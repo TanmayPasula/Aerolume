@@ -84,8 +84,8 @@ def _normalise(page: str) -> str:
 
 def test_committed_home_page_matches_a_fresh_build(tmp_path):
     """The committed index.html must be what build.py writes from today's repository: the same
-    builder, the same assets, no repository address (none is configured in pyproject.toml, so a local
-    build has none either)."""
+    builder, the same assets and the public addresses recorded in CITATION.cff (no environment, so
+    a local build and CI agree)."""
     build = _build_module()
     out = tmp_path / "site"
     out.mkdir()

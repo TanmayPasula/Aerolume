@@ -51,7 +51,9 @@ def test_citation_file_matches_the_package():
         assert key in cff, key
     text = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
     assert "\t" not in text                                     # YAML forbids tab indentation
-    assert "repository-code" not in text                        # no public repository exists yet
+    # the public addresses (the website build reads them from here)
+    assert cff["repository-code"] == "https://github.com/TanmayPasula/Aerolume"
+    assert cff["url"].startswith("https://")
 
 
 def test_methods_document_links_and_references():

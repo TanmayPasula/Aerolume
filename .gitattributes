@@ -1,0 +1,4 @@
+# Licence texts are vendored byte for byte and pinned by SHA-256
+# (packaging/licenses/UPSTREAM.sha256): never convert their line endings.
+packaging/licenses/** -text
+third_party/** -text

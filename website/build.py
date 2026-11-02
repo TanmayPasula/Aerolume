@@ -31,7 +31,8 @@ The site is static, hand-built HTML and CSS. This script does five things:
    outside ``website/`` so a stale second copy is never deployed.
 
 The repository URL is not guessed. It comes from ``[project.urls]`` in pyproject.toml,
-the ``AEROLUME_REPO_URL`` variable, or GitHub Actions' own ``GITHUB_REPOSITORY``; if none
+the ``AEROLUME_REPO_URL`` variable, GitHub Actions' own ``GITHUB_REPOSITORY`` or
+``repository-code`` in CITATION.cff (the site's own address from ``url`` there); if none
 is set the build warns, leaves out the links that need it and says in plain words that
 the source is not public yet, instead of printing an address that may not exist.
 
@@ -915,13 +916,27 @@ def count_templates(repo: Path = REPO) -> int:
     return len(re.findall(r"^_register\(TemplateInfo\(", path.read_text(encoding="utf-8"), flags=re.MULTILINE))
 
 
+def citation_field(repo: Path, key: str) -> str | None:
+    """A top-level ``key: value`` of the repository's CITATION.cff (``repository-code``, ``url``),
+    if it is an https address. CITATION.cff is where a published repository states its addresses,
+    and it is not a build input of the app, so recording them there leaves the installer current."""
+    path = repo / "CITATION.cff"
+    if not path.exists():
+        return None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        m = re.match(rf'^{re.escape(key)}:\s*"?(https://[^"\s]+)"?\s*$', line)
+        if m:
+            return m.group(1)
+    return None
+
+
 def find_repo_url(repo: Path = REPO, env: dict[str, str] | None = None) -> str | None:
     """The public repository address, or None when nothing states it.
 
     In order: ``[project.urls]`` in pyproject.toml (Repository, Source, Source Code,
     Homepage), the ``AEROLUME_REPO_URL`` variable, and GitHub Actions'
     ``GITHUB_SERVER_URL``/``GITHUB_REPOSITORY`` (always set in the Pages workflow, and
-    by definition the repository being built).
+    by definition the repository being built), and last ``repository-code`` in CITATION.cff.
     """
     env = os.environ if env is None else env
     pyproject = repo / "pyproject.toml"
@@ -937,7 +952,8 @@ def find_repo_url(repo: Path = REPO, env: dict[str, str] | None = None) -> str |
         return url.rstrip("/").removesuffix(".git")
     if env.get("GITHUB_REPOSITORY"):
         return f"{env.get('GITHUB_SERVER_URL', 'https://github.com').rstrip('/')}/{env['GITHUB_REPOSITORY']}"
-    return None
+    url = citation_field(repo, "repository-code")
+    return url.rstrip("/").removesuffix(".git") if url else None
 
 
 def build_date() -> _dt.date:
@@ -1996,7 +2012,7 @@ class SiteBuilder:
         env = os.environ if env is None else env
         self.site = SiteInfo(read_version(repo), build_date(),
                              repo_url or find_repo_url(repo, env),
-                             (site_url or env.get("AEROLUME_SITE_URL") or "").strip() or None)
+                             (site_url or env.get("AEROLUME_SITE_URL") or citation_field(repo, "url") or "").strip() or None)
         self.images: set[Path] = set()
         self.warnings: list[str] = []
         self.missing_docs: list[str] = []

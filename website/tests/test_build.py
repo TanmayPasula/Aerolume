@@ -320,6 +320,15 @@ def test_find_repo_url_sources_in_order(tmp_path):
     assert build.find_repo_url(tmp_path, {"AEROLUME_REPO_URL": "https://other"}) == "https://github.com/a/b"
 
 
+def test_find_repo_url_falls_back_to_citation(tmp_path):
+    (tmp_path / "CITATION.cff").write_text('cff-version: 1.2.0\nrepository-code: "https://github.com/c/d.git"\n'
+                                           'url: "https://c.github.io/d/"\n', encoding="utf-8")
+    assert build.find_repo_url(tmp_path, {}) == "https://github.com/c/d"
+    assert build.find_repo_url(tmp_path, {"GITHUB_REPOSITORY": "o/r"}) == "https://github.com/o/r"
+    assert build.citation_field(tmp_path, "url") == "https://c.github.io/d/"
+    assert build.citation_field(tmp_path, "license") is None
+
+
 def test_parse_perf_table_inherits_device_names():
     text = ("| device | grid | options | steps/s | target |\n|---|---|---|--:|--:|\n"
             "| CUDA, RTX 4060 Ti | 1024×512 | default | **493** | ≥ 300 |\n"
@@ -518,10 +527,17 @@ def test_hero_field_follows_the_page_colours(theme):
 # --------------------------------------------------------------------------- full build
 @pytest.fixture(scope="module")
 def built_site(tmp_path_factory):
+    """A build that knows no public address: no environment and, for this build only, no
+    CITATION.cff addresses either, so the not-yet-public wording stays tested."""
     out = tmp_path_factory.mktemp("site")
     shutil.copytree(WEBSITE / "assets", out / "assets")
-    builder = build.SiteBuilder(out=out, env=NO_REPO_ENV)
-    problems = builder.build()
+    real = build.citation_field
+    build.citation_field = lambda repo, key: None
+    try:
+        builder = build.SiteBuilder(out=out, env=NO_REPO_ENV)
+        problems = builder.build()
+    finally:
+        build.citation_field = real
     return out, problems, builder
 
 
