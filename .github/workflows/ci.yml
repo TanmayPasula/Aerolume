@@ -36,4 +36,4 @@ jobs:
       - name: Lint
         run: ruff check src tests
       - name: Tests (fast suite)
-        run: pytest -q
+        run: pytest -v --tb=short -rfE -p faulthandler -o faulthandler_timeout=600

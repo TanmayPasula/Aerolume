@@ -71,6 +71,37 @@ def pytest_configure(config) -> None:
 
     if not os.environ.get("AEROLUME_CONFIG_DIR"):
         os.environ["AEROLUME_CONFIG_DIR"] = tempfile.mkdtemp(prefix="aerolume-test-config-")
+    _probe_vtk_out_of_process()
+
+
+def _probe_vtk_out_of_process() -> None:
+    """Decide once, in a child process, whether VTK can render off-screen here.
+
+    ``viz3d.scene.backend_info()`` opens a real OpenGL context. On machines without
+    a usable driver (the GitHub Actions Windows and Linux runners) that call does not
+    fail politely: the driver crashes the process with an access violation or an
+    abort, and the whole test run dies at collection. The child takes that risk
+    instead. If it crashes, hangs or reports no context, the parent's probe cache is
+    filled with "not ok", so every 3D test skips with its usual reason and nothing in
+    this process touches OpenGL.
+    """
+    import subprocess
+
+    code = ("from aerolume.viz3d.scene import backend_info; "
+            "print('VTKOK' if backend_info().get('ok') else 'VTKNO')")
+    try:
+        out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=False,
+                             timeout=120).stdout
+        ok, why = "VTKOK" in out, "no off-screen OpenGL context (checked in a child process)"
+    except subprocess.TimeoutExpired:
+        ok, why = False, "the off-screen OpenGL probe hung (checked in a child process)"
+    if ok:
+        return
+    try:
+        from aerolume.viz3d import scene
+    except Exception:  # noqa: BLE001 - no VTK at all: the 3D tests skip on import already
+        return
+    scene._BACKEND = {"ok": False, "window": "", "renderer": "", "version": "", "error": why}
 
 
 @pytest.fixture(autouse=True)
