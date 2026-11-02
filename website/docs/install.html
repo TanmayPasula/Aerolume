@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Installing Aerolume</title>
+<meta name="description" content="The Windows installer, the portable folder and a source install; building the installer.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Installing Aerolume">
+<meta property="og:description" content="The Windows installer, the portable folder and a source install; building the installer.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html" aria-current="page">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html" aria-current="page">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#system-requirements">System requirements</a></li><li class="l2"><a href="#installer">Installer</a></li><li class="l3"><a href="#opening-projects">Opening projects</a></li><li class="l2"><a href="#portable-folder">Portable folder</a></li><li class="l3"><a href="#checking-an-installation">Checking an installation</a></li><li class="l2"><a href="#from-source">From source</a></li><li class="l3"><a href="#building-the-installer">Building the installer</a></li><li class="l3"><a href="#building-the-macos-app">Building the macOS app</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="installing-aerolume">Installing Aerolume</h1>
+<p>There are three ways to run Aerolume on Windows. They run the same code and give the same
+numbers; they differ in what you need to have installed and how you update.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col"></th><th scope="col">Installer</th><th scope="col">Portable folder</th><th scope="col">From source</th></tr></thead>
+<tbody>
+<tr><td>What you get</td><td><code>Aerolume-&lt;version&gt;-cuda-setup.exe</code></td><td>the <code>Aerolume</code> folder the installer would install</td><td>a Python environment with the <code>aerolume</code> package</td></tr>
+<tr><td>Needs Python</td><td>no</td><td>no</td><td>Python 3.11+</td></tr>
+<tr><td>Administrator rights</td><td>no (installs for the current user)</td><td>no</td><td>no</td></tr>
+<tr><td>Start-menu entry, <code>.aerolume</code> association, uninstaller</td><td>yes</td><td>no</td><td>no</td></tr>
+<tr><td>Disk space</td><td>3.54 GB installed (download 1.94 GB)</td><td>3.54 GB</td><td>about 4 GB with the CUDA build of PyTorch (4.1 GB measured)</td></tr>
+<tr><td>Best for</td><td>using Aerolume</td><td>USB sticks, locked-down PCs, trying a build</td><td>development, scripting against your own Python packages</td></tr>
+</tbody>
+</table></div>
+<p>The installer and the portable folder include everything: Python, PyTorch with the NVIDIA
+CUDA libraries, VTK, Qt, the documentation and the validation scripts. They also include a
+licence text or notice for every bundled component: the licence files of each Python package,
+the LGPL-3.0 and GPL-3.0 texts for Qt, CPython's licences, the licence texts of the libraries
+VTK builds into <code>_internal\vtk.libs</code> (<code>licenses\vtk\third_party</code>), Qt's attribution of the
+third-party code built into it and of Mesa's llvmpipe in <code>opengl32sw.dll</code>
+(<code>licenses\PySide6_<wbr>Essentials\third_<wbr>party</code>), and notices for the proprietary
+NVIDIA CUDA/cuDNN and Intel OpenMP libraries that come with PyTorch. The notices name each
+agreement and give its address (see <code>licenses\README.txt</code> and <a href="third-party-notices.html">Third-party notices</a>). A <strong>CPU-only</strong> build can be made with <code>packaging/build.py --variant cpu</code>;
+it runs every feature, only slower. It has not been built and measured yet; leaving out the
+2.5 GB of CUDA libraries should make the folder about 1 GB.</p>
+<h2 id="system-requirements">System requirements<a class="anchor" href="#system-requirements" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Windows 10 version 1809 or later, or Windows 11, 64-bit.</li>
+<li>For GPU simulations: an NVIDIA GPU with a current driver (the bundled CUDA 13 runtime needs
+driver 580 or newer). Without a GPU or driver everything runs on the CPU; the setup warns if
+it finds no NVIDIA driver.</li>
+<li>OpenGL 3.2 for the 3D views (any GPU driver from the last ten years; see Troubleshooting for
+remote desktops and virtual machines).</li>
+<li>8 GB of RAM; 16 GB for fine 3D grids.</li>
+</ul>
+<h2 id="installer">Installer<a class="anchor" href="#installer" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Run <code>Aerolume-&lt;version&gt;-cuda-setup.exe</code>. Windows SmartScreen may say the publisher is
+unknown: the installer is not code-signed (open-source builds have no signing certificate
+yet). Choose <strong>More info ▸ Run anyway</strong> only if you got the file from the project's own
+release page.</li>
+<li>The installer asks for the licence (Apache 2.0), the install folder (default
+<code>%LOCALAPPDATA%\Programs\Aerolume</code>), and two options: a desktop shortcut (off by default)
+and opening <code>.aerolume</code> project files with Aerolume (on).</li>
+<li>Aerolume appears in the Start menu. <strong>Settings ▸ Apps ▸ Installed apps ▸ Aerolume ▸
+Uninstall</strong> removes it.</li>
+</ol>
+<p>What the installer changes, all inside your user profile:</p>
+<ul>
+<li>the program folder, a Start-menu shortcut (and the desktop shortcut if chosen);</li>
+<li><code>HKEY_<wbr>CURRENT_<wbr>USER\Software\Classes\.aerolume</code> and <code>Aerolume.Project</code> (the file
+association), <code>Applications\Aerolume.exe</code> ("Open with") and an <code>App Paths</code> entry so
+<strong>Win+R ▸ aerolume</strong> starts the program;</li>
+<li>nothing else: no services, no drivers, no PATH changes, no telemetry.</li>
+</ul>
+<p>Installing a newer version over an older one upgrades in place; the old program files are
+removed first, so no stale library survives an upgrade. Close Aerolume before installing or
+uninstalling - setup detects a running Aerolume and asks you to close it.</p>
+<p><strong>Your data is never removed by the uninstaller</strong>: projects stay where you saved them, and
+settings, recent projects, AI-assistant settings and logs stay in <code>%APPDATA%\Aerolume</code>
+(delete that folder by hand for a completely clean removal).</p>
+<p>For all users of a PC (administrator rights needed), run the installer with <code>/ALLUSERS</code>; it then
+installs to <code>C:\Program Files\Aerolume</code> and registers the association machine-wide. Silent
+installation: <code>/VERYSILENT /SUPPRESSMSGBOXES /NORESTART</code> (add <code>/TASKS="associate"</code> or
+<code>/<wbr>TASKS="associate,desktopicon"</code>; <code>/LOG=setup.log</code> writes a log).</p>
+<h3 id="opening-projects">Opening projects<a class="anchor" href="#opening-projects" aria-label="Link to this section">#</a></h3>
+<p>A project is a folder named <code>&lt;Name&gt;.aerolume</code>. Windows cannot associate a folder with a
+program, so Aerolume puts a small file called <code>project.aerolume</code> into every project folder it
+opens or saves; double-clicking that file opens the project. The file holds no data (the
+project is <code>project.json</code> and the subfolders), and deleting it only removes the shortcut. If
+Aerolume is already running, the project opens in the running window instead of starting a
+second copy. Projects you open in the installed app also appear under <strong>Recent</strong> when you
+right-click Aerolume in the taskbar or the Start menu.</p>
+<h2 id="portable-folder">Portable folder<a class="anchor" href="#portable-folder" aria-label="Link to this section">#</a></h2>
+<p>The portable build is the <code>Aerolume</code> folder produced by <code>packaging/build.py</code> (the same files
+the installer installs). Copy it anywhere you can write to and run <code>Aerolume.exe</code>. Nothing is
+registered; settings still go to <code>%APPDATA%\Aerolume</code> unless you set the environment variable
+<code>AEROLUME_CONFIG_DIR</code> to another folder (for example on the stick itself) before starting.
+If you pass the folder on to someone else, pass it on whole: <code>LICENSE</code>,
+<code>THIRD_PARTY_NOTICES.md</code> and <code>licenses\</code> must go with the libraries. Qt's LGPL, for example,
+requires its text to accompany the Qt DLLs.</p>
+<p>Next to <code>Aerolume.exe</code> you find:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col"></th><th scope="col"></th></tr></thead>
+<tbody>
+<tr><td><code>aerolume-cli.exe</code></td><td>the command line (<code>aerolume-cli doctor</code>, <code>quick</code>, <code>polar</code>, <code>run</code>, <code>script</code>, <code>validate</code>, ...)</td></tr>
+<tr><td><code>docs\</code></td><td>this documentation, also reachable from the Help menu</td></tr>
+<tr><td><code>validation\</code></td><td>the benchmark cases behind <code>aerolume-cli validate</code> and <a href="validation.html">Validation report</a></td></tr>
+<tr><td><code>LICENSE</code>, <code>THIRD_PARTY_NOTICES.md</code>, <code>licenses\</code></td><td>Aerolume's licence, and the licence texts or notices of every bundled component (<code>licenses\README.txt</code> lists them)</td></tr>
+<tr><td><code>build-info.json</code></td><td>version, variant, build time, the versions of Python, PyTorch, CUDA, VTK and Qt, and the SHA-256 fingerprint of the sources the build was made from</td></tr>
+<tr><td><code>_internal\</code></td><td>Python, the libraries and the app's resources - do not edit</td></tr>
+</tbody>
+</table></div>
+<h3 id="checking-an-installation">Checking an installation<a class="anchor" href="#checking-an-installation" aria-label="Link to this section">#</a></h3>
+<p><code>Aerolume.exe --selftest</code> runs a self-test and exits: it checks the bundled resources, docs
+and licences, that <code>build-info.json</code> names the version actually bundled and records its source
+fingerprint, imports the standard library and SciPy for scripts and the Aerolume API
+(accounts included), runs cuBLAS, cuFFT and NVRTC kernels, 20 time steps of the 2D solver and
+10 of the 3D solver with a heated body, a fan, a smoke emitter and a particle emitter on the
+GPU, an airfoil analysis, an off-screen VTK frame, and builds the main window. The 3D check
+also fails an installed build whose fused GPU kernels or CUDA graphs could not start: the
+solver would otherwise fall back to its slower reference arithmetic without telling you,
+which is what a CUDA runtime file missing from the bundle looks like. The result (every check with its time) is
+written to <code>%APPDATA%\Aerolume\logs\selftest.json</code>; add <code>--selftest-out &lt;file&gt;</code> to choose the
+file, <code>--no-window</code> or <code>--no-gpu</code> to skip parts. <code>aerolume-cli doctor</code> prints versions, the
+devices and a one-second solver check in the console. Crash reports start with a line of the
+form <code>Aerolume 0.1.0 (CUDA build 2026-11-01, source &lt;first 12 hex digits of the source fingerprint&gt;)</code>, which identifies the exact build even when several builds share a version
+number.</p>
+<h2 id="from-source">From source<a class="anchor" href="#from-source" aria-label="Link to this section">#</a></h2>
+<p>Use this to develop Aerolume or to script it from your own Python environment. Put the virtual
+environment <strong>outside</strong> OneDrive, Dropbox or other synced folders: the CUDA build of PyTorch is
+several gigabytes of small and large files that the sync client would upload and lock.</p>
+<pre><code class="language-bash">git clone &lt;repository URL&gt; aerolume
+cd aerolume
+python -m venv %LOCALAPPDATA%\venvs\aerolume
+%LOCALAPPDATA%\venvs\aerolume\Scripts\activate</code></pre>
+<p>PyTorch, with CUDA (NVIDIA GPU; pick the build that matches your driver on
+<a href="https://pytorch.org/get-started/locally/">pytorch.org</a>):</p>
+<pre><code class="language-bash">pip install torch --index-url https://download.pytorch.org/whl/cu130</code></pre>
+<p>or CPU only (every feature works; CFD runs use coarser grids and take several times longer):</p>
+<pre><code class="language-bash">pip install torch --index-url https://download.pytorch.org/whl/cpu</code></pre>
+<p>then Aerolume and the optional AI assistant and development tools:</p>
+<pre><code class="language-bash">pip install -e ".[dev,ai]"
+aerolume-cli doctor
+aerolume</code></pre>
+<h3 id="building-the-installer">Building the installer<a class="anchor" href="#building-the-installer" aria-label="Link to this section">#</a></h3>
+<p>Requirements: the source install above plus <code>pip install pyinstaller</code> and
+<a href="https://jrsoftware.org/isinfo.php">Inno Setup 6</a> (6.6 or newer; the per-user install is fine).</p>
+<pre><code class="language-bash">python packaging/build.py --variant cuda          # portable folder + smoke test + installer
+python packaging/build.py --variant cuda --skip-installer
+python packaging/build.py --variant cpu --python &lt;cpu venv&gt;\Scripts\python.exe
+python packaging/build.py --status                 # is the existing build current?</code></pre>
+<p>The build writes to <code>%USERPROFILE%\aerolume-build\&lt;variant&gt;\</code> (set <code>AEROLUME_BUILD_ROOT</code> or
+pass <code>--build-root</code> to change it) - never into the repository, because OneDrive and other sync
+clients lock files while PyInstaller writes them. The finished installer is
+<code>%USERPROFILE%\aerolume-build\cuda\installer\Aerolume-&lt;version&gt;-cuda-setup.exe</code>. It checks
+that the interpreter's PyTorch matches the variant, generates the icon and version resources
+from <code>src/<wbr>aerolume/<wbr>app/<wbr>resources/<wbr>aerolume.svg</code> and <code>aerolume.__version__</code>, runs PyInstaller
+(<code>packaging/aerolume.spec</code>), copies the docs, validation scripts and licence files, launches
+the built program headless (<code>packaging/smoke_test.py</code>: the self-test twice, the console
+program, single-instance forwarding) and only then compiles <code>packaging/aerolume.iss</code>. The
+compiler also writes <code>Aerolume-&lt;version&gt;-&lt;variant&gt;-manifest.txt</code>, a list of every file inside
+the installer with its size and SHA-256; the build checks it against the app folder, so the
+installer is verified to contain exactly the tested files without being run. A summary with
+versions, sizes, timings and every smoke-test result is written to <code>build-report.json</code>.</p>
+<p><strong>The build reads a snapshot, not your working tree.</strong> PyInstaller reads the package for about
+ten minutes; if you (or anyone sharing the tree) save a file meanwhile, the folder would mix two
+versions. So the build first copies every input (the whole <code>aerolume</code> package with its data
+files, <code>pyproject.toml</code>, the packaging scripts, the docs, validation scripts and licence files)
+to <code>&lt;build root&gt;\&lt;variant&gt;\source\</code>, accepting the copy only when the tree did not change while
+it was copied and every <code>.py</code> file compiles (a half-saved file does not); otherwise it waits five
+seconds and tries again, six times at most. PyInstaller, the post-processing and the installer
+then work from that copy alone, and afterwards every file of the bundled <code>aerolume</code> package is
+compared byte for byte with the snapshot - the build stops if one differs. You can keep editing
+while it runs. Aerolume's own package metadata (version, project links, requirements) is
+generated from the snapshot's <code>pyproject.toml</code> too, rather than copied from the editable
+install, which keeps whatever was true on the day <code>pip install -e</code> ran.</p>
+<p><strong>Is this build current?</strong> Every build records the snapshot's SHA-256 fingerprint in
+<code>build-info.json</code> inside the app folder and in <code>build-report.json</code>.
+<code>python packaging/build.py --status</code> compares it with your working tree and prints, for the
+app folder and every installer it finds, <code>CURRENT</code> or the reasons it is not: another version, a
+different fingerprint (naming the most recently changed input and, while the snapshot is still
+there, exactly which files changed, were added or were removed since), or no fingerprint at all
+(builds made before this check existed - shown as stale once any input is newer). A folder whose
+smoke test failed is shown as <code>FAILED</code> with the checks that failed, and one built with
+<code>--skip-smoke</code> as <code>UNTESTED</code>; neither is ever called current, even when its sources match. It
+exits with code 0 only when the folder and an installer compiled from it both match. <code>--reuse-dist</code>
+(compile an installer from an existing folder) refuses a folder that is not current unless you
+add <code>--allow-stale</code>. When only the installer compile fails (an LZMA worker short of memory stops
+with "terminated unexpectedly"), the build still saves its report with the error, so
+<code>--reuse-dist</code> (with <code>--lzma-threads 2</code> if memory was the cause) compiles the installer in a few
+minutes and adds to the same record instead of needing a second full build. A build exits with 0 when it still matches the tree at the end and with 3
+when it was built correctly from its snapshot but the tree has moved on since; either way the
+folder and installer are internally consistent. So a version number alone never passes for
+"this installer contains today's code".</p>
+<p><strong>A failed smoke test leaves no installer.</strong> The build stops before the installer compiler
+runs, exits with a non-zero code naming the failed checks, and deletes any installer in
+<code>&lt;variant&gt;\installer\</code>. An older installer there was compiled from the folder this build
+replaced, so keeping it would leave a file that looks like this build's result. A full build
+also removes the old installer when it deletes the old app folder at the start, so an
+interrupted build cannot leave one either. The build root holds only the build's own output;
+nothing outside it is touched.</p>
+<p><strong>Only the docs changed.</strong> README, CHANGELOG, <code>docs\</code> and <code>validation\</code> are copied next to the
+executable after PyInstaller and nothing is compiled from them. When they are the only inputs
+that changed since the build's snapshot, <code>python packaging/build.py --refresh-docs</code> takes a new
+snapshot and re-copies them. It then re-runs the smoke test and recompiles the installer, which
+takes about a third of a full build (both are in the measurements below). It refuses, and
+changes nothing, if any bundled input changed (a module, a data file in the package, <code>pyproject.toml</code> or a packaging script),
+and it refuses a folder that failed its smoke test. <code>build-info.json</code> records each refresh under
+<code>docs_refreshed</code> with the files it re-copied. This is how the release build's own measurements
+below get into this file, which the app ships, without a second PyInstaller run.</p>
+<p><strong>Why not <code>%LOCALAPPDATA%</code>.</strong> Earlier builds went to <code>%LOCALAPPDATA%\aerolume-build</code>. When the
+build runs inside a packaged (MSIX) Windows app - the Claude desktop app, some terminals and
+IDEs - Windows silently redirects new folders under <code>AppData</code> to that app's private
+<code>%LOCALAPPDATA%\Packages\&lt;app&gt;\LocalCache\Local\</code> store, so the installer existed for the
+build but not in Explorer at the path the log printed. Only <code>AppData</code> is redirected, so the
+profile folder is the same for every program. <code>--status</code> still lists builds left in the old
+location (marked "legacy build root"), and whenever a path is redirected the build log and
+<code>--status</code> print both spellings.</p>
+<p><strong>Release measurements are generated, not typed.</strong> Every run of <code>build.py</code> appends a record to
+<code>runs</code> in <code>build-report.json</code>: the kind of run, the fingerprint it built, the smoke-test and
+self-test times, the installer compile time and the installer's SHA-256, the machine, and the
+average CPU use of the whole machine during the run. A full build starts a new history; a
+docs refresh extends it, so the report of the final installer still holds the full build that
+compiled its program. After every compile the build also writes
+<code>Aerolume-&lt;version&gt;-&lt;variant&gt;-release-notes.md</code> beside the installer, with that installer's
+SHA-256, its timings and every smoke-test and self-test result; that file goes on the release
+page. <code>python packaging/build.py --write-measurements</code> copies the history into the block below
+(and into the CHANGELOG's release-build paragraph when it carries the markers). It refuses a
+build that failed or skipped its smoke test, has no installer, or whose program the working
+tree no longer holds. A release is therefore: full build, <code>--write-measurements</code>,
+<code>--refresh-docs</code>.</p>
+<p><strong>Measured release build: Aerolume 0.1.0, CUDA variant.</strong> Every number in this block is copied from the <code>build-report.json</code> of the runs named in its column headings by <code>python packaging/build.py --write-measurements</code>; none is typed by hand.</p>
+<ul>
+<li>The program was compiled by the full build of snapshot <code>d7b30ff02f9f</code>, finished 2 Nov 2026, 03:59.</li>
+<li>The last run recorded here compiled <code>Aerolume-0.1.0-cuda-setup.exe</code>, SHA-256 <code>866bc41540343927a004880cebee2349109db6aa8e93731e6a7f703a3f10f0ed</code>.</li>
+<li>Machine: 13th Gen Intel(R) Core(TM) i7-13700F, 24 logical CPUs, 16 GB RAM, NVIDIA GeForce RTX 4060 Ti. Average CPU use of the whole machine during each run, the build included: full build <code>d7b30ff02f9f</code> 18 %. Times depend on load and on what is already in the file cache; sizes, file counts and hashes do not.</li>
+</ul>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">step</th><th scope="col">full build <code>d7b30ff02f9f</code></th></tr></thead>
+<tbody>
+<tr><td>PyInstaller</td><td>302 s</td></tr>
+<tr><td>smoke test (self-test twice, console program, <code>doctor</code>, single instance)</td><td>35.8 s</td></tr>
+<tr><td>self-test of the built app, 14 checks: first / second launch</td><td>20.1 s / 6.4 s</td></tr>
+<tr><td>installer compile (lzma2/max)</td><td>125 s</td></tr>
+<tr><td>installer SHA-256</td><td><code>866bc4154034</code></td></tr>
+<tr><td>whole run</td><td>8.4 min</td></tr>
+</tbody>
+</table></div>
+<p>App folder 3.54 GB in 4,241 files; installer 1.94 GB. The installer's manifest lists 4,241 files, identical in size and SHA-256 to the tested app folder.</p>
+<p>A <em>first launch</em> in a docs refresh or re-package starts with the app's libraries already in the file cache, so it is faster than the first start after installing, when Windows also reads 3.5 GB from disk and antivirus software scans it. A <code>-</code> means the run did not measure that step.</p>
+<p>This page ships inside the installer, so it cannot describe the installer that contains it: writing these numbers changes the docs, and the release installer is then recompiled from the same program with <code>--refresh-docs</code>. That run's own figures and the SHA-256 of the installer you download are in <code>Aerolume-0.1.0-cuda-release-notes.md</code> beside the installer on the release page.</p>
+<p>A development build on 24 October failed its self-test (its bundled metadata named a different
+version than its code), which led to the
+<code>FAILED</code> state and the no-installer rule described above. The development builds of 30 October,
+made before the first release was numbered 0.1.0, a first 0.1.0 build on 1 November
+(snapshot <code>533e0bc49fbc</code>, rebuilt after a fix to the Assistant's claims check) and a second one
+the same day (snapshot <code>e7c21614f43d</code>, built before the interface took the website's look)
+passed every check but were replaced by the build above; their reports are not in this history.
+A third build that day (snapshot <code>a9a2c464abc1</code>) passed its smoke test, but its installer compile
+stopped when an LZMA worker died ("terminated unexpectedly"); that run saved no report, which is
+why a failed compile now saves one (see <code>--reuse-dist</code> above). A fourth (snapshot <code>b54186fba8f1</code>)
+passed every check and was replaced after a fix to the names of crash logs (two in the same
+millisecond overwrote each other). The rebuild after it was started while the app was open from
+the build folder: Windows refused to delete the running program half-way through removing the
+folder, so the build now lists the processes running from the folder and refuses before it
+removes anything. The last of these, the full build of snapshot <code>7858260c37c5</code> on the evening of
+1 November, passed every check too. It was replaced because the release check found that its
+<code>licenses</code> folder lacked the LGPL and GPL texts for Qt, CPython's licences and notices for the
+NVIDIA and Intel libraries in <code>torch\lib</code>. The build above adds them (<a href="third-party-notices.html">Third-party notices</a>).
+The release check of 2 November then found the licences of VTK's vendored libraries in
+<code>vtk.libs</code> and of the third-party code inside Qt missing; the build now adds those too, and
+refuses to finish when VTK brings a library whose licence it does not have.</p>
+<h3 id="building-the-macos-app">Building the macOS app<a class="anchor" href="#building-the-macos-app" aria-label="Link to this section">#</a></h3>
+<p>Aerolume has not been tested on macOS, and no <code>.app</code> has been built by the project: PyInstaller
+cannot cross-build, and the release is made on Windows. The spec is ready for it, though. On a
+Mac (Apple silicon or Intel, macOS 11 or later) with Python 3.11 or newer:</p>
+<pre><code class="language-bash">python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e ".[ai]" pyinstaller           # PyTorch for macOS: CPU (no CUDA)
+pyinstaller packaging/aerolume.spec          # writes dist/Aerolume.app</code></pre>
+<p>What the spec does on a Mac (<code>packaging/aerolume.spec</code>, under <code>if IS_MAC</code>): the variant defaults
+to <code>cpu</code>; the Windows version resources are skipped; a <code>BUNDLE</code> target wraps the folder into
+<code>dist/Aerolume.app</code> with the bundle identifier <code>org.aerolume.Aerolume</code>, the version, the
+<code>.aerolume</code> project folders as its document type, and the icon <code>aerolume.icns</code>, which
+<code>buildlib.make_icns</code> renders from the same <code>aerolume.svg</code> as the Windows <code>.ico</code> (no <code>iconutil</code>
+needed). <code>packaging/build.py</code> is Windows-only (it compiles the Inno Setup installer), so on a Mac
+run PyInstaller directly as above, then check the bundle with
+<code>dist/Aerolume.app/Contents/MacOS/Aerolume --selftest</code>. The app is not signed or notarised:
+Gatekeeper will ask before the first start (Control-click, Open). Please report what you find.</p>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" aria-label="Link to this section">#</a></h2>
+<p>Logs are in <code>%APPDATA%\Aerolume\logs</code>: <code>crash-*.log</code> (one per unexpected error, with the
+report the crash dialog shows), <code>aerolume.log</code> (output of the installed program), and
+<code>native-crash-*.log</code> when the previous session ended inside native code (a graphics driver,
+CUDA). Paths in these reports have your home folder replaced by <code>~</code>, so they can be attached
+to an issue as they are.</p>
+<p><strong>The repository or venv is in OneDrive.</strong> Symptoms: <code>PermissionError</code> or "file in use" while
+installing packages or building, random import errors, very high OneDrive memory use, and
+CUDA reporting "out of memory" with an empty GPU (the system has run out of commit memory).
+Move the venv and the build folder out of OneDrive (the build script refuses to build inside
+it), or pause syncing while you work.</p>
+<p><strong>"CUDA not available" / simulations run on the CPU.</strong> Check the device in the status bar or run
+<code>aerolume-cli doctor</code>. Install the current NVIDIA driver (GeForce or Studio driver; the CUDA
+toolkit is <em>not</em> needed, the libraries are bundled). Laptops with two GPUs: set Aerolume to
+the high-performance NVIDIA GPU in <strong>Settings ▸ System ▸ Display ▸ Graphics</strong>. A driver older
+than the bundled CUDA runtime makes PyTorch fall back to the CPU; the self-test's <code>torch</code> line
+says which device it used.</p>
+<p><strong>The 3D view says "3D view unavailable" or is black.</strong> VTK needs OpenGL 3.2. Remote Desktop
+sessions, some virtual machines and the Windows "Basic Display Adapter" provide only OpenGL
+1.1. Update the graphics driver; over Remote Desktop, start Aerolume before connecting or use
+a remote-access tool that renders on the host GPU instead of Remote Desktop. As a last
+resort set the environment variable <code>AEROLUME_<wbr>VTK_<wbr>BACKEND=osmesa</code> to render in software, if an
+<code>osmesa.dll</code> is available. 2D work is unaffected.</p>
+<p><strong>SmartScreen blocks the installer.</strong> The installer is not code-signed; see step 1 above.
+Antivirus software may also scan the 3.5 GB of libraries on the first start, which is why the
+first launch after installing takes noticeably longer than later ones.</p>
+<p><strong>A second window does not open when I double-click a project.</strong> By design: the project opens
+in the running Aerolume. If that window is hung, close it from the Task Manager; the next start
+recovers (the instance lock is released when the process ends).</p>
+<p><strong>Scripts fail with <code>ModuleNotFoundError</code> in the installed app.</strong> The installed app bundles the
+whole standard library, NumPy, SciPy, Matplotlib and Pillow, but not packages from your own
+Python installation. Use a source install for scripts that need other packages.</p>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="overview.html"><span>Previous</span><b>Overview</b></a><a class="next" href="user-guide.html"><span>Next</span><b>User guide</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#system-requirements">System requirements</a></li><li class="l2"><a href="#installer">Installer</a></li><li class="l3"><a href="#opening-projects">Opening projects</a></li><li class="l2"><a href="#portable-folder">Portable folder</a></li><li class="l3"><a href="#checking-an-installation">Checking an installation</a></li><li class="l2"><a href="#from-source">From source</a></li><li class="l3"><a href="#building-the-installer">Building the installer</a></li><li class="l3"><a href="#building-the-macos-app">Building the macOS app</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

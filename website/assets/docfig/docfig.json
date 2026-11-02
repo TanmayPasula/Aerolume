@@ -1,0 +1,70 @@
+{
+  "airfoil_0012.png": {
+    "panels": [
+      {
+        "name": "lift",
+        "alt": "NACA 0012 lift coefficient against angle of attack: Aerolume at Re 6 and 3 million, tripped, with Ladson's and Gregory and O'Reilly's measurements.",
+        "width": 360,
+        "height": 390,
+        "light": "airfoil_0012-lift-light.png",
+        "dark": "airfoil_0012-lift-dark.png"
+      },
+      {
+        "name": "polar",
+        "alt": "NACA 0012 drag polar at Re 6 million: Aerolume tripped and free-transition curves with Ladson's tripped data and Abbott and von Doenhoff's smooth-model data.",
+        "width": 360,
+        "height": 390,
+        "light": "airfoil_0012-polar-light.png",
+        "dark": "airfoil_0012-polar-dark.png"
+      }
+    ]
+  },
+  "airfoil_cambered.png": {
+    "panels": [
+      {
+        "name": "lift",
+        "alt": "Lift of NACA 2412 and 4412 against angle of attack, with the zero-lift angles, lift at zero angle and maximum lift read from Abbott and von Doenhoff.",
+        "width": 360,
+        "height": 390,
+        "light": "airfoil_cambered-lift-light.png",
+        "dark": "airfoil_cambered-lift-dark.png"
+      },
+      {
+        "name": "polar",
+        "alt": "Predicted drag polars of NACA 2412 and 4412 at Re 6 million.",
+        "width": 360,
+        "height": 330,
+        "light": "airfoil_cambered-polar-light.png",
+        "dark": "airfoil_cambered-polar-dark.png"
+      },
+      {
+        "name": "moment",
+        "alt": "Quarter-chord pitching moment of NACA 2412 and 4412 against angle of attack, with the book values as dotted lines.",
+        "width": 360,
+        "height": 350,
+        "light": "airfoil_cambered-moment-light.png",
+        "dark": "airfoil_cambered-moment-dark.png"
+      }
+    ]
+  },
+  "airfoil_cp_2412.png": {
+    "panels": [
+      {
+        "name": "cp",
+        "alt": "Pressure coefficient along NACA 2412 at 4 degrees and Re 1 million: viscous solution against the inviscid panel solution.",
+        "width": 360,
+        "height": 350,
+        "light": "airfoil_cp_2412-cp-light.png",
+        "dark": "airfoil_cp_2412-cp-dark.png"
+      },
+      {
+        "name": "cf",
+        "alt": "Skin friction on the upper and lower surface of the same case, with the transition points dotted.",
+        "width": 360,
+        "height": 350,
+        "light": "airfoil_cp_2412-cf-light.png",
+        "dark": "airfoil_cp_2412-cf-dark.png"
+      }
+    ]
+  }
+}

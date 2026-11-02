@@ -1,0 +1,776 @@
+{
+ "format": "aerolume-result",
+ "schema": 1,
+ "type": "cfd",
+ "token": "b08c50f2af634a96a91fd6dface15d8f",
+ "result": {
+  "sim_id": "414f0dca8ce8",
+  "cd": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "cl": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "cm": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "drag": NaN,
+  "lift": NaN,
+  "moment": NaN,
+  "drag_area": NaN,
+  "power": NaN,
+  "strouhal": null,
+  "strouhal_length": 0.1,
+  "re_real": 375.2933125204011,
+  "re_sim": 375.2933125204011,
+  "grid": [
+   64,
+   64
+  ],
+  "cells_per_ref": 64.0,
+  "t_end": 69.20408630371094,
+  "t_avg_start": 52.47900390625,
+  "converged": true,
+  "wall_seconds": 15.22081739999976,
+  "device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+  "precision": "float32",
+  "turbulence": "laminar",
+  "notes": [
+   "Closed box: 0.100 m × 0.100 m with no-slip walls on every side (from Domain ▸ Extent); gravity along −y. There is no free stream: the reference velocity U = 0.0548 m/s is the free-fall velocity √(gβΔT H), and coefficients use q = ½ρU².",
+   "Grid: 64 × 64 = 4,096 cells of 1.56 mm, set by 64 cells across the box's smaller side (Draft quality on the GPU).",
+   "Flow model: laminar at Re = 375 (U L/ν); advection uses third-order upwind differences.",
+   "Duration: 105 L/U (105 free-fall times H/U, 191 s of real flow); averages from t = 52.48, and the run stops early once the monitored quantities have settled.",
+   "Time step ≈ 0.0071 L/U: about 14,784 steps, estimated 45 s on GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) (the placed physics costs about 66 % per step).",
+   "Heat transfer: air at 15 °C (ideal gas, Sutherland's law): Pr 0.710, k 0.0253 W/(m·K), cp 1,006 J/(kg·K), β 0.00347 1/K (prandtl, beta as typed).",
+   "Temperature scale ΔT = 0.883 K (left wall to right wall); the solver carries θ = (T − 15.00 °C) / ΔT.",
+   "β·ΔT = 0.0031 (ΔT 0.883 K): inside the Boussinesq range (below about 0.1).",
+   "Buoyancy: Boussinesq, gravity along −y. Ri = gβΔT L/U² = 1.00 on the reference length L = 0.100 m (the solver's buoyancy coefficient). Gr 1.41×10^5 and Ra 1.00×10^5 on 0.100 m, the height of the closed box.",
+   "Thermal resolution: about 7 cells across the thermal boundary layer of the heated walls (about H / (2 Nu) = 10.6 mm with Nu ≈ 4.7 by the cavity correlation).",
+   "Settled: the Nusselt number ±0.00044 % (one standard error), the kinetic energy ±0.0028 % (one standard error).",
+   "Nusselt number of the left wall (the hottest), Nu = (Q/A) H / (k ΔT) with H = 0.100 m and ΔT = 0.883 K, the definition of the cavity benchmarks; the heat rate is the heat through that wall.",
+   "Heat through the domain sides (W/m, positive into the fluid): left wall 0.102, right wall -0.102.",
+   "Fluid temperature (time-averaged): mean 15.00 °C, min 14.56 °C, max 15.44 °C (ambient 15.00 °C).",
+   "Mean Nusselt number 4.562 ± 2.0e-05 (a rough estimate: few independent samples) over t = 52.5 … 69.2; heat rate 0.1021 W/m."
+  ],
+  "warnings": [],
+  "per_body": {},
+  "nusselt": {
+   "mean": 4.562399118655795,
+   "rms": 3.852318334954737e-05,
+   "min": 4.562250167552913,
+   "max": 4.562435293857455,
+   "stderr": 2.022643989354869e-05,
+   "stderr_reliable": false
+  },
+  "heat_rate": 0.10212876336294736,
+  "fans_report": [],
+  "diagnostics": {
+   "step": 9135.0,
+   "t": 69.20408630371094,
+   "dt": 0.007637228816747665,
+   "cfl": 0.20650102365356204,
+   "div_rms": 4.002189717969714e-07,
+   "div_max": 1.9073486328125e-06,
+   "p_residual": 1.4476852988985992e-05,
+   "du_l2": 4.215197257380051e-09,
+   "du_rms": 4.182646984482352e-09,
+   "du_max": 1.4901161193847656e-08,
+   "du_rel": 5.824930164141687e-08,
+   "dv_l2": 4.083754015902171e-09,
+   "dv_rms": 4.05221876392032e-09,
+   "dv_max": 2.9802322387695312e-08,
+   "dv_rel": 4.856929779957719e-08,
+   "dp_l2": 1.681986270058862e-07,
+   "dp_rms": 1.681986270058862e-07,
+   "dp_max": 3.762543201446533e-07,
+   "dp_rel": 5.086252516012769e-06,
+   "dtheta_l2": 1.3869370758695768e-09,
+   "dtheta_rms": 1.3869370758695768e-09,
+   "dtheta_max": 2.9802322387695312e-08,
+   "dtheta_rel": 5.696647281218105e-09,
+   "steps_per_s": 570.1599655041846,
+   "heat_in_bodies": 0.0,
+   "heat_in_walls": -3.5359408049255127e-09,
+   "heat_in_sources": 0.0,
+   "heat_in_ports": 0.0,
+   "heat_in_inlet": 0.0,
+   "heat_out_outlet": 0.0,
+   "heat_out_ports": 0.0,
+   "heat_storage_rate": 6.642566071041151e-10,
+   "heat_balance_residual": -4.200197412029628e-09,
+   "t_fluid_mean": 15.000000000958817,
+   "t_fluid_min": 14.563504675795764,
+   "t_fluid_max": 15.436495324204236,
+   "t_fluid_dev_max": 0.4364953242042364
+  },
+  "bodies_wind": []
+ },
+ "arrays": {
+  "history": [
+   "t",
+   "cd",
+   "cl",
+   "cm",
+   "nu",
+   "heat_rate",
+   "ke"
+  ],
+  "surface": [],
+  "mean_fields": {
+   "extent": [
+    0.0,
+    0.1,
+    0.0,
+    0.1
+   ],
+   "label": "mean",
+   "fields": {
+    "u": {
+     "scale": 0.009042228572070599,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "v": {
+     "scale": 0.01410258375108242,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "speed": {
+     "scale": 0.014108977280557156,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "p": {
+     "scale": 0.0003702401590999216,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "cp": {
+     "scale": 0.20116053521633148,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "vorticity": {
+     "scale": 4.373709201812744,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "u_rms": {
+     "scale": 3.7563270893770095e-07,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "v_rms": {
+     "scale": 3.039874343357951e-07,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "p_rms": {
+     "scale": 4.228807970463322e-09,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "cp_rms": {
+     "scale": 2.2976148557063425e-06,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "temperature": {
+     "scale": 0.4364957809448242,
+     "shape": [
+      64,
+      64
+     ],
+     "offset": 15.0
+    },
+    "temperature_rms": {
+     "scale": 5.602880719379755e-06,
+     "shape": [
+      64,
+      64
+     ]
+    }
+   },
+   "mask": {
+    "scale": 1.0
+   }
+  },
+  "instant_fields": {
+   "extent": [
+    0.0,
+    0.1,
+    0.0,
+    0.1
+   ],
+   "label": "instant",
+   "fields": {
+    "u": {
+     "scale": 0.009042084217071533,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "v": {
+     "scale": 0.014102526009082794,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "speed": {
+     "scale": 0.014108920469880104,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "p": {
+     "scale": 0.00037023978075012565,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "cp": {
+     "scale": 0.20116032660007477,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "vorticity": {
+     "scale": 4.373703956604004,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "dye": {
+     "scale": 1.0,
+     "shape": [
+      64,
+      64
+     ]
+    },
+    "temperature": {
+     "scale": 0.4364957809448242,
+     "shape": [
+      64,
+      64
+     ],
+     "offset": 15.0
+    }
+   },
+   "mask": {
+    "scale": 1.0
+   }
+  },
+  "diagnostics_history": [
+   "step",
+   "t",
+   "dt",
+   "cfl",
+   "div_rms",
+   "div_max",
+   "p_residual",
+   "du_l2",
+   "du_rms",
+   "du_max",
+   "du_rel",
+   "dv_l2",
+   "dv_rms",
+   "dv_max",
+   "dv_rel",
+   "dp_l2",
+   "dp_rms",
+   "dp_max",
+   "dp_rel",
+   "dtheta_l2",
+   "dtheta_rms",
+   "dtheta_max",
+   "dtheta_rel"
+  ]
+ },
+ "provenance": {
+  "format": "aerolume-provenance",
+  "schema": 1,
+  "captured": "2026-10-31T23:33:56",
+  "source": {
+   "software": "store",
+   "simulation": "store",
+   "settings_hash": "store",
+   "design": "store",
+   "design_hash": "store",
+   "config_hash": "store",
+   "run": "store",
+   "plan": "store (re-planned at save; grid and Reynolds number match the run)"
+  },
+  "software": {
+   "aerolume": "0.1.0",
+   "python": "3.11.9",
+   "implementation": "CPython",
+   "os": "Windows 10",
+   "os_version": "10.0.26200",
+   "machine": "AMD64",
+   "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+   "packages": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "torch": "2.14.1+cu130",
+    "vtk": "9.7.1",
+    "matplotlib": "3.11.2",
+    "pyqtgraph": "0.14.0"
+   },
+   "torch_cuda": "13.0",
+   "cudnn": 92400,
+   "gpu": "NVIDIA GeForce RTX 4060 Ti",
+   "gpu_capability": "8.9",
+   "gpu_count": 1
+  },
+  "simulation": {
+   "name": "Heated cavity · Ra 1.0×10⁵",
+   "design_id": "871654687002",
+   "analysis": "cfd",
+   "conditions": {
+    "fluid": {
+     "name": "Air, ISA sea level",
+     "density": 1.225000018124288,
+     "viscosity": 1.7892976260350732e-05
+    },
+    "speed": 0.05481725903872283,
+    "alpha_deg": 0.0,
+    "yaw_deg": 0.0
+   },
+   "ground": {
+    "enabled": false,
+    "moving": true,
+    "rotate_wheels": false
+   },
+   "cfd": {
+    "quality": "draft",
+    "cells_per_ref": null,
+    "domain_upstream": null,
+    "domain_downstream": null,
+    "domain_height": null,
+    "duration": null,
+    "average_from": null,
+    "turbulence": "auto",
+    "reynolds_mode": "real",
+    "reynolds_cap": null,
+    "precision": "auto",
+    "device": "auto",
+    "compute_sensitivity": false,
+    "sensitivity_objective": "cd",
+    "symmetry": "auto",
+    "domain_width": null,
+    "domain_mode": "closed",
+    "domain_box": [
+     0.0,
+     0.1,
+     0.0,
+     0.1
+    ],
+    "record_diagnostics": true,
+    "adaptive_dt": "cfl"
+   },
+   "airfoil": {
+    "alpha_start": -4.0,
+    "alpha_end": 14.0,
+    "alpha_step": 1.0,
+    "ncrit": 9.0,
+    "xtr_upper": 1.0,
+    "xtr_lower": 1.0,
+    "mach": 0.0,
+    "panels": 199
+   },
+   "id": "414f0dca8ce8",
+   "status": "new",
+   "created": "2026-10-31T23:33:40",
+   "finished": null,
+   "notes": "",
+   "error": null,
+   "wing": {
+    "alpha_start": -4.0,
+    "alpha_end": 12.0,
+    "alpha_step": 1.0,
+    "method": "vlm",
+    "viscous": true,
+    "ncrit": 9.0,
+    "mach": 0.0
+   },
+   "emitters": [],
+   "thermal": {
+    "enabled": true,
+    "t_ambient": 15.0,
+    "buoyancy": true,
+    "gravity": 9.80665,
+    "beta": 0.00347041471455839,
+    "prandtl": 0.71,
+    "conductivity": null,
+    "cp": null,
+    "walls": [
+     {
+      "side": "left",
+      "mode": "temperature",
+      "value": 15.441471411581217
+     },
+     {
+      "side": "right",
+      "mode": "temperature",
+      "value": 14.558528588418783
+     }
+    ]
+   },
+   "heat_sources": [],
+   "fans": [],
+   "ports": []
+  },
+  "settings_hash": "7cb45b2dd582883fba58299a46321f298f1976bda85a9dbe0ae437bfed8ba838",
+  "design": {
+   "name": "Heated cavity · Ra 1.0×10⁵",
+   "kind": "generic",
+   "bodies": [],
+   "length_ref": 0.1,
+   "force_ref": 0.1,
+   "moment_ref": [
+    0.05,
+    0.05
+   ],
+   "id": "871654687002",
+   "source": {
+    "type": "case",
+    "case": "cavity",
+    "ra": 100000.0,
+    "pr": 0.71,
+    "size": 0.1,
+    "delta_t": 0.8829428231624324
+   },
+   "created": "2026-10-31T23:33:40",
+   "notes": "",
+   "dimension": 2,
+   "meshes": [],
+   "wing": null,
+   "ref_area": 0.0,
+   "span_ref": 0.0,
+   "moment_ref3": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "symmetric": false
+  },
+  "design_hash": "6cde41fe176178b1fd85638634423ee1db11a742147b25ebe1d3a4a6e9e67c63",
+  "config_hash": "6c81d2f4dd1ca3e651a172cbcd1201d6000f5e9ef52a10bd1ed4f61fa66a73c1",
+  "run": {
+   "device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+   "precision": "float32",
+   "wall_seconds": 15.22081739999976,
+   "grid": [
+    64,
+    64
+   ],
+   "cells_per_ref": 64.0,
+   "re_real": 375.2933125204011,
+   "re_sim": 375.2933125204011,
+   "t_end": 69.20408630371094,
+   "t_avg_start": 52.47900390625,
+   "converged": true,
+   "turbulence": "laminar",
+   "result_type": "CFDResult"
+  },
+  "seed": null,
+  "deterministic_inputs": true,
+  "determinism": "The flow computation draws no random numbers (the start-up perturbation is a fixed Lamb-Oseen vortex), so the inputs determine every field, force and heat rate; only the display positions of 3D tracer particles are random. Floating-point reductions on a GPU are not bitwise reproducible across devices or driver versions, which changes time-averaged values only within their statistical uncertainty.",
+  "plan": {
+   "type": "SimPlan",
+   "length_ref": 0.1,
+   "speed": 0.05481725903872283,
+   "fluid": {
+    "name": "Air, ISA sea level",
+    "density": 1.225000018124288,
+    "viscosity": 1.7892976260350732e-05
+   },
+   "re_real": 375.2933125204011,
+   "re_sim": 375.2933125204011,
+   "turbulence": "laminar",
+   "t_end": 104.95310667513408,
+   "t_avg_start": 52.47655333756704,
+   "dt": 0.007668456324998424,
+   "steps_estimate": 13687,
+   "est_seconds": 31.078644459441527,
+   "cells": 4096,
+   "cells_per_ref": 64.0,
+   "extent": [
+    0.0,
+    0.1,
+    0.0,
+    0.1
+   ],
+   "notes": [
+    "Closed box: 0.100 m × 0.100 m with no-slip walls on every side (from Domain ▸ Extent); gravity along −y. There is no free stream: the reference velocity U = 0.0548 m/s is the free-fall velocity √(gβΔT H), and coefficients use q = ½ρU².",
+    "Grid: 64 × 64 = 4,096 cells of 1.56 mm, set by 64 cells across the box's smaller side (Draft quality on the GPU).",
+    "Flow model: laminar at Re = 375 (U L/ν); advection uses third-order upwind differences.",
+    "Duration: 105 L/U (105 free-fall times H/U, 191 s of real flow); averages from t = 52.48, and the run stops early once the monitored quantities have settled.",
+    "Time step ≈ 0.0077 L/U: about 13,687 steps, estimated 31 s on GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) (the placed physics costs about 66 % per step).",
+    "Heat transfer: air at 15 °C (ideal gas, Sutherland's law): Pr 0.710, k 0.0253 W/(m·K), cp 1,006 J/(kg·K), β 0.00347 1/K (prandtl, beta as typed).",
+    "Temperature scale ΔT = 0.883 K (left wall to right wall); the solver carries θ = (T − 15.00 °C) / ΔT.",
+    "β·ΔT = 0.0031 (ΔT 0.883 K): inside the Boussinesq range (below about 0.1).",
+    "Buoyancy: Boussinesq, gravity along −y. Ri = gβΔT L/U² = 1.00 on the reference length L = 0.100 m (the solver's buoyancy coefficient). Gr 1.41×10^5 and Ra 1.00×10^5 on 0.100 m, the height of the closed box.",
+    "Thermal resolution: about 7 cells across the thermal boundary layer of the heated walls (about H / (2 Nu) = 10.6 mm with Nu ≈ 4.7 by the cavity correlation)."
+   ],
+   "warnings": [],
+   "device": "cuda",
+   "device_name": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+   "precision": "float32",
+   "advection": "upwind3",
+   "quality": "draft",
+   "ground": false,
+   "ground_moving": false,
+   "strouhal_length": 0.1,
+   "blockage": "nan",
+   "ref_label": "reference length",
+   "live": false,
+   "capped": false,
+   "geometry_class": "generic",
+   "conv_rtol": 0.05,
+   "blockage_limit": "nan",
+   "est_seconds_headless": 25.682621288618225,
+   "bl_resolved": true,
+   "domain_mode": "closed",
+   "physics": {
+    "dim": 2,
+    "closed": true,
+    "length": 0.1,
+    "speed": 0.05481725903872283,
+    "speed_basis": "free-fall velocity √(gβΔT H)",
+    "nu": 1.4606511016831119e-05,
+    "thermal": true,
+    "buoyancy": true,
+    "t_ambient": 15.0,
+    "delta_t": 0.8829428231624341,
+    "delta_t_basis": "left wall to right wall",
+    "length_ra": 0.1,
+    "length_ra_basis": "height of the closed box",
+    "props": {
+     "prandtl": 0.71,
+     "conductivity": 0.025299815452533445,
+     "cp": 1006.0,
+     "beta": 0.00347041471455839,
+     "density": 1.225000018124288,
+     "viscosity": 1.7892976260350732e-05,
+     "basis": "air at 15 °C (ideal gas, Sutherland's law)",
+     "known": true,
+     "typed": [
+      "prandtl",
+      "beta"
+     ]
+    },
+    "g_beta": 0.03403314246052403,
+    "u_forced": 0.0,
+    "re": 375.2933125204011,
+    "pr": 0.71,
+    "pe": 266.45825188948476,
+    "gr": 140845.0704225355,
+    "ra": 100000.0000000002,
+    "ri": 1.0,
+    "ri_flow": null,
+    "regime": "Natural",
+    "natural": true,
+    "surfaces": 2,
+    "bodies": 0
+   },
+   "placed": {
+    "emitters": [],
+    "thermal": {
+     "prandtl": 0.71,
+     "richardson": 1.0,
+     "gravity": [
+      0.0,
+      -1.0
+     ],
+     "prandtl_turbulent": 0.85,
+     "walls": [
+      {
+       "side": "left",
+       "mode": "temperature",
+       "value": 0.5
+      },
+      {
+       "side": "right",
+       "mode": "temperature",
+       "value": -0.5
+      }
+     ],
+     "theta_inlet": 0.0,
+     "theta_initial": 0.0,
+     "eta": null
+    },
+    "heat_sources": [],
+    "fans": [],
+    "ports": [],
+    "body_thermal": [],
+    "dye_channels": [],
+    "particle_palette": [],
+    "particle_names": [],
+    "fans_si": [],
+    "ports_si": [],
+    "heaters_si": [],
+    "dye_inlet": true,
+    "notes": [],
+    "warnings": []
+   },
+   "monitors": [
+    "nu",
+    "ke"
+   ],
+   "calibration_kind": "closed-natural@64",
+   "step_cost": 1.658,
+   "speed_ratio": 1.0,
+   "peak_basis": "free-fall velocity √(gβΔT H)",
+   "est_seconds_planned": 31.078644459441527,
+   "est_after_seconds": 0.0,
+   "thermal_grid": [
+    0.0015625,
+    16.51827018591329,
+    4.0
+   ],
+   "grid": [
+    64,
+    64
+   ],
+   "time_unit": 1.8242429802876527,
+   "estimate_label": "~30 s",
+   "summary": {
+    "Simulated Reynolds number": "375 (U L / ν with U the reference velocity)",
+    "Flow model": "Laminar (all scales resolved), upwind3 advection",
+    "Grid": "64 × 64",
+    "Cells": "4,096",
+    "Cells per reference length": "64",
+    "Domain": "0.100 m × 0.100 m",
+    "Road": "fixed walls",
+    "Time step": "0.00767 L/U (14.0 ms)",
+    "Duration": "105 L/U (191 s of flow)",
+    "Averaging from": "t = 52.48 L/U",
+    "Stops early when": "Nu to ±2.5 %, the kinetic energy to ±5 %",
+    "Steps (estimate)": "≈ 13,687",
+    "Estimated run time": "31 s",
+    "Device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) · float32",
+    "Domain type": "Closed box (walls on every side)",
+    "Reference velocity": "0.0548 m/s (free-fall velocity √(gβΔT H))",
+    "Temperature scale": "0.883 K",
+    "Prandtl number": "0.71",
+    "Length of Gr, Ra and Ri": "0.100 m (height of the closed box)",
+    "Grashof number": "1.4×10⁵",
+    "Rayleigh number": "1.0×10⁵",
+    "Péclet number": "266",
+    "Convection": "Natural"
+   },
+   "solver_config": {
+    "type": "SolverConfig",
+    "nx": 64,
+    "ny": 64,
+    "h": 0.015625,
+    "x0": 0.0,
+    "y0": 0.0,
+    "re": 375.2933125204011,
+    "bodies": [],
+    "inlet": "uniform",
+    "bc_top": "noslip",
+    "bc_bottom": "noslip",
+    "ground_speed": 1.0,
+    "periodic": false,
+    "advection": "upwind3",
+    "turbulence": "none",
+    "cfl": 0.5,
+    "dt": null,
+    "force_ref": 1.0,
+    "moment_ref": [
+     0.5,
+     0.5
+    ],
+    "dtype": "float32",
+    "device": "cuda",
+    "use_cuda_graphs": true,
+    "dye": false,
+    "perturb": true,
+    "eta": null,
+    "mask_width": 1.0,
+    "les_constant": null,
+    "domain": "closed",
+    "bc_left": "noslip",
+    "bc_right": "noslip",
+    "dye_inlet": true,
+    "emitters": [],
+    "thermal": {
+     "prandtl": 0.71,
+     "richardson": 1.0,
+     "gravity": [
+      0.0,
+      -1.0
+     ],
+     "prandtl_turbulent": 0.85,
+     "walls": [
+      {
+       "side": "left",
+       "mode": "temperature",
+       "value": 0.5
+      },
+      {
+       "side": "right",
+       "mode": "temperature",
+       "value": -0.5
+      }
+     ],
+     "theta_inlet": 0.0,
+     "theta_initial": 0.0,
+     "eta": null
+    },
+    "heat_sources": [],
+    "fans": [],
+    "ports": [],
+    "particle_capacity": 32768,
+    "diagnostics": true,
+    "adaptive_dt": "cfl",
+    "wall_model": "none"
+   },
+   "solver_hash": "4149d2ac306f647ba75a4dc1fdccdd97a191af31725c8dc188447b6f6a5381d5"
+  },
+  "saved": "2026-10-31T23:33:56"
+ }
+}

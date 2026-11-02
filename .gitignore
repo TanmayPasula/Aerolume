@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.venv/
+*.aerolume/
+!examples/**/*.aerolume/
+!src/aerolume/examples/**/*.aerolume/
+validation/out/
+scratch/
+
+# stray command logs from local runs (e.g. stage_live_out4.txt)
+stage_*.txt

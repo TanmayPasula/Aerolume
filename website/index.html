@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume</title>
+<meta name="description" content="Open-source aerodynamics and heat-transfer studio: GPU Navier-Stokes solvers in 2D and 3D with smoke emitters, heated bodies, fans and rooms, an XFOIL-class airfoil solver and finite wings, in one guided desktop workflow.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume">
+<meta property="og:description" content="Open-source aerodynamics and heat-transfer studio: GPU Navier-Stokes solvers in 2D and 3D with smoke emitters, heated bodies, fans and rooms, an XFOIL-class airfoil solver and finite wings, in one guided desktop workflow.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="home">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap" data-hero-quiet>
+    <nav aria-label="Site">
+      <a href="#validation">Validation</a>
+      <a href="#download">Get Aerolume</a>
+      <a href="docs/index.html">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn hero-pause" type="button" data-hero-pause hidden aria-label="Pause the background animation"><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.25v9.5L12.5 8z" fill="currentColor"/></svg></button>
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<main id="main">
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <canvas class="field" data-hero-field aria-hidden="true"></canvas>
+  <div class="hero-copy wrap" data-hero-copy>
+    <h1 id="hero-title">Aerolume</h1>
+    <p class="lede">An open-source aerodynamics and heat-transfer studio, built for independent student researchers who need numbers they can trust.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#validation">See the validation</a>
+      <a class="btn btn-secondary" href="#download">Get Aerolume</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec trust wrap" id="validation" aria-labelledby="trust-h">
+  <div class="trust-head" data-reveal>
+  <h2 class="statement" id="trust-h">No black-box results.</h2>
+  <div class="trust-lede">
+    <p class="lede">Every solver is checked against published benchmarks. Each check has a tolerance band written in <code>validation/run_all.py</code> before the case runs. The one band revised after its result was known (the square cylinder&rsquo;s drag, checked at two grid levels) is marked below. Every number on this page comes from a script in <code>validation/</code>, and the <a href="docs/validation.html">validation report</a> names which.</p>
+    <p class="tally"><span class="tally-bar" aria-hidden="true" style="--frac:0.9844"><span class="tally-fill"></span></span>In the last full run (1 November 2026), <strong>126 of 128 checks passed</strong>. Two cases have a failing check: Square cylinder, Re 100; Plane laminar jet from a port. Both stay in the report as failing, with the numbers and the reason.</p>
+  </div>
+  </div>
+  <div class="table-scroll ledger-wrap" data-reveal>
+    <table class="ledger">
+      <caption>The check that came closest to its band edge in each solver area, and every failing check. Run of 1 November 2026, Aerolume 0.1.0 on an RTX 4060 Ti. All the others are in <a href="docs/validation.html#9-automated-validation-run">section 9 of the report</a>; <code>python validation/run_all.py --all</code> reruns them.</caption>
+      <thead><tr><th scope="col">Check</th><th scope="col" class="num">Aerolume</th><th scope="col" class="num">Published</th><th scope="col" class="num">Difference</th><th scope="col" class="num">Band</th><th scope="col">Result</th></tr></thead>
+      <tbody>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#verification-exact-answers">Verification (exact answers)</a><span>10 of 10 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">Taylor–Green 3D spatial order (8 → 16 cells)</span><span class="src"><a href="docs/validation.html#ref-exact">Exact solution</a></span></th><td class="num val" data-label="Aerolume">1.894</td><td class="num ref" data-label="Published">2</td><td class="num diff" data-label="Difference">&minus;5.3&nbsp;%</td><td class="num band" data-label="Band">1.8&ndash;2.2<span class="gauge" style="--p:0.236" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#2d-flow">2D flow</a><span>15 of 16 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">Schäfer–Turek 2D-2, Cl,max (40 cells/D)</span><span class="src"><a href="docs/validation.html#ref-schafer-turek">Schäfer &amp; Turek (1996)</a></span></th><td class="num val" data-label="Aerolume">1.034</td><td class="num ref" data-label="Published">0.99–1.01</td><td class="num diff" data-label="Difference">+2.4&nbsp;%</td><td class="num band" data-label="Band">0.9603&ndash;1.04<span class="gauge" style="--p:0.922" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="fail"><th scope="row"><span class="case">Square cylinder Re 100, mean Cd (32 cells/D)</span><span class="src"><a href="docs/validation.html#ref-sohankar">Sohankar et al. (1998)</a></span><span class="flag">Band revised after this result was known: <a href="docs/validation.html#3-channel-and-sharp-edged-benchmarks">report, section 3</a></span></th><td class="num val" data-label="Aerolume">1.582</td><td class="num ref" data-label="Published">1.477–1.494</td><td class="num diff" data-label="Difference">+5.9&nbsp;%</td><td class="num band" data-label="Band">1.403&ndash;1.569<span class="gauge" style="--p:1.079" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result"><strong>fail</strong></td></tr>
+        <tr class="pass"><th scope="row"><span class="case">Square cylinder Re 100, mean Cd (48 cells/D)</span><span class="src"><a href="docs/validation.html#ref-sohankar">Sohankar et al. (1998)</a></span><span class="flag">Band revised after this result was known: <a href="docs/validation.html#3-channel-and-sharp-edged-benchmarks">report, section 3</a></span></th><td class="num val" data-label="Aerolume">1.549</td><td class="num ref" data-label="Published">1.477–1.494</td><td class="num diff" data-label="Difference">+3.7&nbsp;%</td><td class="num band" data-label="Band">1.403&ndash;1.569<span class="gauge" style="--p:0.880" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#3d-flow">3D flow</a><span>3 of 3 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">Sphere Re 100, Cd (24 cells/D, 2.85 % blockage)</span><span class="src"><a href="docs/validation.html#ref-clift">Clift et al. (1978)</a></span></th><td class="num val" data-label="Aerolume">1.148</td><td class="num ref" data-label="Published">1.087 unconfined</td><td class="num diff" data-label="Difference">+5.6&nbsp;%</td><td class="num band" data-label="Band">1.05&ndash;1.15<span class="gauge" style="--p:0.979" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#heat-transfer">Heat transfer</a><span>41 of 41 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">Heated cylinder Re 40, Pr 0.71: mean Nu (32 cells/D)</span><span class="src"><a href="docs/validation.html#ref-cylinder-nu">Biswas &amp; Sarkar (2009)</a></span></th><td class="num val" data-label="Aerolume">3.336</td><td class="num ref" data-label="Published">3.2–3.255</td><td class="num diff" data-label="Difference">+2.5&nbsp;%</td><td class="num band" data-label="Band">3.072&ndash;3.385<span class="gauge" style="--p:0.841" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#fans-and-jets">Fans and jets</a><span>14 of 15 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">Round jet Re 100: rms of u/u_c − (1 + ξ²/4)⁻² inside 2 r½</span><span class="src"><a href="docs/validation.html#ref-schlichting">Schlichting (1933)</a></span></th><td class="num val" data-label="Aerolume">0.01064</td><td class="num ref" data-label="Published">0</td><td class="num diff" data-label="Difference">&mdash;</td><td class="num band" data-label="Band">&lt;&nbsp;0.02<span class="gauge" style="--p:0.532" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="fail"><th scope="row"><span class="case">Plane jet Re 25: drift of the core momentum flux ∫u² dy over 8 ≤ x/b ≤ 24</span><span class="src"><a href="docs/validation.html#ref-bickley">Bickley (1937)</a></span></th><td class="num val" data-label="Aerolume">0.06158</td><td class="num ref" data-label="Published">0 for a free jet</td><td class="num diff" data-label="Difference">&mdash;</td><td class="num band" data-label="Band">&lt;&nbsp;0.05<span class="gauge" style="--p:1.232" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result"><strong>fail</strong></td></tr>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#airfoil-polars">Airfoil polars</a><span>23 of 23 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">NACA 0012 Re 6×10⁶ tripped, cl at 8.3°</span><span class="src"><a href="docs/validation.html#ref-ladson">Ladson (1988)</a></span></th><td class="num val" data-label="Aerolume">0.9315</td><td class="num ref" data-label="Published">0.887</td><td class="num diff" data-label="Difference">+5.0&nbsp;%</td><td class="num band" data-label="Band">0.8373&ndash;0.9373<span class="gauge" style="--p:0.942" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+        <tr class="group"><th colspan="6" scope="rowgroup"><a href="docs/validation.html#finite-wings">Finite wings</a><span>20 of 20 checks pass</span></th></tr>
+        <tr class="pass"><th scope="row"><span class="case">Weber &amp; Brebner 45° wing, CL at 10.5°</span><span class="src"><a href="docs/validation.html#ref-weber">Weber &amp; Brebner</a></span></th><td class="num val" data-label="Aerolume">0.5808</td><td class="num ref" data-label="Published">0.559</td><td class="num diff" data-label="Difference">+3.9&nbsp;%</td><td class="num band" data-label="Band">0.5311&ndash;0.587<span class="gauge" style="--p:0.890" aria-hidden="true"><span class="band"></span><span class="mark"></span></span></td><td class="res" data-label="Result">pass</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figure class="vplot" data-reveal="plot"><svg class="vplot-svg" viewBox="0 0 440 336" role="img" aria-labelledby="vplot-t vplot-d"><title id="vplot-t">Square cavity: mean Nusselt number against Rayleigh number</title><desc id="vplot-d">Aerolume 1.118, 2.251, 4.531, 8.841 against 1.117, 2.238, 4.509, 8.817 published, at Ra 1,000, 10,000, 100,000, 1,000,000; differences +0.1 to +0.6 %, inside every band.</desc><line class="grid" x1="68" x2="428" y1="185.9" y2="185.9"/><text class="tick" x="60" y="189.9" text-anchor="end">1</text><line class="grid" x1="68" x2="428" y1="135.7" y2="135.7"/><text class="tick" x="60" y="139.7" text-anchor="end">2</text><line class="grid" x1="68" x2="428" y1="69.4" y2="69.4"/><text class="tick" x="60" y="73.4" text-anchor="end">5</text><line class="grid" x1="68" x2="428" y1="19.2" y2="19.2"/><text class="tick" x="60" y="23.2" text-anchor="end">10</text><line class="grid" x1="68" x2="428" y1="296.0" y2="296.0"/><text class="tick" x="60" y="300.0" text-anchor="end">&minus;6&nbsp;%</text><line class="zero" x1="68" x2="428" y1="256.0" y2="256.0"/><text class="tick" x="60" y="260.0" text-anchor="end">0&nbsp;%</text><line class="grid" x1="68" x2="428" y1="216.0" y2="216.0"/><text class="tick" x="60" y="220.0" text-anchor="end">+6&nbsp;%</text><text class="tick" x="105.9" y="316" text-anchor="middle">10<tspan dy="-5" font-size="9">3</tspan></text><text class="tick" x="200.6" y="316" text-anchor="middle">10<tspan dy="-5" font-size="9">4</tspan></text><text class="tick" x="295.4" y="316" text-anchor="middle">10<tspan dy="-5" font-size="9">5</tspan></text><text class="tick" x="390.1" y="316" text-anchor="middle">10<tspan dy="-5" font-size="9">6</tspan></text><text class="axis" x="248" y="334" text-anchor="middle">Rayleigh number</text><text class="axis" transform="translate(14 100) rotate(-90)" text-anchor="middle">Mean Nu, hot wall</text><text class="axis" transform="translate(14 256) rotate(-90)" text-anchor="middle">Difference</text><path class="bandbar" d="M100.9 242.7H110.9M105.9 242.7V269.3M100.9 269.3H110.9"/><circle class="ref" cx="105.9" cy="177.9" r="5"/><path class="bandbar" d="M195.6 242.7H205.6M200.6 242.7V269.3M195.6 269.3H205.6"/><circle class="ref" cx="200.6" cy="127.6" r="5"/><path class="bandbar" d="M290.4 236.0H300.4M295.4 236.0V276.0M290.4 276.0H300.4"/><circle class="ref" cx="295.4" cy="76.9" r="5"/><path class="bandbar" d="M385.1 222.7H395.1M390.1 222.7V289.3M385.1 289.3H395.1"/><circle class="ref" cx="390.1" cy="28.3" r="5"/><polyline class="curve" pathLength="1" points="105.9,177.8 200.6,127.2 295.4,76.5 390.1,28.2"/><polyline class="curve" pathLength="1" points="105.9,255.2 200.6,252.2 295.4,252.7 390.1,254.2"/><circle class="val" style="--i:0" cx="105.9" cy="177.8" r="2.6"/><circle class="val" style="--i:0" cx="105.9" cy="255.2" r="2.6"/><circle class="val" style="--i:1" cx="200.6" cy="127.2" r="2.6"/><circle class="val" style="--i:1" cx="200.6" cy="252.2" r="2.6"/><circle class="val" style="--i:2" cx="295.4" cy="76.5" r="2.6"/><circle class="val" style="--i:2" cx="295.4" cy="252.7" r="2.6"/><circle class="val" style="--i:3" cx="390.1" cy="28.2" r="2.6"/><circle class="val" style="--i:3" cx="390.1" cy="254.2" r="2.6"/></svg><figcaption><b>One case across four decades.</b> Natural convection in a differentially heated square cavity, Ra = 10<sup>3</sup>, 10<sup>4</sup>, 10<sup>5</sup>, 10<sup>6</sup> on 64&sup2;&ndash;256&sup2; grids. Mean Nusselt number of the hot wall: Aerolume 1.118, 2.251, 4.531, 8.841 (dots) against <a href="docs/validation.html#ref-devahl">de Vahl Davis (1983)</a>, 1.117, 2.238, 4.509, 8.817 (rings), a difference of +0.1 to +0.6&nbsp;%. The lower panel shows each check&rsquo;s tolerance band. All four pass.</figcaption></figure>
+  <p class="more">How each solver works and how it was verified: <a href="docs/theory-ns2d.html">2D</a> and <a href="docs/theory-ns3d.html">3D Navier&ndash;Stokes</a>, <a href="docs/theory-airfoil.html">airfoil polars</a>, <a href="docs/theory-wing.html">finite wings</a>.</p>
+</section>
+
+<section class="sec wrap" id="limits" aria-labelledby="limits-h">
+  <div class="limits" data-reveal>
+    <div class="sec-head">
+      <h2 id="limits-h">Before you quote a number</h2>
+      <p class="lede">The checks above hold where they were run. These limits apply to every run; the <a href="docs/overview.html#limits">overview</a> carries the same list, and the report says <a href="docs/validation.html#10-what-is-not-validated">what has not been validated</a>.</p>
+    </div>
+    <div class="limit-list">
+<ul>
+<li><strong>High Reynolds numbers.</strong> Above about 10⁴ the boundary layers are not resolved; there is no
+wall model and no transition model in the Navier–Stokes solvers. Absolute vehicle drag is not
+validated (a wall-unresolved Ahmed-type body reads about 2.2× its wind-tunnel drag): compare
+designs run the same way, do not quote a car's C<sub>d</sub>. Airfoils at flight Reynolds
+numbers belong to the polar solver, wings to the finite-wing analysis.</li>
+<li><strong>2D vehicles</strong> are infinitely wide side profiles.</li>
+<li><strong>Uniform grids.</strong> No local refinement; the planner trades domain size, blockage and
+resolution and states the trade. The immersed wall is about one cell thick, so sharp edges
+converge slowly.</li>
+<li><strong>Heat transfer</strong> is Boussinesq (small temperature differences) with constant properties; no
+radiation, no conduction inside solids, no turbulence model for convection. Validated for
+laminar natural and forced convection at Pr 0.71.</li>
+<li><strong>Fans</strong> are actuator discs (no blades); <strong>smoke</strong> is passive visualisation.</li>
+<li>Incompressible only. Not in this release: a Lattice-Boltzmann solver and neural-operator
+surrogates.</li>
+</ul>
+<p><strong>Planned for 0.2.</strong> The first three limits are the next version's work: local grid refinement
+with a sharper immersed wall, a wall model with a transition model (so absolute drag at high
+Reynolds numbers can be validated), and finite-width 2D vehicles (a side profile run as a 3D
+body of a chosen width). A design with prototype measurements exists; none of it is in 0.1.0,
+and the limits above describe this release as it is.</p>
+
+    </div>
+  </div>
+</section>
+
+<figure class="plate-fig wrap" data-reveal>
+  <div class="plate" style="--ar: 2816 / 1126; --ar-m: 1100 / 826">
+    <picture>
+      <source media="(max-width: 640px)" srcset="assets/flow-airfoil-smoke-m.webp">
+      <img src="assets/flow-airfoil-smoke.webp" width="2816" height="1126" alt="Computed smoke streaks flowing left to right past a NACA 2412 airfoil at 8 degrees; a staggered street of vortices forms behind the trailing edge." loading="lazy">
+    </picture>
+  </div>
+  <figcaption><b>Smoke streaks computed by Aerolume.</b> NACA 2412 at &alpha; = 8&deg;, Re = 5000, t = 12.2 c/U after an impulsive start; 1408 &times; 563 cells (256 per chord), float32, 16&#8201;200 steps on an RTX 4060 Ti. Made by <code>website/tools/make_figures.py</code>.</figcaption>
+</figure>
+
+<div class="streak wrap" data-reveal aria-hidden="true"><svg viewBox="0 0 1200 104" preserveAspectRatio="xMaxYMid slice" focusable="false"><g class="sl" fill="none" stroke="currentColor" stroke-width="1"><path d="M-9.9 101.1 L200.1 99.3 L365.1 97.5 L515.1 95.4 L635.1 93.0 L695.0 91.6 L738.3 90.3 L807.8 87.6 L835.3 86.2 L858.9 84.8 L879.1 83.3 L915.8 80.3 L928.0 79.8 L993.0 80.4 L1015.8 81.0 L1033.3 81.9 L1081.1 85.3 L1112.7 87.1 L1162.3 89.2 L1216.2 91.0" pathLength="1" style="--k:8" opacity="0.49"/><path d="M-9.9 91.2 L215.1 89.3 L395.1 87.2 L545.1 84.9 L665.0 82.4 L724.5 80.7 L763.7 79.4 L797.3 78.0 L834.8 76.1 L858.3 74.6 L884.4 72.4 L900.7 70.7 L918.9 68.2 L922.9 67.9 L926.7 67.9 L940.2 68.8 L953.6 69.3 L1000.1 69.6 L1020.4 70.2 L1034.8 71.1 L1071.3 74.5 L1106.4 76.7 L1153.3 78.9 L1216.2 81.1" pathLength="1" style="--k:6" opacity="0.59"/><path d="M-9.9 82.9 L245.1 80.6 L455.1 78.0 L545.1 76.5 L620.1 75.0 L680.0 73.6 L738.2 71.9 L786.6 70.0 L826.0 68.1 L858.0 66.0 L884.1 63.7 L900.3 61.6 L909.8 59.9 L914.1 58.9 L918.1 57.5 L921.7 55.6 L925.1 53.5 L928.6 52.2 L932.0 51.4 L935.4 50.8 L941.7 50.2 L950.1 49.9 L957.4 49.9 L965.7 50.4 L975.6 51.3 L984.9 52.4 L995.1 53.9 L1006.3 55.9 L1046.0 63.5 L1067.2 65.6 L1094.3 67.5 L1128.8 69.4 L1173.0 71.3 L1217.0 72.7" pathLength="1" style="--k:4" opacity="0.67"/><path d="M-9.9 75.7 L245.1 73.4 L440.1 71.0 L530.1 69.6 L605.1 68.2 L665.0 66.8 L724.5 65.1 L763.6 63.7 L807.2 61.8 L842.7 59.8 L871.7 57.6 L889.7 55.6 L905.2 53.2 L914.1 51.1 L925.9 47.4 L933.1 45.9 L942.8 44.8 L951.4 44.4 L958.9 44.5 L967.5 44.9 L984.5 46.4 L1004.2 49.1 L1036.8 54.5 L1047.4 56.1 L1059.8 57.5 L1074.1 58.8 L1103.0 60.8 L1131.8 62.3 L1166.9 63.8 L1209.5 65.2" pathLength="1" style="--k:2" opacity="0.74"/><path d="M-9.9 67.9 L230.1 65.7 L425.1 63.4 L515.1 62.0 L590.1 60.7 L650.0 59.3 L710.0 57.7 L751.2 56.4 L797.2 54.5 L834.6 52.5 L858.0 50.8 L878.2 49.0 L895.4 46.9 L905.5 45.2 L926.9 40.8 L934.2 39.6 L944.2 38.7 L953.0 38.4 L960.8 38.4 L970.0 38.8 L987.6 40.2 L1005.2 42.3 L1048.6 48.4 L1061.2 49.8 L1081.2 51.4 L1105.5 53.0 L1134.9 54.6 L1170.7 56.1 L1214.1 57.6" pathLength="1" style="--k:0" opacity="0.82"/><path d="M-9.9 60.7 L215.1 58.7 L410.1 56.4 L575.1 53.8 L635.0 52.5 L695.0 51.0 L738.2 49.6 L786.6 47.8 L817.0 46.3 L850.8 44.2 L872.1 42.4 L890.4 40.4 L901.1 38.9 L924.0 35.1 L931.8 34.0 L942.5 33.1 L954.9 32.6 L970.6 32.9 L988.4 34.2 L1006.5 36.1 L1038.7 40.1 L1054.4 41.9 L1073.3 43.6 L1089.9 44.8 L1116.2 46.4 L1139.5 47.6 L1209.1 50.2" pathLength="1" style="--k:1" opacity="0.80"/><path d="M-9.9 53.2 L215.1 51.2 L410.1 48.9 L575.1 46.3 L635.0 45.0 L695.0 43.5 L738.2 42.1 L775.5 40.7 L807.6 39.3 L843.3 37.2 L865.8 35.5 L885.2 33.6 L896.7 32.3 L925.3 28.5 L933.4 27.6 L944.4 26.8 L954.2 26.5 L971.5 26.7 L989.2 27.8 L1007.2 29.4 L1042.6 33.3 L1059.7 35.0 L1080.1 36.7 L1098.1 37.9 L1126.3 39.4 L1151.4 40.6 L1213.7 42.8" pathLength="1" style="--k:3" opacity="0.73"/><path d="M-9.9 45.4 L215.1 43.4 L410.1 41.1 L560.1 38.8 L680.0 36.1 L724.5 34.8 L763.9 33.4 L797.7 32.0 L826.7 30.5 L851.8 28.9 L873.3 27.2 L892.0 25.3 L918.1 22.4 L931.3 21.1 L943.1 20.3 L957.1 19.9 L972.7 20.2 L992.7 21.2 L1010.2 22.7 L1064.4 27.8 L1086.2 29.4 L1105.4 30.6 L1152.9 32.9 L1216.1 35.1" pathLength="1" style="--k:5" opacity="0.65"/><path d="M-9.9 36.4 L215.1 34.4 L395.1 32.4 L545.1 30.0 L665.0 27.5 L751.6 24.9 L787.3 23.5 L818.1 22.0 L844.6 20.5 L867.5 18.8 L929.5 13.4 L942.2 12.6 L957.5 12.3 L978.0 12.6 L997.4 13.6 L1064.9 19.0 L1107.5 21.8 L1156.4 24.0 L1209.2 25.9" pathLength="1" style="--k:7" opacity="0.56"/><path d="M-9.9 25.6 L200.1 23.8 L380.1 21.8 L530.1 19.5 L650.0 17.1 L738.6 14.6 L798.7 12.3 L828.2 10.8 L853.8 9.3 L928.2 3.8 L942.1 3.2 L954.9 2.9 L974.4 3.0 L993.0 3.7 L1015.8 5.0 L1072.6 9.0 L1112.1 11.3 L1163.5 13.6 L1218.8 15.4" pathLength="1" style="--k:9" opacity="0.45"/></g><path class="foil" d="M1043.8 66.5 L1043.4 66.4 L1042.8 66.3 L1041.9 66.1 L1040.7 65.9 L1039.2 65.6 L1037.5 65.3 L1035.6 64.9 L1033.4 64.4 L1031.0 63.9 L1028.5 63.4 L1025.7 62.8 L1022.8 62.2 L1019.7 61.5 L1016.5 60.8 L1013.2 60.2 L1009.7 59.5 L1006.2 58.8 L1002.6 58.1 L999.0 57.4 L995.3 56.8 L991.5 56.1 L987.8 55.5 L984.0 55.0 L980.3 54.5 L976.6 54.0 L972.9 53.6 L969.2 53.2 L965.7 52.9 L962.2 52.7 L958.8 52.5 L955.5 52.3 L952.3 52.3 L949.2 52.3 L946.3 52.3 L943.5 52.4 L940.8 52.6 L938.3 52.8 L936.0 53.1 L933.9 53.4 L931.9 53.8 L930.1 54.2 L928.6 54.6 L927.2 55.1 L926.0 55.6 L925.1 56.1 L924.3 56.6 L923.8 57.1 L923.6 57.7 L923.5 58.2 L923.7 58.8 L924.1 59.3 L924.7 59.8 L925.5 60.3 L926.6 60.8 L927.9 61.2 L929.5 61.7 L931.2 62.0 L933.2 62.4 L935.4 62.7 L937.8 63.0 L940.4 63.2 L943.2 63.4 L946.1 63.6 L949.3 63.8 L952.6 63.9 L956.1 63.9 L959.7 64.0 L963.4 64.0 L967.2 64.0 L971.1 64.0 L975.2 64.0 L979.2 64.0 L983.3 64.0 L987.5 64.0 L991.6 63.9 L995.7 64.0 L999.8 64.0 L1003.8 64.0 L1007.8 64.1 L1011.6 64.2 L1015.3 64.3 L1018.9 64.4 L1022.2 64.6 L1025.4 64.7 L1028.4 64.9 L1031.2 65.1 L1033.7 65.3 L1036.0 65.5 L1038.0 65.7 L1039.7 65.9 L1041.1 66.1 L1042.2 66.3 L1043.1 66.4 L1043.6 66.4 L1043.8 66.5Z"/></svg></div>
+
+<section class="sec wrap" id="workflow" aria-labelledby="workflow-h">
+  <div class="sec-head" data-reveal>
+    <h2 id="workflow-h">From a shape to a report, in one program</h2>
+    <p class="lede">Geometry, setup, simulation, results, comparison and report, in that order. Every result carries its units, the Reynolds number actually simulated, the grid, the convergence state and the solver&rsquo;s own diagnostics.</p>
+  </div>
+
+  <div class="feature" id="flow3d">
+    <div class="feature-text">
+      <h3>Flow around any shape, in 2D and 3D</h3>
+      <p>Unsteady incompressible Navier&ndash;Stokes written in PyTorch, on an NVIDIA GPU or the CPU. In 2D around any number of sections or vehicle profiles; in 3D around imported STL, OBJ or PLY meshes, with a symmetry plane, a moving road and rolling wheels. The 3D views show smoke, streamlines from a movable rake, slices and vortex iso-surfaces.</p>
+      <ul class="facts">
+        <li><b>493</b> steps/s on 1024&nbsp;&times;&nbsp;512 cells in 2D, RTX 4060 Ti</li>
+        <li><b>44.9&ndash;49.2</b> steps/s on 4.2&nbsp;M cells in 3D, same GPU shared with other jobs (54.7 when idle)</li>
+        <li><b>61</b> steps/s on 512&nbsp;&times;&nbsp;256 cells in 2D on a desktop i7-13700F, 4 threads</li>
+      </ul>
+      <p class="small">Measured with <code>validation/bench_ns2d.py</code> and <code>bench_ns3d.py</code>; <a href="docs/theory-ns2d.html#10-performance-cuda-graphs-cpu-path">every configuration</a>.</p>
+    </div>
+    <div class="feature-media" data-reveal="wipe"><figure class="shot shot-feature"><a class="frame crop" href="assets/screens/results3d.png" style="--crop-ar: 1076 / 720" title="Open the full screenshot (1600 &times; 1000)"><img src="assets/screens/results3d.png" alt="Results: in 3D, the stored smoke and the mean-flow streamlines around a car on a moving road, from a Draft run." loading="lazy" decoding="async" width="1600" height="1000" style="width:148.699%;left:-21.747%;top:-13.333%"></a><figcaption><b>Results.</b> In 3D, the stored smoke and the mean-flow streamlines around a car on a moving road, from a Draft run.</figcaption></figure></div>
+  </div>
+
+  <div class="feature" id="physics">
+    <div class="feature-text">
+      <h3>Smoke, heat, fans and jets</h3>
+      <p>Place emitters that release smoke in up to four colours or tracer particles. Hold bodies and walls at a temperature or a heat flux, with buoyancy; add heaters, fans set by thrust or a target speed, jets and vents, in a wind tunnel or a closed room.</p>
+      <p>Results give heat rates and Nusselt numbers with their standard errors, the heat balance of the domain and what each fan delivers.</p>
+    </div>
+    <div class="feature-media" data-reveal="wipe"><div class="feature-pair"><figure class="shot shot-feature"><a class="frame crop" href="assets/screens/heat.png" style="--crop-ar: 580 / 446" title="Open the full screenshot (1600 &times; 1000)"><img src="assets/screens/heat.png" alt="Results: the heated cylinder&#x27;s Nusselt number and heat rate with their standard errors, per body, and the heat balance of the domain." loading="lazy" decoding="async" width="1600" height="1000" style="width:275.862%;left:-40.690%;top:-33.632%"></a><figcaption><b>Results.</b> The heated cylinder's Nusselt number and heat rate with their standard errors, per body, and the heat balance of the domain.</figcaption></figure><figure class="shot shot-feature"><a class="frame crop" href="assets/screens/physics.png" style="--crop-ar: 460 / 354" title="Open the full screenshot (1600 &times; 1000)"><img src="assets/screens/physics.png" alt="Setup: placed physics, a fan, a heater, a supply jet, a vent and two smoke emitters in a closed room." loading="lazy" decoding="async" width="1600" height="1000" style="width:347.826%;left:-111.957%;top:-42.373%"></a><figcaption><b>Setup.</b> Placed physics, a fan, a heater, a supply jet, a vent and two smoke emitters in a closed room.</figcaption></figure></div></div>
+  </div>
+
+  <div class="feature" id="explore">
+    <div class="feature-text">
+      <h3>Draw into a running flow</h3>
+      <p>Explore mode keeps the flow running while you change the angle or the speed, draw and erase obstacles, and drag emitters, fans and heaters to new places.</p>
+      <p>The diagnostics show what decides whether a run can be trusted: the divergence left after the projection, the change of each field per step, the CFL number and the pressure residual.</p>
+    </div>
+    <div class="feature-media" data-reveal="wipe"><figure class="shot shot-feature"><a class="frame crop" href="assets/screens/explore.png" style="--crop-ar: 1036 / 630" title="Open the full screenshot (1600 &times; 1000)"><img src="assets/screens/explore.png" alt="Simulate: in explore mode, a wall drawn into the running flow of the room, with the run&#x27;s monitors." loading="lazy" decoding="async" width="1600" height="1000" style="width:154.440%;left:-21.429%;top:-14.286%"></a><figcaption><b>Simulate.</b> In explore mode, a wall drawn into the running flow of the room, with the run's monitors.</figcaption></figure></div>
+  </div>
+
+  <div class="feature" id="scripting">
+    <div class="feature-text">
+      <h3>Script it, or ask the assistant</h3>
+      <p><code>import aerolume as al</code> is the API the program itself uses: designs, runs, sweeps, results with their standard errors, plots and exports.</p>
+      <p>The experiment assistant plans and analyses runs with Claude or a local model through Ollama. Every change it suggests does nothing until you click Apply, and nothing leaves your computer until you agree.</p>
+      <p><a href="docs/scripting.html">Scripting guide</a>, <a href="docs/assistant.html">the assistant</a>, <a href="docs/mcp.html">MCP server</a></p>
+    </div>
+    <div class="feature-media" data-reveal="wipe"><figure class="shot shot-feature"><a class="frame crop" href="assets/screens/script.png" style="--crop-ar: 960 / 300" title="Open the full screenshot (1600 &times; 1000)"><img src="assets/screens/script.png" alt="Script: the scripting API reading the open project&#x27;s results in the script console." loading="lazy" decoding="async" width="1600" height="1000" style="width:166.667%;left:0.000%;top:-182.667%"></a><figcaption><b>Script.</b> The scripting API reading the open project's results in the script console.</figcaption></figure></div>
+  </div>
+</section>
+
+<section class="sec wrap" id="download" aria-labelledby="download-h">
+  <div class="sec-head" data-reveal>
+    <h2 id="download-h">Get Aerolume</h2>
+    <p class="lede">Version <span class="ver">0.1.0</span>, the first release, for Windows 10 and 11, 64-bit. Free and open source under the Apache License 2.0.</p>
+  </div>
+  <div class="two-col code-right">
+    <div class="prose">
+      <p><strong>There is no public download yet.</strong> The source repository is not public yet either; once it is, this page will link to it and show the command that clones it.</p>
+      <p>The build makes <code>Aerolume-0.1.0-cuda-setup.exe</code>, which installs for the current user without administrator rights, with Python, PyTorch and its CUDA libraries, VTK, Qt, the documentation and the validation scripts inside. GPU runs need only an NVIDIA driver; without one, every analysis runs on the CPU.</p>
+      <p>The installer is not code-signed, so Windows SmartScreen asks once. The <a href="docs/install.html">installation guide</a> covers installing from source with pip, the portable folder and troubleshooting.</p>
+    </div>
+    <div class="codeblock">
+      <p class="label">Build the installer, inside a copy of the repository<button class="copy" type="button" data-copy="cmd-build" hidden>Copy</button></p>
+<pre class="cmd" id="cmd-build"><code><span class="ln">pip install pyinstaller          # and Inno Setup 6
+</span><span class="ln">python packaging/build.py --variant cuda
+</span><span class="ln">python packaging/build.py --status    # does the build match the sources?</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="sec wrap" id="accounts" aria-labelledby="accounts-h">
+  <div class="two-col" data-reveal>
+    <div>
+      <h2 id="accounts-h">No account needed</h2>
+      <div class="prose">
+        <p>Aerolume works fully offline and sends nothing anywhere by default. Accounts exist only once you connect a Supabase project of your own: sign-in by email, a magic link or a code, or GitHub and Google through the system browser; cloud copies of projects; expiring read-only links to share a result. There is no Aerolume-run server.</p>
+        <p><a href="docs/accounts.html">What leaves your computer, and how to connect a project</a></p>
+      </div>
+    </div>
+    <div id="open-source">
+      <h2>Open source</h2>
+      <div class="prose">
+        <p>Released under the <a href="LICENSE.txt">Apache License 2.0</a>: use it commercially, modify it and redistribute it. The airfoil solver builds on <strong>mfoil</strong> by Krzysztof J. Fidkowski (MIT licence); the <a href="docs/third-party-notices.html">third-party notices</a> list the rest. The repository is not public yet, so this site cannot link to the source code or an issue tracker; it will once the repository is published.</p>
+        <p>A change that moves a coefficient has to say by how much, on which validation case, and why the new value is closer to the reference: the <a href="docs/contributing.html">contributing guide</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="docs/index.html">Documentation</a>
+      <a href="index.html#validation">Validation</a>
+      <a href="index.html#download">Get Aerolume</a>
+      <a href="LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="assets/site.js" defer></script>
+<script src="assets/hero/hero.js" defer></script>
+</body>
+</html>

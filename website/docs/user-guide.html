@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · User guide</title>
+<meta name="description" content="The pages of the application, 3D, placed physics, explore, scripting, the Assistant, accounts.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · User guide">
+<meta property="og:description" content="The pages of the application, 3D, placed physics, explore, scripting, the Assistant, accounts.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html" aria-current="page">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html" aria-current="page">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-the-window">1. The window</a></li><li class="l2"><a href="#2-start-page-and-projects">2. Start page and projects</a></li><li class="l2"><a href="#3-geometry">3. Geometry</a></li><li class="l2"><a href="#4-setup">4. Setup</a></li><li class="l2"><a href="#5-simulate">5. Simulate</a></li><li class="l2"><a href="#6-results">6. Results</a></li><li class="l2"><a href="#7-compare">7. Compare</a></li><li class="l2"><a href="#8-report">8. Report</a></li><li class="l2"><a href="#9-three-dimensions-and-finite-wings">9. Three dimensions and finite wings</a></li><li class="l2"><a href="#10-heat-smoke-fans-and-rooms">10. Heat, smoke, fans and rooms</a></li><li class="l2"><a href="#11-explore-drawing-into-the-flow-diagnostics-and-the-solver-trace">11. Explore: drawing into the flow, diagnostics and the solver trace</a></li><li class="l2"><a href="#12-the-script-console-and-the-scripting-api">12. The Script console and the scripting API</a></li><li class="l2"><a href="#13-the-experiment-assistant">13. The experiment Assistant</a></li><li class="l2"><a href="#14-accounts-optional">14. Accounts (optional)</a></li><li class="l2"><a href="#15-keyboard-shortcuts">15. Keyboard shortcuts</a></li><li class="l2"><a href="#16-when-something-goes-wrong">16. When something goes wrong</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="user-guide">User guide</h1>
+<p>This guide follows the application from an empty window to a finished report. It
+describes what each page shows and what each control does. How a run is planned, when
+it stops and how far to trust its numbers are in the companion chapter
+<a href="simulation-guide.html">Running simulations</a>; the physics and numerics are in the
+theory documents.</p>
+<p>Install Aerolume with the Windows installer or from source as described in
+<a href="install.html">Installing Aerolume</a>, then start it from the Start menu, or with <code>aerolume</code>
+(or <code>python -m aerolume.app</code>) in a source install. The first start shows a short welcome tour
+(Help ▸ Welcome tour shows it again). Sections 1–8 follow the six pages of a study; sections
+9–14 cover 3D, the placed physics (heat, smoke, fans and rooms), live editing and the solver
+diagnostics, the Script console, the Assistant and the optional accounts.</p>
+<h2 id="1-the-window">1. The window<a class="anchor" href="#1-the-window" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_simulate.png" alt="The main window with the Simulate page: project tree on the left, the live flow in the middle, the Run panel on the right, the Messages panel at the bottom" width="1600" height="1000" loading="lazy"><figcaption>The main window with the Simulate page: project tree on the left, the live flow in the middle, the Run panel on the right, the Messages panel at the bottom</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">part</th><th scope="col">what it is for</th></tr></thead>
+<tbody>
+<tr><td><strong>Menu and toolbar</strong></td><td>New, Open, Save; Import geometry; Run (F5) and Stop (Shift+F5); Report</td></tr>
+<tr><td><strong>Step bar</strong></td><td>the six steps of the workflow: Geometry, Setup, Simulate, Results, Compare, Report. The active step is underlined, completed steps carry a check mark. Ctrl+1 … Ctrl+6 jump to them. The right end shows the current design and simulation.</td></tr>
+<tr><td><strong>Project</strong> panel (left)</td><td>every design with its simulations nested under it. The icon in front of a simulation is its status: not run, queued, running (with the percentage), done, stopped, failed. Selecting an item makes it current on every page. Right-click for New simulation, Run, Duplicate, Rename (F2) and Delete.</td></tr>
+<tr><td><strong>Page</strong> (middle)</td><td>the current step. Most pages have a viewport in the middle and their settings in the <strong>Properties</strong> panel on the right.</td></tr>
+<tr><td><strong>Messages</strong> panel (bottom)</td><td>what the planner decided and why, warnings, errors and the run log, with filters for errors, warnings and messages, and for the selected simulation only. It opens by itself when something needs attention.</td></tr>
+<tr><td><strong>Assistant</strong>, <strong>Script</strong>, <strong>Flow visualisation</strong>, <strong>Diagnostics</strong> panels</td><td>hidden until asked for: the experiment assistant (section 13), the Python console (section 12), the smoke / particle / streamline layers of the flow on screen, and the solver diagnostics of a running simulation (section 11)</td></tr>
+<tr><td><strong>Account</strong> button (top right)</td><td>optional cloud accounts (section 14); with no account service connected it only says that the program works offline</td></tr>
+<tr><td><strong>Status bar</strong></td><td>the last action, the progress of a running simulation, the compute device (for example <em>CUDA · RTX 4060 Ti</em>) and the unit system.</td></tr>
+</tbody>
+</table></div>
+<p><strong>Panels and workspaces.</strong> Every side panel can be collapsed to its header (the chevron or a
+double-click on the header), moved up or down or to another edge (the header's menu),
+hidden and brought back from <strong>View</strong> (Alt+1 … Alt+7), and resized by dragging the rail's
+edge. Where a panel's effect can be switched off without losing its settings, its header has
+an on/off switch (Diagnostics ▸ Record, for example). The arrangement is a <em>workspace</em>:
+<strong>View ▸ Workspace</strong> offers <em>Default</em> (Project and Properties, the log folded at the bottom),
+<em>Analysis</em> (the Assistant and the open log beside the results), <em>Live</em> (Flow visualisation
+and Diagnostics beside a live run) and <em>Scripting</em> (a tall Script panel, the Assistant on the
+right). Each workspace remembers your changes across restarts; <strong>View ▸ Workspace ▸ Reset</strong>
+restores the preset. In a narrow window the right-hand panels fold into the left rail as
+tabs and return when the window is wider.</p>
+<p>Everything is saved as you go: changes to designs and simulations are written to the
+project folder when you make them, results when a run finishes. <strong>View</strong> shows or hides
+the panels and switches the theme (<strong>View ▸ Theme</strong>, light or dark, also Ctrl+Shift+T);
+<strong>Edit ▸ Preferences</strong> (Ctrl+,) sets the theme, the units and the default compute device and
+precision. <strong>Tools</strong> has the import, the template gallery and NACA sections, and report
+generation.</p>
+<h2 id="2-start-page-and-projects">2. Start page and projects<a class="anchor" href="#2-start-page-and-projects" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_start.png" alt="Start page: the study types across the top, recent projects and the bundled examples below them, and the Open and Learn links on the right" width="1600" height="1000" loading="lazy"><figcaption>Start page: the study types across the top, recent projects and the bundled examples below them, and the Open and Learn links on the right</figcaption></figure>
+<p>With no project open the window shows the start page: the study types to start from,
+<strong>Open project…</strong> and <strong>Open example</strong>, links to this guide, the keyboard shortcuts and the
+validation cases, and the projects you used recently and the examples.</p>
+<ul>
+<li><strong>New airfoil study</strong> creates a project with a NACA 2412 section (chord 1 m) and two
+simulations ready to run: a viscous polar at Re = 10⁶ from −4° to 14°, and a CFD run at
+4° at Draft quality.</li>
+<li><strong>New vehicle study</strong> creates a sedan side profile on a road with one CFD simulation at
+30 m/s, moving road, Draft quality.</li>
+<li><strong>3D body from a mesh</strong> imports an STL, OBJ or PLY surface (a car, a drone, a rider) into
+a 3D wind tunnel with a Draft CFD run at 30 m/s (a few minutes on a GPU).</li>
+<li><strong>Wing (3D)</strong> creates a tapered NACA 2412 wing (2 m span) with a vortex-lattice polar from
+−4° to 12° at 30 m/s, which runs in seconds.</li>
+<li><strong>Heated room (3D)</strong> creates a closed 4 × 3 × 2.5 m room with a 200 W radiator under a
+12 °C window, a ceiling fan and supply and extract air: 3D CFD with heat transfer and
+buoyancy.</li>
+<li><strong>Electronics enclosure (2D)</strong> creates a closed box cross-section with a circuit board, a
+40 W/m chip, an intake jet with a fan and a balancing exhaust vent.</li>
+<li><strong>Empty project</strong> has no geometry: import a 2D outline or a 3D mesh, or start from a
+template.</li>
+<li><strong>Open example</strong> copies one of the bundled example projects to
+<code>Documents/<wbr>Aerolume/<wbr>Examples</code> and opens the copy, so the original stays intact. Every
+example contains finished Draft results, so every page has something to show at once:
+<em>Sedan in 3D</em> (smoke, streamlines and surface pressure of a 3D car), <em>Tapered wing</em> (a
+finite-wing polar), <em>Heated cylinder</em> (forced convection at Re 40 against its reference
+Nusselt number), <em>Heated cavity Ra 1e5</em> (the natural-convection benchmark),
+<em>Room with a fan and a heater</em> (fan, heater, supply jet, vent and two smoke colours in a
+2D room), <em>Wing section NACA 2412</em> (a polar and a CFD run at 4°) and <em>Sedan vs fastback</em>
+(two car profiles at 30 m/s, ready to compare).</li>
+</ul>
+<p>A project is a folder named <code>&lt;Name&gt;.aerolume</code> with one JSON file per design and per
+simulation and the results next to them (<code>DESIGN.md</code> section 5.7 describes the format).
+It can be copied, zipped or put under version control as it is.</p>
+<h2 id="3-geometry">3. Geometry<a class="anchor" href="#3-geometry" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_geometry.png" alt="Geometry page: a NACA 2412 section with its chord and thickness dimensions, and the inspector with Source, Transform, References and Diagnostics" width="1600" height="1000" loading="lazy"><figcaption>Geometry page: a NACA 2412 section with its chord and thickness dimensions, and the inspector with Source, Transform, References and Diagnostics</figcaption></figure>
+<p>The viewport draws the design to scale: outline, a light fill, the chord or length
+dimension, the maximum thickness of an airfoil, the moment reference point (the circle
+with a cross) and, for vehicles, the road. Scroll to zoom, drag to pan, <strong>Fit</strong> to frame
+the design; <strong>Points</strong> shows the vertices, <strong>Dimensions</strong> and <strong>Grid</strong> toggle the
+annotations.</p>
+<p><strong>Getting a shape in</strong></p>
+<ul>
+<li><strong>Templates…</strong> opens the template gallery: NACA 4- and 5-digit airfoils, a two-element
+ground-effect wing, seven road vehicles (sedan, hatchback, fastback, SUV, pickup, van,
+box truck), a 2D Ahmed body, and bluff bodies (cylinder, square, ellipse, flat plate,
+rounded rectangle). A template's parameters (length, height, ground clearance,
+windscreen and rear angles, wheels, …) stay editable afterwards in the inspector.</li>
+<li><strong>Import</strong> (Ctrl+I, or drop a file on the window) reads airfoil coordinates (<code>.dat</code> in
+Selig or Lednicer order), SVG paths, DXF polylines, CSV point lists and silhouettes from
+images (PNG, JPG). The import dialog shows a preview and what it repaired (closed gaps,
+joined open paths, removed duplicate points), asks for the real length of the shape when
+the file has no units, and whether it is an airfoil, a vehicle or a generic body.</li>
+</ul>
+<p><strong>Inspector</strong> (right)</p>
+<ul>
+<li><strong>Source</strong>: where the shape came from and how many edits it has had.</li>
+<li><strong>Transform</strong>: chord or length (scales the shape), rotate, move, mirror.</li>
+<li><strong>Cleanup</strong> (collapsed): resample the outline to a number of evenly spaced points (sharp
+corners are kept) and smooth noisy imported outlines.</li>
+<li><strong>References</strong>: the kind of design and the reference quantities every coefficient uses:
+the length for the Reynolds number, the length for the coefficients (the chord of an
+airfoil, the frontal height of a vehicle) and the moment point (quarter chord for
+airfoils). <em>Auto</em> follows the shape; type a value to fix it.</li>
+<li><strong>Diagnostics</strong>: problems the solvers would trip over — self-intersections, outlines
+with too few points, trailing edges or gaps too thin for the grid — or <em>No problems found</em>.</li>
+</ul>
+<p><strong>Set up simulation</strong> (bottom right) goes to the next step.</p>
+<h2 id="4-setup">4. Setup<a class="anchor" href="#4-setup" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_setup.png" alt="Setup page: the case preview with the domain outline, the Estimate table, the planner&#x27;s notes, and the property grid with Analysis, Flow, Attitude, Ground and Mesh &amp; time" width="1600" height="1000" loading="lazy"><figcaption>Setup page: the case preview with the domain outline, the Estimate table, the planner's notes, and the property grid with Analysis, Flow, Attitude, Ground and Mesh &amp; time</figcaption></figure>
+<p>Setup edits the selected simulation. The top of the page previews the case in the wind
+frame (flow from the left, the design rotated by the angle of attack); <strong>Domain</strong> shows the
+computational domain the planner chose. Below it, the <strong>Estimate</strong> table and the
+<strong>Planner</strong> notes update as you change any setting.</p>
+<p><strong>Property grid</strong></p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">group</th><th scope="col">settings</th></tr></thead>
+<tbody>
+<tr><td>Analysis</td><td>name; type: <strong>CFD</strong> (Navier–Stokes, any design) or <strong>Polar</strong> (viscous–inviscid, single airfoils only)</td></tr>
+<tr><td>Flow</td><td>fluid (air at an ISA altitude or a temperature, water, or custom density and viscosity), speed and its unit</td></tr>
+<tr><td>Attitude</td><td>angle of attack (airfoils) or pitch (vehicles), with a slider</td></tr>
+<tr><td>Ground</td><td>road: none, fixed floor or moving belt; whether wheels rotate (vehicles)</td></tr>
+<tr><td>Mesh &amp; time</td><td>quality (Draft, Standard, Fine, or Custom once you override a value), cells per chord / vehicle height, upstream, downstream and height of the domain, duration and the start of averaging; <em>Auto</em> everywhere by default</td></tr>
+<tr><td>Solver (collapsed)</td><td>turbulence (auto, laminar, LES), Reynolds number (real or capped) and the cap (fixed when the simulation is made — Re 2,500 for a new capped airfoil, the same on every quality and device; <em>Auto</em> lets the grid choose, which changes with the quality), precision, device, sensitivity map and its objective</td></tr>
+<tr><td>Polar (Polar only)</td><td>angle range and step, Ncrit, forced transition on each surface, Mach number, panels</td></tr>
+<tr><td>Wing analysis (wings only)</td><td>method (vortex lattice or lifting line), viscous or inviscid, angle range, sideslip</td></tr>
+<tr><td>Flow visualisation</td><td>smoke and particle emitters (section 10); in 3D without emitters, the automatic smoke rake upstream of the body</td></tr>
+<tr><td>Domain</td><td><strong>Wind tunnel</strong> (a free stream from the left) or <strong>Closed box</strong> (walls on every side: a room, an enclosure, a cavity) and its extent, Auto or typed</td></tr>
+<tr><td>Heat transfer</td><td>on/off, ambient temperature, buoyancy and gravity, the fluid's thermal properties (Auto from the fluid), each domain wall (adiabatic, temperature or heat flux) and each body's surface condition</td></tr>
+<tr><td>Heat sources, Fans, Jets and vents</td><td>lists of placed items with Add, Duplicate and Remove and the selected item's fields (section 10)</td></tr>
+<tr><td>Diagnostics (collapsed)</td><td>record solver diagnostics (on by default), fixed or PID-controlled time step</td></tr>
+</tbody>
+</table></div>
+<p><strong>Estimate</strong> lists what the planner made of these settings: the real and the simulated
+Reynolds number, dynamic pressure, flow model, grid and cells, cells per reference length,
+domain, blockage, road, time step, duration, averaging start, the early-stop target
+("Cd ±5 %, Cl ±10 %"), the number of steps and the estimated run time on the device. The
+<strong>Planner</strong> list explains each decision in a sentence and puts warnings first (for
+example that lift and drag are not reliable at a Reynolds number the grid cannot resolve,
+or that a car's underbody gap is only four cells high). The same lines go to the Messages
+panel when the run starts. When the strip under the preview is narrower than about 520 px
+(1280 × 800 with the Project and Assistant panels open), the Estimate moves above the Planner,
+so neither has to cut its values short; the property grid never gets narrower than its own
+fields, and side panels give way first.</p>
+<p>New simulations start at <strong>Draft</strong> quality, so the first run comes back in seconds (an
+airfoil) to a few minutes (a car). Airfoils above Re = 10⁵ start in the <strong>capped</strong>
+Reynolds mode, at Re = 2,500 on every quality and device: the CFD run is a resolved flow at a
+lower Reynolds number, and the polar answers at the real one. A simulation added to a design
+that has none starts from the fluid, speed, angle, quality and Reynolds settings of the
+study's latest CFD run, so the designs of a study are compared at the same conditions. <a href="simulation-guide.html">Running simulations</a> explains both
+choices and the presets.</p>
+<p>With heat transfer on, the Estimate table adds the temperature scale and the dimensionless
+groups the run rests on (Ra, Gr, Pr, Ri, Pe), each with the rule that chose it, and the
+planner warns about what the grid or the model cannot carry (an unbalanced closed box, an
+item outside the domain, a thermal boundary layer only a few cells thick, a temperature
+difference too large for the Boussinesq model).</p>
+<p><strong>Run</strong> (bottom right) queues the simulation and opens Simulate; <strong>Explore live</strong> starts
+explore mode (sections 5 and 11).</p>
+<h2 id="5-simulate">5. Simulate<a class="anchor" href="#5-simulate" aria-label="Link to this section">#</a></h2>
+<p>The viewport shows the running simulation. Its toolbar selects the <strong>field</strong> (speed,
+pressure coefficient, vorticity, smoke, eddy viscosity), the <strong>colour map</strong> (each field has a sensible default; no rainbow maps), and
+the overlays <strong>Particles</strong> and <strong>Streamlines</strong>; <strong>Fit</strong> frames the design again. The colour
+bar on the right edge carries the field's name, unit and ticks; the scale bar at the
+bottom left gives the size. Hovering over the field shows the value under the cursor.</p>
+<p>The <strong>Run</strong> panel on the right shows the simulation, its status and a progress bar, the
+phase (<em>Transient</em> while the start-up washes out, then <em>Averaging</em>), the simulated time in
+convective units, the rate in steps per second, the remaining time, the grid, the
+Reynolds number and the estimate. <strong>Stop</strong> ends the run at the next block of steps and
+keeps what has been computed as a result marked <em>Stopped</em> — except when the run was a
+<em>Run again</em> of a finished simulation: the partial run is then discarded and the earlier
+complete result stays. The panel always describes the simulation selected in the Project
+panel: when another one is running, a line above the rows says whose flow the viewport
+shows, and for a queued simulation the button reads <strong>Remove from queue</strong>. A polar sweep
+shows a busy bar until its first angle is in (the first angle is solved from scratch and
+takes most of the start; Setup shows the expected run time). <strong>Monitors</strong> shows the latest
+C<sub>d</sub>, C<sub>l</sub> and L/D and their histories; the averaging window is shaded.</p>
+<p>Runs are queued: pressing Run on another simulation while one is running adds it to the
+queue (the project tree shows <em>Queued</em>). Results are saved to the project as soon as a run
+ends.</p>
+<p><strong>Explore</strong> (the collapsed group in the right panel, or <em>Explore live</em> on Setup) runs the
+flow in real time at Draft resolution (a coarser grid on a CPU), without averaging or an
+end — typically 30–50 frames per second on a mid-range GPU — while you drag the angle and
+the speed sliders; the field and overlays can change as it runs. Its
+grid is shown in the Run panel while it runs. It is for building intuition and finding
+interesting cases; its numbers are not results. <strong>Run with these settings</strong> turns the
+explored angle and speed (and the moved emitters, fans, heaters and jets) into a simulation
+(a new one if the current one already has a result) and queues it. Section 11 describes
+drawing obstacles into the running flow, moving placed items, and the diagnostics.</p>
+<h2 id="6-results">6. Results<a class="anchor" href="#6-results" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_results.png" alt="Results page: the header line with the run&#x27;s validity, and the Summary table with mean, standard error, RMS, minimum and maximum of every coefficient and force" width="1600" height="1000" loading="lazy"><figcaption>Results page: the header line with the run's validity, and the Summary table with mean, standard error, RMS, minimum and maximum of every coefficient and force</figcaption></figure>
+<p>The header states the facts that decide how far to trust the run: converged or not, the
+Reynolds number (simulated and real when they differ), the grid and the cells per
+reference length, the flow model, the run time and the device. <em>Converged</em> judges the
+monitored quantities (the force coefficients, the Nusselt number, each fan's flow); when 5 %
+or more of the heat put into the fluid was still being stored at the end, the header says so
+("9 % of the heat still being stored"), and above 10 % it is drawn in the warning colour
+because the domain had not reached a thermal steady state. A warning line follows when
+needed, with <strong>Details</strong> for the full text. <strong>Add to comparison</strong> puts the run on the
+Compare page; <strong>Report…</strong> opens the Report page.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">tab</th><th scope="col">content</th></tr></thead>
+<tbody>
+<tr><td><strong>Summary</strong></td><td>every coefficient and force with its mean, standard error, RMS, minimum, maximum and unit; the Strouhal number when the flow sheds; the conditions on the right</td></tr>
+<tr><td><strong>Forces</strong></td><td>C<sub>d</sub>, C<sub>l</sub> and C<sub>m</sub> against time with the averaging window, and per-body values when there are several bodies</td></tr>
+<tr><td><strong>Surface</strong></td><td>pressure and skin-friction coefficients along the surface (upper and lower sides of an airfoil plotted against x/c)</td></tr>
+<tr><td><strong>Fields</strong></td><td>the mean and the last instantaneous fields with the same toolbar as Simulate</td></tr>
+<tr><td><strong>Heat transfer</strong></td><td>runs with heat transfer: the mean Nusselt number and heat rate of every body with standard errors, the heat balance of the domain, the temperature field and the wall heat flux</td></tr>
+<tr><td><strong>Fans</strong></td><td>runs with fans: delivered thrust, volume flow, mean induced speed and ideal power of each fan, beside the momentum-theory reference</td></tr>
+<tr><td><strong>Diagnostics</strong></td><td>the solver's end-of-run divergence, change norms, CFL number, time step and residual (section 11)</td></tr>
+<tr><td><strong>Sensitivity</strong></td><td>the shape-sensitivity map on the outline, when it was computed (Setup ▸ Solver ▸ Sensitivity map), relative to its strongest values: the pattern is reliable, the size only indicative (the values in 1/m are in the surface CSV)</td></tr>
+<tr><td><strong>Polar</strong></td><td>polar simulations only: C<sub>l</sub>(α), drag polar, C<sub>m</sub>(α), L/D and transition, and the table of points. (A CFD run of a single airfoil states its polar cross-check in the header warning and the Messages panel.)</td></tr>
+<tr><td><strong>Data</strong></td><td>the raw numbers and the exports: summary, force history, surface data and polar table as CSV, flow fields as VTK (<code>.vti</code>, for ParaView) or NumPy <code>.npz</code>, and every figure as PNG</td></tr>
+</tbody>
+</table></div>
+<p>Every value is rounded to its standard error. A run that ended before its uncertainty
+target is labelled <em>Not converged</em> and its error bars say how far it got; when the run was
+too short to measure its error bars (fewer than about 20 independent samples), its warning
+says they are rough estimates, the report marks them with ~, and Compare does not call a
+difference significant on them. A polar whose lift is still rising at its last angle shows
+C<sub>l,max</sub> as a lower bound ("≥ 1.547, still rising at α = 14°"): extend the last
+angle in Setup to find the stall.</p>
+<h2 id="7-compare">7. Compare<a class="anchor" href="#7-compare" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_compare.png" alt="Compare page: three fastback variants with drag, lift and moment against the first one, and the drag chart" width="1600" height="1000" loading="lazy"><figcaption>Compare page: three fastback variants with drag, lift and moment against the first one, and the drag chart</figcaption></figure>
+<p>Compare puts simulations with results side by side. Tick them in the list on the left
+(at most what fits the table; four by default, preferring runs of the same kind — CFD with
+CFD, polars with polars), choose the <strong>Baseline</strong>, and tell the page whether more lift is
+good (a wing), bad (a race car's front wing producing downforce reads negative lift) or
+neither (a road car) with <strong>Lift objective</strong>.</p>
+<p>The table lists every quantity for every simulation and, for each variant, the change
+against the baseline in per cent. Green and red mark improvements and deteriorations;
+<strong>grey marks a change smaller than the combined statistical uncertainty of the two runs</strong> —
+not a real difference. A warning icon in a column header flags a run that did not
+converge. Below the table:</p>
+<ul>
+<li><strong>Chart</strong>: a bar chart of the chosen quantity with error bars.</li>
+<li><strong>Geometry</strong>: the outlines overlaid in their series colours.</li>
+<li><strong>Pressure</strong>: surface pressure of all selected runs.</li>
+<li><strong>Polars</strong>: the polars of the selected polar simulations.</li>
+<li><strong>Fields</strong>: one field of each run on the same scale, or the difference to the baseline.</li>
+</ul>
+<p>Compare designs run at the same quality and conditions: a Draft and a Standard run of the
+same car differ by more than most design changes. A warning line above the table says when
+the compared runs differ in speed, angle or fluid, or simulate different Reynolds numbers,
+because their differences are then not design effects alone (the report prints the same
+warnings). With runs of both kinds selected, the baseline is a CFD run: a polar has no single
+C<sub>d</sub> to compare against.</p>
+<h2 id="8-report">8. Report<a class="anchor" href="#8-report" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/ui_report.png" alt="Report page: simulations, sections and document settings on the left, the list of generated reports on the right" width="1600" height="1000" loading="lazy"><figcaption>Report page: simulations, sections and document settings on the left, the list of generated reports on the right</figcaption></figure>
+<p>Choose the simulations (all with results are ticked), the sections — summary, geometry,
+setup, results, surface pressure and friction, flow fields, convergence, shape
+sensitivity, airfoil polars, comparison, methodology and validity — a title, an author and
+the format (PDF or HTML), then <strong>Generate</strong>. Reports are written to the project's
+<code>reports</code> folder on a background thread and listed on the right with their size; <strong>Open</strong>
+and <strong>Show folder</strong> act on the selected one. Every report states the conditions, the
+uncertainty and the validity limits of each number it contains (the methodology section
+says how they were obtained).</p>
+<h2 id="9-three-dimensions-and-finite-wings">9. Three dimensions and finite wings<a class="anchor" href="#9-three-dimensions-and-finite-wings" aria-label="Link to this section">#</a></h2>
+<p>A 3D design is a surface mesh (<strong>File ▸ Import ▸ 3D mesh (STL, OBJ, PLY)…</strong>, Ctrl+Shift+I, or
+a primitive) or a wing (<strong>Tools ▸ New wing</strong>). The Geometry page shows it in a 3D view (orbit
+with the left mouse button, pan with the middle one, scroll to zoom; Iso, Front, Side and Top
+views) with a mesh inspector: parts, units, size, watertightness and the checks the solver
+needs. A vehicle sits on the road (z = 0); a body that is symmetric about the centre plane is
+solved on a half domain with a symmetry plane, which halves the cost.</p>
+<p>A 3D CFD run shows its flow in the 3D view of Simulate and Results: surface pressure,
+<strong>smoke</strong> (volume rendering of the released dye, up to four colours), <strong>streamlines</strong> from a
+rake you can move, vortex iso-surfaces and slices through the mean flow. The Flow
+visualisation panel switches the layers. A wing runs the finite-wing analysis instead (a
+vortex lattice or a lifting line on the section polars, seconds): lift, induced and profile
+drag, span loading and the stall-onset estimate. How a 3D run is planned and how far its
+numbers go are in <a href="simulation-guide.html">Running simulations</a>, sections 10–12.</p>
+<h2 id="10-heat-smoke-fans-and-rooms">10. Heat, smoke, fans and rooms<a class="anchor" href="#10-heat-smoke-fans-and-rooms" aria-label="Link to this section">#</a></h2>
+<p>The groups below <strong>Mesh &amp; time</strong> on Setup place physics into a simulation. It works in 2D
+and 3D with the same meaning, and everything is off until you add it.</p>
+<ul>
+<li><strong>Emitters</strong> (Flow visualisation): a point, a line or a rake of nozzles, a rectangle, or
+in 3D a disc or a plane, releasing smoke (a passive dye) or tracer particles (streaklines;
+pulsed emitters draw timelines). Each colour is its own smoke channel, up to four.
+<em>Wind</em> emitters stay put when the body is pitched or yawed; <em>body</em> emitters move with it.</li>
+<li><strong>Heat transfer</strong>: the temperature is solved with the flow, with buoyancy on or off. A
+body is held at a temperature, releases a heat flux or is adiabatic; each domain wall
+likewise. Results gain the temperature field, the heat rate of every body (W, or W per
+metre of span in 2D) and its mean Nusselt number with a standard error.</li>
+<li><strong>Heat sources</strong>: a heater (or a cooler, with negative power) of a given power over a
+rectangle or box, a disc or a sphere.</li>
+<li><strong>Fans</strong>: an actuator disc (a strip in 2D) blowing along its direction, set by its thrust,
+its pressure jump, or a target speed through it that the solver regulates. The result
+reports the delivered thrust, volume flow, mean induced speed and ideal power.</li>
+<li><strong>Jets and vents</strong>: fluid blown in at a speed (optionally hotter or colder, optionally
+carrying smoke) or sucked out. In a closed box the jets and vents must balance; the planner
+says when they do not.</li>
+<li><strong>Domain ▸ Closed box</strong> turns the wind tunnel into a room with walls on every side. A room
+without a free stream takes its speed scale from its fastest jet or fan, or from buoyancy.
+A closed box is judged on what it is about (the Nusselt number, the warmest and the mean
+fluid temperature, fan flow, kinetic energy), never on force coefficients. In <strong>2D</strong> a room's
+fan speeds, disc velocity and volume flow are qualitative and depend on the grid (2D flow has
+no vortex stretching; <a href="theory-ns2d.html#184-fans-in-closed-2d-rooms-a-grid-study-and-the-wall-model">Navier–Stokes solver (2D), §18.4</a>): the thrust is exact and the flow pattern
+meaningful, but use 3D for numbers.</li>
+</ul>
+<p><strong>Planned and measured temperatures.</strong> A heater's or a heat flux's temperature rise is not
+known before the run, so the planner estimates it (from the air flowing through the heater)
+and sizes the run on that estimate. After the run, Results and the report label the plan's
+ΔT, Rayleigh and Grashof numbers <em>(planned estimate)</em> and give the measured ones beside them,
+and the Setup page re-states its warnings on the measured rise while the settings are those of
+the stored result. A ΔT set by the walls and bodies (the cavity's hot and cold walls) is exact
+and has no label. Natural or mixed convection around a heated body (a free plume) is not
+validated, and a run in that regime says so in its warnings.</p>
+<p>The Setup preview draws every item with handles; drag them, or type positions in the list.
+Results add the heat summary (Nusselt number, heat rate, the energy balance), a fan table, the
+run's diagnostics and, for a reference case (the heated cylinder, the cavity), the comparison
+with the published value. The examples <em>Heated cylinder</em>, <em>Heated cavity Ra 1e5</em> and <em>Room
+with a fan and a heater</em> show each of these with finished results. What the planner chooses,
+the measured accuracy and the limits are in <a href="simulation-guide.html">Running simulations, section
+13</a>; the validation against de Vahl Davis, Lange et al., momentum
+theory and the jet similarity laws is in the <a href="validation.html">validation report</a>.</p>
+<h2 id="11-explore-drawing-into-the-flow-diagnostics-and-the-solver-trace">11. Explore: drawing into the flow, diagnostics and the solver trace<a class="anchor" href="#11-explore-drawing-into-the-flow-diagnostics-and-the-solver-trace" aria-label="Link to this section">#</a></h2>
+<p><strong>Explore</strong> (<strong>Start explore</strong> on Simulate, or <strong>Simulation ▸ Explore live</strong>) runs the flow
+continuously at Draft resolution. While it runs:</p>
+<ul>
+<li>The <strong>drawing strip</strong> above the 2D view has a <strong>brush</strong> and a <strong>polygon</strong> tool that add
+solid obstacles to the running flow, an <strong>eraser</strong>, <strong>undo / redo / clear</strong>, the brush
+size, and a <strong>move</strong> tool that drags emitters, fans, heaters and jets to a new place. The
+flow keeps running; the drawing is resolution-independent and never changes the design.
+In 3D, obstacles are placed as spheres and boxes.</li>
+<li>The sliders change the angle and the speed; with the <strong>Reynolds lock</strong> two of speed,
+viscosity and Reynolds number are held and the third follows. <strong>Pause</strong>, <strong>Step</strong>, the
+target frame rate and the steps per frame control the pace.</li>
+<li>Edits the session cannot carry out are said in Messages, not silently ignored: a speed
+change in a closed box (it has no free stream), an item moved out of the domain, or heat
+added to a session started without heat transfer (restart explore to add it).</li>
+</ul>
+<p>The <strong>Diagnostics</strong> panel (Alt+7; open in the <em>Live</em> workspace) shows whether the solver is
+doing its job: the RMS divergence after the projection, the change of each field per step
+block (absolute and relative), the CFL number and time step, the pressure-solve residual and
+the throughput, as numbers and as plots against step or time. Its header switch pauses
+recording and keeps the values; <strong>Export CSV</strong> writes every column at full precision. A
+converged-looking picture with a divergence of 10⁻² is a broken run; change norms that stopped
+falling mean a steady state or a limit cycle.</p>
+<p>The panel's <strong>Solver trace</strong> tab records one time step stage by stage (<strong>Capture step</strong>): the
+tentative velocity after advection and diffusion, its divergence, the pressure correction and
+the corrected velocity, one row per Runge–Kutta stage. Each stage is a thumbnail; one is
+enlarged with its colour bar; colour ranges are shared per quantity or separate; <strong>Export
+NPZ…</strong> saves every array. Production runs record diagnostics too (Setup ▸ Diagnostics):
+the Results page's Diagnostics tab keeps their end-of-run values with the result, and the
+step-by-step history for the session that ran it.</p>
+<h2 id="12-the-script-console-and-the-scripting-api">12. The Script console and the scripting API<a class="anchor" href="#12-the-script-console-and-the-scripting-api" aria-label="Link to this section">#</a></h2>
+<p><strong>Tools ▸ Run script…</strong> or the <strong>Script</strong> panel (Alt+4) runs Python against the open project
+with <code>al</code> (the <code>aerolume</code> package) and <code>project</code> bound: add designs, run simulations through
+the same queue as the Run button, sweep parameters, plot and export. Output and figures
+appear inline; <strong>Stop</strong> cancels a run (keeping its partial result) or interrupts plain Python;
+an error marks its line. Scripts are saved with the project, and the examples menu has short
+starting points. The same API works outside the program (<code>import aerolume as al</code>) and from
+the command line (<code>aerolume-cli script study.py --project "Wing study.aerolume"</code>): see the
+<a href="scripting.html">scripting guide</a>.</p>
+<h2 id="13-the-experiment-assistant">13. The experiment Assistant<a class="anchor" href="#13-the-experiment-assistant" aria-label="Link to this section">#</a></h2>
+<p>The <strong>Assistant</strong> panel (Alt+3, or <strong>Tools ▸ Experiment assistant</strong>, Ctrl+Shift+A) plans, runs
+and analyses experiments from a goal written in plain words, through the scripting API. It
+works with Claude (an Anthropic API key in <strong>Edit ▸ Preferences ▸ Assistant</strong>) or with a local
+model through Ollama, in which case nothing leaves the computer. Its rules:</p>
+<ul>
+<li>nothing is sent to a model off this computer until you agree on a card that lists what is
+sent and what is not (meshes, flow fields, figures and the project's files are not);</li>
+<li>a suggested change arrives as a card listing every setting old → new and changes nothing
+until you click <strong>Apply</strong> (one Undo takes it back); runs above the approval threshold,
+code and deletions ask first;</li>
+<li>every statement in a final answer is checked against the project's numbers and marked
+verified or <em>not verified</em>.</li>
+</ul>
+<p>Claude Desktop or Claude Code can drive the same tools without an API key in the program
+through the <code>aerolume-mcp</code> server (<strong>Help ▸ Driving Aerolume from Claude (MCP)</strong>). Details:
+<a href="assistant.html">the Assistant</a> and <a href="mcp.html">the MCP server</a>.</p>
+<h2 id="14-accounts-optional">14. Accounts (optional)<a class="anchor" href="#14-accounts-optional" aria-label="Link to this section">#</a></h2>
+<p>Aerolume works fully offline and needs no account; nothing is sent anywhere by default. An
+account service exists only once you connect a Supabase project of your own (<strong>Edit ▸
+Preferences ▸ Account</strong>: the project URL and its public anon key). Then the Account button
+offers sign-up and sign-in (email and password, a magic link or a 6-digit code, or GitHub /
+Google through the system browser), a profile, <strong>Cloud projects</strong> (upload, download, sync
+status, conflicts detected by content hash) and expiring read-only <strong>share links</strong> for a
+result. Sessions are stored in your user folder with restrictive permissions and never
+logged. Setting up a project, what leaves your computer and the security model are in
+<a href="accounts.html">Accounts</a>.</p>
+<h2 id="15-keyboard-shortcuts">15. Keyboard shortcuts<a class="anchor" href="#15-keyboard-shortcuts" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">keys</th><th scope="col">action</th></tr></thead>
+<tbody>
+<tr><td>Ctrl+N / Ctrl+O / Ctrl+S</td><td>new study / open project / save</td></tr>
+<tr><td>Ctrl+I</td><td>import geometry</td></tr>
+<tr><td>Ctrl+1 … Ctrl+6</td><td>Geometry … Report</td></tr>
+<tr><td>F5 / Shift+F5</td><td>run the selected simulation / stop the running one</td></tr>
+<tr><td>F2 / Delete</td><td>rename / delete the selected design or simulation</td></tr>
+<tr><td>Ctrl+,</td><td>preferences</td></tr>
+<tr><td>Ctrl+Shift+T</td><td>switch between the light and the dark theme</td></tr>
+<tr><td>Alt+1 … Alt+7</td><td>show or hide the Project, Messages, Assistant, Script, Properties, Flow visualisation and Diagnostics panels</td></tr>
+<tr><td>F11</td><td>full screen</td></tr>
+<tr><td>F6 / Shift+F6</td><td>next / previous region: the step bar, the page, then each panel's header</td></tr>
+<tr><td>Enter, Shift+F10, Delete</td><td>on a panel header: collapse or expand, the options menu, hide the panel</td></tr>
+<tr><td>Ctrl+Tab / Ctrl+Shift+Tab</td><td>leave the Script editor (Tab indents there); Esc then Tab also works</td></tr>
+<tr><td>F1</td><td>this guide</td></tr>
+</tbody>
+</table></div>
+<p><strong>Moving around with the keyboard.</strong> Tab goes from the step bar into the page, through the
+page's fields in reading order, and then into the panels (left rail, right rail, bottom), and
+wraps round; Shift+Tab walks the same order backwards. The panel headers' own buttons are not
+Tab stops: F6 lands on a header, where Enter or Space collapses or expands the panel, Shift+F10
+or the Menu key opens its options and Delete hides it, and Tab goes into its content. F6 back to
+the page returns to the field you left. Every control is at least 24 pixels high. In the Script
+editor Tab indents the code; Ctrl+Tab (or Esc followed by Tab) moves on, and <strong>More ▸ Tab key
+moves focus</strong> makes Tab leave the editor instead.</p>
+<h2 id="16-when-something-goes-wrong">16. When something goes wrong<a class="anchor" href="#16-when-something-goes-wrong" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>A run fails.</strong> The project tree shows <em>Failed</em>, the Messages panel the reason in one
+sentence (out of GPU memory, an unstable flow, a geometry problem) and what to do. The
+table in <a href="simulation-guide.html#9-when-something-goes-wrong">Running simulations, section 9</a>
+lists the messages.</li>
+<li><strong>A run is much slower than its estimate.</strong> Another program is using the GPU (games,
+video encoders, other simulations). The estimate adapts after each run.</li>
+<li><strong>No GPU is found.</strong> Run <code>aerolume-cli doctor</code>: it lists the devices PyTorch sees and runs
+a one-second solver check. Everything works on the CPU, with coarser grids and longer
+run times; the planner says so.</li>
+<li><strong>A page shows an error instead of its content.</strong> It names the failing module and offers
+<em>Retry</em>. Please report it with the text shown.</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="install.html"><span>Previous</span><b>Installing Aerolume</b></a><a class="next" href="simulation-guide.html"><span>Next</span><b>Simulation guide</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-the-window">1. The window</a></li><li class="l2"><a href="#2-start-page-and-projects">2. Start page and projects</a></li><li class="l2"><a href="#3-geometry">3. Geometry</a></li><li class="l2"><a href="#4-setup">4. Setup</a></li><li class="l2"><a href="#5-simulate">5. Simulate</a></li><li class="l2"><a href="#6-results">6. Results</a></li><li class="l2"><a href="#7-compare">7. Compare</a></li><li class="l2"><a href="#8-report">8. Report</a></li><li class="l2"><a href="#9-three-dimensions-and-finite-wings">9. Three dimensions and finite wings</a></li><li class="l2"><a href="#10-heat-smoke-fans-and-rooms">10. Heat, smoke, fans and rooms</a></li><li class="l2"><a href="#11-explore-drawing-into-the-flow-diagnostics-and-the-solver-trace">11. Explore: drawing into the flow, diagnostics and the solver trace</a></li><li class="l2"><a href="#12-the-script-console-and-the-scripting-api">12. The Script console and the scripting API</a></li><li class="l2"><a href="#13-the-experiment-assistant">13. The experiment Assistant</a></li><li class="l2"><a href="#14-accounts-optional">14. Accounts (optional)</a></li><li class="l2"><a href="#15-keyboard-shortcuts">15. Keyboard shortcuts</a></li><li class="l2"><a href="#16-when-something-goes-wrong">16. When something goes wrong</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

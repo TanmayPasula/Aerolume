@@ -1,0 +1,29 @@
+NVIDIA CUDA and cuDNN runtime libraries
+=======================================
+
+The PyTorch distribution bundled with Aerolume (torch {torch_version}) contains NVIDIA runtime
+libraries. They are listed at the end of this file, each with the description, version and
+copyright line recorded in the file itself.
+
+These files are NVIDIA proprietary software. They are not open source and Aerolume's Apache
+License 2.0 does not cover them. NVIDIA allows them to be redistributed as part of an
+application under these agreements:
+
+  * NVIDIA CUDA Toolkit End User License Agreement: the CUDA runtime and math libraries,
+    NVRTC, nvJitLink, CUPTI and the Nsight Perf host library that comes with it, and NVTX.
+    https://docs.nvidia.com/cuda/eula/index.html
+  * NVIDIA cuDNN Software License Agreement: the cudnn*.dll files.
+    https://docs.nvidia.com/deeplearning/cudnn/latest/reference/eula.html
+
+Under the "Distribution Requirements" of both agreements, only the application they are
+distributed with may access these files. The terms the application is distributed under must
+also be consistent with the agreements. So these files are licensed to you only for use as
+part of Aerolume, including the PyTorch it bundles, and NVIDIA's agreements govern them, not
+Aerolume's licence. Neither agreement requires its text to be shipped with the application,
+so the full texts are not included here. Read them at the addresses above.
+
+PyTorch's own licence files, in licenses/torch, include the open-source NVIDIA components
+compiled into PyTorch (CUTLASS, cuDNN frontend, NVTX headers) under their licences.
+
+Files
+-----

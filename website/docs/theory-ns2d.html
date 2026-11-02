@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Navier–Stokes solver (2D)</title>
+<meta name="description" content="Equations, discretisation, immersed boundaries, forces, heat transfer, fans, performance and limits.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Navier–Stokes solver (2D)">
+<meta property="og:description" content="Equations, discretisation, immersed boundaries, forces, heat transfer, fans, performance and limits.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html" aria-current="page">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html" aria-current="page">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-equations-and-scaling">1. Equations and scaling</a></li><li class="l2"><a href="#2-grid-and-boundary-conditions">2. Grid and boundary conditions</a></li><li class="l2"><a href="#3-spatial-discretisation">3. Spatial discretisation</a></li><li class="l2"><a href="#4-pressure-exact-projection-with-a-direct-dct-poisson-solver">4. Pressure: exact projection with a direct DCT Poisson solver</a></li><li class="l2"><a href="#5-time-integration-and-time-step">5. Time integration and time step</a></li><li class="l2"><a href="#6-immersed-boundaries-brinkman-volume-penalisation">6. Immersed boundaries: Brinkman volume penalisation</a></li><li class="l3"><a href="#61-masks">6.1 Masks</a></li><li class="l3"><a href="#62-implicit-penalisation">6.2 Implicit penalisation</a></li><li class="l3"><a href="#63-choosing-η-and-placing-the-effective-wall">6.3 Choosing η and placing the effective wall</a></li><li class="l3"><a href="#64-force-evaluation">6.4 Force evaluation</a></li><li class="l3"><a href="#65-surface-distributions-cp-cf">6.5 Surface distributions (cp, cf)</a></li><li class="l2"><a href="#7-subgrid-models-2d-les">7. Subgrid models (2D LES)</a></li><li class="l2"><a href="#8-passive-dye">8. Passive dye</a></li><li class="l2"><a href="#9-start-up-perturbation">9. Start-up perturbation</a></li><li class="l2"><a href="#10-performance-cuda-graphs-cpu-path">10. Performance: CUDA graphs, CPU path</a></li><li class="l2"><a href="#11-verification-and-validation">11. Verification and validation</a></li><li class="l3"><a href="#verification-exact-answers">Verification (exact answers)</a></li><li class="l3"><a href="#validation-circular-cylinder">Validation: circular cylinder</a></li><li class="l3"><a href="#channel-and-sharp-edged-benchmarks">Channel and sharp-edged benchmarks</a></li><li class="l3"><a href="#airfoil-sanity-check-not-a-quantitative-validation">Airfoil sanity check (not a quantitative validation)</a></li><li class="l3"><a href="#moving-ground">Moving ground</a></li><li class="l2"><a href="#12-limitations-what-to-trust">12. Limitations — what to trust</a></li><li class="l2"><a href="#13-differentiability">13. Differentiability</a></li><li class="l2"><a href="#14-references">14. References</a></li><li class="l2"><a href="#15-placed-physics-design-rules">15. Placed physics: design rules</a></li><li class="l2"><a href="#16-heat-transfer">16. Heat transfer</a></li><li class="l3"><a href="#161-energy-equation-and-its-discretisation">16.1 Energy equation and its discretisation</a></li><li class="l3"><a href="#162-temperature-bodies-implicit-penalisation-and-the-thermal-wall">16.2 Temperature bodies: implicit penalisation and the thermal wall</a></li><li class="l3"><a href="#163-heat-flux-and-adiabatic-bodies">16.3 Heat-flux and adiabatic bodies</a></li><li class="l3"><a href="#164-domain-walls-heat-rates-and-nusselt-numbers">16.4 Domain walls, heat rates and Nusselt numbers</a></li><li class="l3"><a href="#165-buoyancy-and-scaling">16.5 Buoyancy and scaling</a></li><li class="l3"><a href="#166-heaters-and-the-energy-balance">16.6 Heaters and the energy balance</a></li><li class="l2"><a href="#17-emitters-smoke-channels-and-tracer-particles">17. Emitters: smoke channels and tracer particles</a></li><li class="l2"><a href="#18-fans-actuator-strips">18. Fans: actuator strips</a></li><li class="l3"><a href="#181-momentum-source">18.1 Momentum source</a></li><li class="l3"><a href="#182-velocity-mode-an-in-graph-pi-controller">18.2 Velocity mode: an in-graph PI controller</a></li><li class="l3"><a href="#183-fan-report">18.3 Fan report</a></li><li class="l3"><a href="#184-fans-in-closed-2d-rooms-a-grid-study-and-the-wall-model">18.4 Fans in closed 2D rooms: a grid study, and the wall model</a></li><li class="l2"><a href="#19-ports-jets-and-vents-and-painted-obstacles">19. Ports (jets and vents) and painted obstacles</a></li><li class="l3"><a href="#191-jets-and-vents">19.1 Jets and vents</a></li><li class="l3"><a href="#192-mass-balance-and-the-neumann-compatibility">19.2 Mass balance and the Neumann compatibility</a></li><li class="l3"><a href="#193-painted-obstacles-explore-mode">19.3 Painted obstacles (explore mode)</a></li><li class="l2"><a href="#20-live-editing-diagnostics-solver-trace-and-the-pid-time-step">20. Live editing, diagnostics, solver trace and the PID time step</a></li><li class="l3"><a href="#201-live-edits">20.1 Live edits</a></li><li class="l3"><a href="#202-pid-controlled-time-step">20.2 PID-controlled time step</a></li><li class="l3"><a href="#203-diagnostics-and-the-solver-trace">20.3 Diagnostics and the solver trace</a></li><li class="l2"><a href="#21-validation-of-the-placed-physics">21. Validation of the placed physics</a></li><li class="l3"><a href="#211-differentially-heated-square-cavity-de-vahl-davis-1983">21.1 Differentially heated square cavity (de Vahl Davis 1983)</a></li><li class="l3"><a href="#212-forced-convection-from-a-heated-cylinder">21.2 Forced convection from a heated cylinder</a></li><li class="l3"><a href="#213-rayleigh-bénard-onset">21.3 Rayleigh–Bénard onset</a></li><li class="l3"><a href="#214-actuator-strip-in-a-channel-momentum-theory">21.4 Actuator strip in a channel (momentum theory)</a></li><li class="l3"><a href="#215-plane-jet-from-a-port">21.5 Plane jet from a port</a></li><li class="l3"><a href="#216-exact-balances-tests-teststest_ns2d_physicspy">21.6 Exact balances (tests, tests/test_ns2d_physics.py)</a></li><li class="l2"><a href="#22-limitations-of-the-placed-physics">22. Limitations of the placed physics</a></li><li class="l2"><a href="#23-references-placed-physics">23. References (placed physics)</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Theory</p>
+<h1 id="the-aerolume-2d-navier-stokes-solver-theory-numerics-and-verification">The Aerolume 2D Navier–Stokes solver — theory, numerics and verification</h1>
+<p>Module: <code>aerolume.solvers.ns2d</code> (<code>config.py</code>, <code>core.py</code>, <code>poisson.py</code>, <code>geometry.py</code>,
+<code>solver.py</code>, <code>rollout.py</code>; the placed physics of sections 15–23 in <code>physics.py</code>, <code>scalar.py</code>,
+<code>particles.py</code>, <code>diagnostics.py</code>). Verification and validation scripts:
+<code>validation/ns2d_cases.py</code>, <code>validation/<wbr>thermal2d_<wbr>cases.py</code>, <code>validation/bench_ns2d.py</code>; tests:
+<code>tests/test_ns2d_core.py</code>, <code>tests/<wbr>test_<wbr>ns2d_<wbr>solver.py</code>, <code>tests/<wbr>test_<wbr>ns2d_<wbr>physics.py</code>,
+<code>tests/<wbr>test_<wbr>ns2d_<wbr>validation.py</code> and <code>tests/<wbr>test_<wbr>ns2d_<wbr>physics_<wbr>validation.py</code> (<code>-m slow</code>).</p>
+<p>Part I (sections 1–14) is the validated flow solver. Part II (sections 15–23) adds the placed
+physics of DESIGN.md section 10 — smoke emitters and tracer particles, heat transfer with
+buoyancy, fans, jets and vents, painted obstacles, live editing, diagnostics — without
+changing a Part I number.</p>
+<p>This document explains every numerical choice, why it was made, and what was measured to
+back it. All numbers quoted were produced on the development machine (RTX 4060 Ti 8 GB,
+i7-13700F, torch 2.14.1+cu130, Windows 11) by the scripts above.</p>
+<hr>
+<h2 id="1-equations-and-scaling">1. Equations and scaling<a class="anchor" href="#1-equations-and-scaling" aria-label="Link to this section">#</a></h2>
+<p>The solver integrates the incompressible Navier–Stokes equations with a Brinkman
+penalisation term that represents solid bodies, in non-dimensional form</p>
+<div class="eq" role="math" aria-label="∂u/∂t + ∇·(u u) = −∇p + (1/Re) ∇²u + ∇·(2 ν_t S) − (χ/η)(u − u_s) ; ∇·u = 0"><table role="presentation"><tr><td class="l">∂<i>u</i>/∂<i>t</i> + ∇·(<i>u</i> <i>u</i>)</td><td class="rel">=</td><td class="r">−∇<i>p</i> + (1/Re) ∇²<i>u</i> + ∇·(2 ν<sub><i>t</i></sub> <i>S</i>) − (χ/η)(<i>u</i> − <i>u</i><sub><i>s</i></sub>)</td></tr><tr><td class="l">∇·<i>u</i></td><td class="rel">=</td><td class="r">0</td></tr></table></div>
+<p>Lengths are scaled by the reference length <code>L</code> (chord, cylinder diameter, vehicle
+length), velocities by the free-stream speed <code>U</code>, time by <code>L/U</code>, pressure by <span class="math">ρ<i>U</i>²</span>, so
+<span class="math">Re = UL/ν</span>. <span class="math">χ ∈ [0, 1]</span> is the solid fraction, <span class="math"><i>u</i><sub><i>s</i></sub></span> the velocity of the solid (zero, or
+rigid rotation for wheels), <span class="math">η</span> the permeability of the penalisation, <span class="math">ν<sub><i>t</i></sub></span> an optional
+subgrid eddy viscosity and <code>S</code> the strain-rate tensor.</p>
+<p>Flow always enters from the left along +x; angle of attack is applied by rotating the
+geometry (DESIGN.md §3), so the x force is drag and the y force is lift.</p>
+<p>Pressure coefficient: <span class="math">cp = 2 (<i>p</i> − <i>p</i><sub>ref</sub>)</span> where <span class="math"><i>p</i><sub>ref</sub></span> is the mean pressure over the two
+inlet columns (in periodic mode: the domain mean). Force coefficients use the reference
+length <code>force_ref</code> (in units of L): <code>Cd = Fx / (½ force_ref)</code>, <code>Cl = Fy / (½ force_ref)</code>.
+The pitching moment is about <code>moment_ref</code> and <strong>positive nose-up</strong>. For flow from the left
+a nose-up rotation is <em>clockwise</em> in the x-right/y-up frame (the leading edge moves up),
+so <code>Cm = −Mz / (½ force_ref)</code> where <code>Mz</code> is the usual counter-clockwise moment. With this
+convention a positively cambered airfoil has a negative <code>Cm</code> about c/4 (verified, §11).</p>
+<h2 id="2-grid-and-boundary-conditions">2. Grid and boundary conditions<a class="anchor" href="#2-grid-and-boundary-conditions" aria-label="Link to this section">#</a></h2>
+<p>Uniform staggered (MAC, Harlow &amp; Welch 1965) grid of <span class="math">nx × ny</span> cells of size <code>h</code> covering
+<span class="math">[x0, x0 + nx <i>h</i>] × [y0, y0 + ny <i>h</i>]</span>:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">quantity</th><th scope="col">location</th><th scope="col">shape</th></tr></thead>
+<tbody>
+<tr><td><code>u</code></td><td>x-faces <span class="math">(x0 + <i>i</i> <i>h</i>, y0 + (<i>j</i>+½) <i>h</i>)</span></td><td><code>(ny, nx+1)</code></td></tr>
+<tr><td><code>v</code></td><td>y-faces <span class="math">(x0 + (<i>i</i>+½) <i>h</i>, y0 + <i>j</i> <i>h</i>)</span></td><td><code>(ny+1, nx)</code></td></tr>
+<tr><td><code>p</code>, <span class="math">χ<sub><i>c</i></sub></span>, dye, ν_t</td><td>cell centres</td><td><code>(ny, nx)</code></td></tr>
+</tbody>
+</table></div>
+<p>The staggered arrangement couples pressure and velocity without checkerboard modes and
+makes the discrete divergence of the discrete gradient exactly the 5-point Laplacian, which
+is what makes the projection exact (§4).</p>
+<p>Boundary conditions are imposed through two layers of ghost values built by <code>pad_u</code> /
+<code>pad_v</code> before every right-hand-side evaluation, so the interior stencils never branch:</p>
+<ul>
+<li><strong>Inlet</strong> (x = x0): <code>u = 1</code> (or a parabola with discrete mean exactly 1 and peak 1.5 for
+channel benchmarks; Re is then based on the bulk velocity, as in Schäfer–Turek), <code>v = 0</code>
+(odd reflection of v). The inlet column is re-imposed from <code>ops.u_inlet</code> at every stage, so
+the solution is differentiable with respect to the inflow.</li>
+<li><strong>Outlet</strong> (x = x0 + nx h): convective condition <span class="math">∂<i>u</i>/∂<i>t</i> + <i>U</i><sub><i>c</i></sub> ∂<i>u</i>/∂<i>x</i> = 0</span> with <span class="math"><i>U</i><sub><i>c</i></sub> = 1</span>,
+integrated by the same Runge–Kutta stages as the interior; v has zero gradient. After each
+stage the outlet column is shifted uniformly so that the outflow equals the inflow
+exactly (a device-side reduction, no host sync). Walls are impermeable, so the net
+boundary flux — and hence the sum of the Poisson right-hand side — is zero to round-off,
+which the all-Neumann pressure problem requires.</li>
+<li><strong>Top / bottom walls</strong>: <code>v = 0</code> on the wall face; <code>u</code> ghosts mirror the first interior row
+so that the interpolated wall value is: <code>slip</code> → <span class="math">∂<i>u</i>/∂<i>y</i> = 0</span>; <code>noslip</code> → <code>u = 0</code>;
+<code>moving</code> (bottom only) → <code>u = ground_speed</code> (the rolling road of vehicle studies).</li>
+<li><strong>Periodic</strong> (verification mode): periodic in x and y, no inlet/outlet; the duplicate
+faces (<code>u[:, nx] = u[:, 0]</code>, <code>v[ny] = v[0]</code>) are kept bit-identical.</li>
+</ul>
+<h2 id="3-spatial-discretisation">3. Spatial discretisation<a class="anchor" href="#3-spatial-discretisation" aria-label="Link to this section">#</a></h2>
+<p><strong>Advection</strong> is written in conservative (divergence) form <span class="math">∇·(<i>u</i> <i>u</i>)</span>; momentum fluxes are
+evaluated at cell centres (normal fluxes) and cell corners (cross fluxes) with the
+advecting velocity interpolated to the flux point, then differenced back to the faces.</p>
+<ul>
+<li><p><code>central</code>: 2nd-order average of the transported velocity. On a staggered grid with a
+discretely divergence-free velocity this divergence form conserves kinetic energy
+(Morinishi et al. 1998), so the scheme adds no numerical dissipation — the right
+choice for DNS and verification. Verified: inviscid periodic random flow keeps its
+energy to 1 part in 10⁴ over 50 steps (the residual is the O(Δt³) RK3 error).</p></li>
+<li><p><code>upwind3</code> (default): the transported value at a face between <code>b</code> and <code>c</code> (neighbours
+<code>a b | c d</code>) is the 3rd-order upwind-biased reconstruction <span class="math">(−<i>a</i> + 5b + 2c)/6</span> for flow
+from the left (mirror for flow from the right). Written branch-free:</p>
+<div class="eq" role="math" aria-label="φ_face = [7(b + c) − (a + d)]/12 + sign(V) [3(b − c) − (a − d)]/12 ; flux = V · central4 + |V| · dissipation"><table role="presentation"><tr><td class="l">φ<sub>face</sub></td><td class="rel">=</td><td class="r">[7(<i>b</i> + <i>c</i>) − (<i>a</i> + <i>d</i>)]/12  +  sign(<i>V</i>) [3(<i>b</i> − <i>c</i>) − (<i>a</i> − <i>d</i>)]/12</td></tr><tr><td class="l">flux</td><td class="rel">=</td><td class="r"><i>V</i> · central4  +  |<i>V</i>| · dissipation</td></tr></table></div>
+<p>i.e. a 4th-order central flux plus a 4th-difference dissipation proportional to |V|
+(the same structure as Kawamura–Kuwahara, with a 3× smaller coefficient). It is robust at
+cell Reynolds numbers far above 2, which makes under-resolved high-Re runs stable without
+smearing resolved scales the way 1st-order upwind would. Being smooth (|V| is the only
+non-smooth element) it is also differentiable almost everywhere.</p></li>
+</ul>
+<p><strong>Diffusion</strong>: 2nd-order 5-point Laplacian for the molecular part; the subgrid part is the
+divergence of <span class="math">2 ν<sub><i>t</i></sub> <i>S</i></span> with <span class="math">ν<sub><i>t</i></sub></span> at cell centres (diagonal stresses) and averaged to cell
+corners (shear stress), which conserves momentum and is dissipative.</p>
+<p>Observed order (Taylor–Green vortex, periodic, Re = 10, t = 1, max velocity error):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">N</th><th scope="col">central</th><th scope="col">order</th><th scope="col">upwind3</th><th scope="col">order</th></tr></thead>
+<tbody>
+<tr><td>16</td><td>2.06e-3</td><td></td><td>7.53e-4</td><td></td></tr>
+<tr><td>32</td><td>5.23e-4</td><td>1.97</td><td>2.77e-4</td><td>1.44</td></tr>
+<tr><td>64</td><td>1.31e-4</td><td>1.99</td><td>9.50e-5</td><td>1.54</td></tr>
+<tr><td>128</td><td>3.30e-5</td><td>2.00</td><td>2.80e-5</td><td>1.76</td></tr>
+</tbody>
+</table></div>
+<p><code>central</code> is cleanly 2nd order. <code>upwind3</code> has two error terms of opposite sign — the
+2nd-order diffusion/interpolation error and its 3rd-order upwind dissipation — which
+partly cancel on coarse grids: its error is <em>smaller</em> than the central one at every
+resolution and its observed order rises towards 2 as the 3rd-order term dies out. The
+measured energy-decay rate at N = 64 is 0.9992 × the exact <code>4/Re</code> (the discrete Laplacian
+eigenvalue <span class="math">(2 − 2 cos <i>h</i>)/<i>h</i>²</span> is <span class="math">1 − <i>h</i>²/12</span> of the exact one).</p>
+<h2 id="4-pressure-exact-projection-with-a-direct-dct-poisson-solver">4. Pressure: exact projection with a direct DCT Poisson solver<a class="anchor" href="#4-pressure-exact-projection-with-a-direct-dct-poisson-solver" aria-label="Link to this section">#</a></h2>
+<p>Each Runge–Kutta stage ends with a projection: solve <span class="math"><i>L</i> ψ = ∇<sub><i>h</i></sub>·û</span> and set
+<span class="math"><i>u</i> = û − ∇<sub><i>h</i></sub> ψ</span>, where <span class="math"><i>L</i> = ∇<sub><i>h</i></sub>·∇<sub><i>h</i></sub></span> is the 5-point Laplacian with homogeneous Neumann
+conditions on all four sides. (Every boundary-normal velocity is prescribed, so the
+correction must not change it: zero normal gradient of ψ.)</p>
+<p>With Neumann conditions on a cell-centred grid the eigenvectors of <code>L</code> are exactly the
+DCT-II basis functions, with eigenvalues <span class="math">λ<sub><i>k</i></sub> = (2 cos(π<i>k</i>/<i>n</i>) − 2)/<i>h</i>²</span> per direction. A 2D
+forward DCT, a division by <span class="math">λ<sub>kx</sub> + λ<sub>ky</sub></span> and an inverse DCT therefore solve the <em>discrete</em>
+problem to round-off: no iterations, no tolerance, identical cost on every call — ideal for
+CUDA-graph capture and for autograd. The constant mode (null space of <code>L</code>) is set to zero;
+the right-hand side has zero sum by construction (§2).</p>
+<p>Implementation (<code>poisson.py</code>), all in differentiable <code>torch.fft</code>:</p>
+<ul>
+<li>A length-N DCT-II is computed with Makhoul's reordering (evens ascending, odds
+descending — one <code>index_select</code>), one <strong>real</strong> FFT of length N, and a quarter-wave
+twiddle <span class="math"><i>Z</i><sub><i>k</i></sub> = <i>e</i><sup>−<i>i</i>π<i>k</i>/2N</sup> <i>V</i><sub><i>k</i></sub></span>, k = 0..N/2. For real input that half spectrum holds every
+coefficient: <span class="math"><i>X</i><sub><i>k</i></sub> = 2 Re <i>Z</i><sub><i>k</i></sub></span>, <span class="math"><i>X</i><sub><i>N</i>−<i>k</i></sub> = −2 Im <i>Z</i><sub><i>k</i></sub></span>.</li>
+<li>The coefficients are never put back in natural order: the solver keeps the <em>packed</em>
+layout <span class="math">[Re <i>Z</i><sub>0</sub>..Re <i>Z</i><sub><i>N</i>/2</sub>, Im <i>Z</i><sub>1</sub>..Im <i>Z</i><sub><i>m</i></sub>]</span> and permutes the eigenvalues once at
+construction. The inverse rebuilds Z from the packed array (including the Nyquist
+identity <span class="math">Im <i>Z</i><sub><i>N</i>/2</sub> = −Re <i>Z</i><sub><i>N</i>/2</sub></span>), untwiddles, runs <code>irfft</code> and undoes the reordering
+with one gather. Cost: two half-length complex FFTs per direction and a few elementwise
+passes — about 90 µs for a 1024×512 forward 2D transform inside a CUDA graph.</li>
+<li>Periodic mode uses <code>rfft2</code>/<code>irfft2</code> with the periodic eigenvalues.</li>
+</ul>
+<p>Verified (<code>test_poisson_is_exact</code>, <code>bench_ns2d.py verify</code>): <span class="math">max|<i>L</i> ψ − <i>f</i>| / max|<i>f</i>| ≤ 4.1e-14</span>
+in float64 for even and odd sizes, Neumann and periodic (tests: &lt; 1e-10 on random right-hand
+sides). Projected divergence of real solver states after full steps (cylinder; the fast tests
+also use a moving ground and a no-slip top wall): <span class="math">max|∇·<i>u</i>| <i>h</i> / <i>U</i> = 3.9e-16</span> (float64), <code>1.8e-7</code>
+(float32, GPU) — the quality bars are 1e-10 and 1e-5.</p>
+<p>The pressure written to the state is the <strong>step-averaged</strong> pressure
+<span class="math"><i>p</i> = (⅙ ψ₁ + ⅔ ψ₂ + ψ₃) / Δ<i>t</i></span>. Expanding the stages (§6.4) shows that the stage
+gradients reach <span class="math"><i>u</i><sup><i>n</i>+1</sup></span> with exactly these weights, so this <code>p</code> is the pressure of the
+discrete momentum balance: a control-volume balance evaluated with it reproduces the
+penalisation force to 0.1 % (§6.4). The last stage alone, <span class="math">ψ₃ / (<i>b</i>₃ Δ<i>t</i>)</span> (the first
+implementation), is <em>not</em> consistent: with stiff penalisation every stage also removes the
+velocity that the previous projection left inside the solid, so the stage potentials are not
+proportional to <span class="math"><i>b</i><sub><i>s</i></sub> Δ<i>t</i></span>. The difference is a harmonic, dipole-like field around each body;
+it is invisible in the far field but made the control-volume drag of the Re = 40 cylinder 6 %
+low and its stagnation cp 0.13 low. <code>p</code> is output only (fields, cp, surface data) and does
+not feed back into the dynamics.</p>
+<h2 id="5-time-integration-and-time-step">5. Time integration and time step<a class="anchor" href="#5-time-integration-and-time-step" aria-label="Link to this section">#</a></h2>
+<p>Three-stage strong-stability-preserving Runge–Kutta (Shu &amp; Osher 1988) with a projection
+after every stage, written in the convex-combination form</p>
+<div class="eq" role="math" aria-label="û_s = lerp(u_(s−1), u_0, a_s) + b_s Δt L(u_(s−1)), (a, b) = (0, 1), (¾, ¼), (⅓, ⅔) ; û_s ← implicit penalisation (§6), u_s = P(û_s) (projection, §4)"><table role="presentation"><tr><td class="l">û<sub><i>s</i></sub></td><td class="rel">=</td><td class="r">lerp(<i>u</i><sub><i>s</i>−1</sub>, <i>u</i><sub>0</sub>, <i>a</i><sub><i>s</i></sub>) + <i>b</i><sub><i>s</i></sub> Δ<i>t</i> <i>L</i>(<i>u</i><sub><i>s</i>−1</sub>),</td><td class="cond">(<i>a</i>, <i>b</i>) = (0, 1), (¾, ¼), (⅓, ⅔)</td><td class="cond"></td></tr><tr><td class="l">û<sub><i>s</i></sub></td><td class="rel">←</td><td class="r">implicit penalisation (§6),</td><td class="cond"><i>u</i><sub><i>s</i></sub> = <i>P</i>(û<sub><i>s</i></sub>)</td><td class="cond">(projection, §4)</td></tr></table></div>
+<p>so every stage value is discretely divergence-free. SSP-RK3 is 3rd-order in time and its
+stability region contains a segment of the imaginary axis (|z| ≤ √3), which the purely
+central advection operator needs (forward Euler and SSP-RK2 do not have that property).</p>
+<p><strong>Time step</strong> — <span class="math">Δ<i>t</i> = min(cfl · <i>h</i> / (max|<i>u</i>| + max|<i>v</i>|), 0.25 <i>h</i>² / (1/Re + max ν<sub><i>t</i></sub>))</span> with
+<code>cfl = 0.5</code> by default. The advective limit uses the sum of the component maxima, a safe
+bound for the 2D CFL number; the viscous limit 0.25 is below the SSP-RK3 limit for the 2D
+5-point Laplacian (≈0.31). The reduction is computed <strong>on the device at every step</strong> and
+the step size stays a device tensor: there is no GPU→CPU synchronisation anywhere in a
+step, which is what allows CUDA-graph capture. (The specification suggested refreshing
+<code>umax</code> every K steps; doing it every step costs two reductions, ~1 % of a step, and is
+strictly safer.) A fixed <code>dt</code> can be configured instead.</p>
+<h2 id="6-immersed-boundaries-brinkman-volume-penalisation">6. Immersed boundaries: Brinkman volume penalisation<a class="anchor" href="#6-immersed-boundaries-brinkman-volume-penalisation" aria-label="Link to this section">#</a></h2>
+<h3 id="61-masks">6.1 Masks<a class="anchor" href="#61-masks" aria-label="Link to this section">#</a></h3>
+<p>Bodies enter only through the solid fraction χ, evaluated from the signed distance <code>d</code>
+(negative inside) of each polygon <strong>directly at the u-faces and v-faces</strong> (and at centres
+for display and LES switch-off):</p>
+<div class="eq" role="math" aria-label="χ(d) = 1 d + δ ≤ −w ; = ½ (1 − sin(π (d + δ) / 2w)) |d + δ| &lt; w ; = 0 d + δ ≥ w"><table role="presentation"><tr><td class="l">χ(<i>d</i>)</td><td class="rel">=</td><td class="r">1</td><td class="cond"><i>d</i> + δ ≤ −<i>w</i></td></tr><tr><td class="l"></td><td class="rel">=</td><td class="r">½ (1 − sin(π (<i>d</i> + δ) / 2w))</td><td class="cond">|<i>d</i> + δ| &lt; <i>w</i></td></tr><tr><td class="l"></td><td class="rel">=</td><td class="r">0</td><td class="cond"><i>d</i> + δ ≥ <i>w</i></td></tr></table></div>
+<p>with half-width <code>w = mask_width · h</code> (default 1 cell) and an inward shift <span class="math">δ = 0.32 <i>h</i></span>
+(§6.3). The profile is C¹ and has <strong>compact support</strong>: with stiff penalisation any non-zero
+tail of χ acts as a wall (a <code>tanh</code> profile would move the effective surface outwards by
+several cells). The signed distance is exact (distance to the nearest edge, sign from an
+even-odd crossing test), differentiable with respect to the vertices, and is taken from
+<code>aerolume.geometry.sdf.signed_<wbr>distance</code> when that module is importable (private fallback
+otherwise). Masks are stored only on a <strong>window</strong> of cells covering the bodies plus a margin,
+so penalisation, force sums and SDF evaluations cost in proportion to the body, not the
+domain. The live solver sizes the window for ±25° of pitch about <code>moment_ref</code>, so angle
+changes from the GUI rebuild masks in place (captured CUDA graphs stay valid).</p>
+<p>Rigid rotation (wheels, <code>omega</code> about <code>center</code>) enters as <span class="math">χ <i>u</i><sub><i>s</i></sub></span> with
+<span class="math"><i>u</i><sub><i>s</i></sub> = ω × (<i>x</i> − <i>c</i>)</span>; it is pre-multiplied into the window arrays so it costs nothing per step.</p>
+<h3 id="62-implicit-penalisation">6.2 Implicit penalisation<a class="anchor" href="#62-implicit-penalisation" aria-label="Link to this section">#</a></h3>
+<p>After the explicit part of each stage, the penalisation term is integrated implicitly over
+that stage's effective step <span class="math"><i>b</i><sub><i>s</i></sub> Δ<i>t</i></span>:</p>
+<div class="eq" role="math" aria-label="u ← (u + k χ u_s) / (1 + k χ), k = b_s Δt / η"><table role="presentation"><tr><td class="l"><i>u</i></td><td class="rel">←</td><td class="r">(<i>u</i> + <i>k</i> χ <i>u</i><sub><i>s</i></sub>) / (1 + <i>k</i> χ),</td><td class="cond"><i>k</i> = <i>b</i><sub><i>s</i></sub> Δ<i>t</i> / η</td></tr></table></div>
+<p>which is unconditionally stable — η → 0 simply pins u to u_s wherever χ &gt; 0 — and exactly
+solves the stage's backward-Euler penalisation equation. The projection follows, so the
+final field is divergence-free; the small velocity the projection re-introduces inside the
+solid is removed again at the next stage.</p>
+<h3 id="63-choosing-η-and-placing-the-effective-wall">6.3 Choosing η and placing the effective wall<a class="anchor" href="#63-choosing-η-and-placing-the-effective-wall" aria-label="Link to this section">#</a></h3>
+<p>A smoothed mask with stiff penalisation does not put the no-slip wall at <code>d = 0</code>: the wall
+sits wherever the penalisation rate <span class="math">χ/η</span> overtakes the rate at which momentum is supplied
+into a cell. In a wall-bounded shear flow that supply is viscous (<span class="math">ν/<i>h</i>²</span>), so the effective
+wall position depends on the <strong>stiffness</strong> <span class="math"><i>S</i> = <i>h</i>²/(ν η)</span> alone. We measured it with an exact
+reference: body-force-driven plane Poiseuille flow between penalised slabs in a periodic
+box (flow rate → effective gap width → wall offset), averaging four sub-cell positions of the
+wall (<code>scratch</code> study, reproduced in this section's table):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">w (cells)</th><th scope="col">S = 12</th><th scope="col">S = 31</th><th scope="col">S = 60</th><th scope="col">S = 125</th><th scope="col">S = 250</th><th scope="col">S = 1000</th></tr></thead>
+<tbody>
+<tr><td>1.0</td><td>0.00</td><td>−0.16</td><td>−0.24</td><td>−0.30</td><td>−0.33</td><td>−0.36</td></tr>
+<tr><td>1.5</td><td>−0.31</td><td>−0.52</td><td>−0.63</td><td></td><td>−0.78</td><td>−0.83</td></tr>
+<tr><td>2.0</td><td>−0.64</td><td></td><td>−1.03</td><td></td><td>−1.23</td><td>−1.31</td></tr>
+</tbody>
+</table></div>
+<p>(offset of the effective wall in cells, unshifted mask; negative = wall protrudes into the
+fluid). The offset saturates as S grows. Wider masks do not reduce the sub-cell scatter
+once S is large (≈0.45 cells peak-to-peak for every width) and make the offset more
+Re-dependent, so <strong>w = 1 cell</strong>. The permeability is then chosen to keep the stiffness on the
+flat part of the curve at every Reynolds number:</p>
+<div class="eq" role="math" aria-label="η = min(0.05 h / U, h² / (ν · 60))"><table role="presentation"><tr><td class="l">η</td><td class="rel">=</td><td class="r">min(0.05 <i>h</i> / <i>U</i>,  <i>h</i>² / (ν · 60))</td></tr></table></div>
+<p>The first bound keeps the inertial penetration <span class="math"><i>U</i> η</span> below 5 % of a cell (high Re); the
+second keeps <span class="math"><i>S</i> ≥ 60</span> (low Re). Over <span class="math"><i>S</i> ∈ [60, ∞)</span> the offset spans −0.24 … −0.38 cells, so
+the mask is shifted inwards by <strong>δ = 0.32 h</strong>, which centres that band on the true surface:
+measured offset +0.05 h at S = 60 and −0.11 h at S = 1000. The penetration length
+<span class="math">√(ν η) ≤ <i>h</i>/√60 ≈ 0.13 <i>h</i></span> and both bounds vanish as h → 0, so the method converges to the
+no-slip solution. η is a device tensor updated by <code>set_inflow(re=…)</code> without breaking
+captured CUDA graphs. This calibration uses only the Poiseuille problem; the cylinder
+benchmarks below are independent validation.</p>
+<p>Remaining geometric uncertainty: for straight walls aligned with grid lines the effective
+wall position scatters by about ±0.2 h with the sub-cell position of the wall; on curved
+bodies this averages out around the perimeter.</p>
+<h3 id="64-force-evaluation">6.4 Force evaluation<a class="anchor" href="#64-force-evaluation" aria-label="Link to this section">#</a></h3>
+<p>The force on the bodies is the momentum the penalisation removes. Writing the stage
+increments of the penalisation as Δ₁, Δ₂, Δ₃ and expanding the Shu–Osher stages,</p>
+<div class="eq" role="math" aria-label="u^(n+1) = u^n + Δt (⅙ L₁ + ⅙ L₂ + ⅔ L₃) + ⅙ Δ₁ + ⅔ Δ₂ + Δ₃ (+ gradient terms)"><table role="presentation"><tr><td class="l"><i>u</i><sup><i>n</i>+1</sup></td><td class="rel">=</td><td class="r"><i>u</i><sup><i>n</i></sup> + Δ<i>t</i> (⅙ <i>L</i>₁ + ⅙ <i>L</i>₂ + ⅔ <i>L</i>₃) + ⅙ Δ₁ + ⅔ Δ₂ + Δ₃  (+ gradient terms)</td></tr></table></div>
+<p>so the force on body b over the step is</p>
+<div class="eq" role="math" aria-label="F_b = −(h² / Δt) Σ_faces w_b (⅙ Δ₁ + ⅔ Δ₂ + Δ₃)"><table role="presentation"><tr><td class="l"><i>F</i><sub><i>b</i></sub></td><td class="rel">=</td><td class="r">−(<i>h</i>² / Δ<i>t</i>) Σ<sub>faces</sub> <i>w</i><sub><i>b</i></sub> (⅙ Δ₁ + ⅔ Δ₂ + Δ₃)</td></tr></table></div>
+<p>(<span class="math"><i>w</i><sub><i>b</i></sub></span> = body b's share of χ at a face; 1 on its own support when bodies do not overlap).
+For a steady flow the three weighted increments sum to exactly <span class="math">−Δ<i>t</i></span> times the stage
+residual, i.e. this is the discrete momentum balance of the whole domain: the projection
+adds momentum only through the boundary pressure, so a control-volume balance evaluated
+consistently with the discretisation returns the same number (plus the rate of change of
+momentum inside the control volume). The moment uses the same increments with lever arms
+at the face positions. The method is cheap (two small einsums on the window per step),
+per-body, and differentiable.</p>
+<p><strong>Cross-check by a control-volume balance.</strong> For the steady cylinder at Re = 40 (32 cells/D)
+the drag from the momentum balance</p>
+<div class="eq" role="math" aria-label="Cd_cv(r) = 2 · ∮_(|x| = r) [ −p n_x − u (u·n) + ν (2 ∂u/∂x n_x + (∂u/∂y + ∂v/∂x) n_y) ] ds"><table role="presentation"><tr><td class="l">Cd<sub>cv</sub>(<i>r</i>)</td><td class="rel">=</td><td class="r">2 · ∮<sub>|<i>x</i>| = <i>r</i></sub> [ −<i>p</i> <i>n</i><sub><i>x</i></sub> − <i>u</i> (<i>u</i>·<i>n</i>) + ν (2 ∂<i>u</i>/∂<i>x</i> <i>n</i><sub><i>x</i></sub> + (∂<i>u</i>/∂<i>y</i> + ∂<i>v</i>/∂<i>x</i>) <i>n</i><sub><i>y</i></sub>) ] ds</td></tr></table></div>
+<p>with every quantity interpolated bilinearly from its own staggered position, is 1.6205,
+1.6206, 1.6205, 1.6202, 1.6198, 1.6199 on circles 1.5, 2, 3, 4, 10 and 20 cells outside the
+surface, against <strong>1.6190</strong> from the impulse (0.1 %). The parts change a lot between those
+radii (pressure 1.14 → 1.99, viscous 0.49 → 0.12, momentum flux −0.01 → −0.49); only their
+sum is constant. The
+fast test <code>test_<wbr>pressure_<wbr>closes_<wbr>the_<wbr>momentum_<wbr>balance</code> checks the same identity (to 0.3 %) on a
+coarse Re = 10 case. So the impulse is the force of the discrete solution — not an estimate
+of it — and its grid convergence (§11) is the force's grid convergence. Of the candidate
+evaluations named in the specification (penalisation impulse, control-volume balance,
+surface integration) the impulse is the cheapest, exact per body and differentiable, so it
+is the solver's force output; the other two agree with it once the output pressure is the
+step-averaged one (§4) and the surface sampling is second order (§6.5). A sharper
+interpolated direct-forcing IB was not needed: the calibrated penalisation meets every
+cylinder target at 32 cells/D (§11).</p>
+<h3 id="65-surface-distributions-cp-cf">6.5 Surface distributions (cp, cf)<a class="anchor" href="#65-surface-distributions-cp-cf" aria-label="Link to this section">#</a></h3>
+<p><code>FlowSolver.surface(n, mean=False)</code> returns, per body, <code>n</code> points equally spaced in arc
+length with outward normals, cp and cf (instantaneous, or from the running means). The wall
+is diffuse — the penalised layer reaches <span class="math">(<i>w</i> − δ) <i>h</i> = 0.68 <i>h</i></span> into the fluid — so wall
+values are <strong>extrapolated from two probes</strong> along the outward normal at <span class="math"><i>d</i>₁ = 1.5 <i>h</i></span> and
+<span class="math"><i>d</i>₂ = 2.5 <i>h</i></span>, just outside the layer:</p>
+<ul>
+<li><strong>cp</strong>: linear extrapolation of the probe pressures to <code>d = 0</code>. This removes the
+centrifugal gradient <span class="math">∂<i>p</i>/∂<i>n</i> ≈ <i>u</i><sub><i>t</i></sub>²/<i>R</i></span> across the probe distance (up to 0.07 in cp at the
+cylinder shoulders at 32 cells/D).</li>
+<li><strong>cf</strong> <span class="math">= (2/Re) ∂<i>u</i><sub><i>t</i></sub>/∂<i>n</i></span> at the wall, from the quadratic through the wall velocity at
+<code>d = 0</code> (zero, or <span class="math">(ω × <i>r</i>)·<i>t</i></span> on a spinning wheel) and the tangential velocity at both
+probes, with u and v interpolated from their own faces (no extra averaging pass). This is
+second order. The first implementation's one-sided <span class="math"><i>u</i><sub><i>t</i></sub>(<i>d</i>)/<i>d</i></span> at a single probe
+under-predicted the cylinder's friction drag by 15–20 % and put separation 5–7° too far aft.
+Only the molecular viscosity enters (WALE and Vreman ν_t vanish at walls anyway).</li>
+</ul>
+<p>Measured on the cylinder (§11 table, columns <code>Cd_surf</code>, <code>Cp_front</code>, <span class="math">θ<sub>sep</sub></span>): the integral
+<span class="math">∮ (−cp <i>n</i><sub><i>x</i></sub> + cf <i>t</i><sub><i>x</i></sub>) ds</span> reproduces the impulse drag to 0.0–0.1 % at Re 40, and to within
+2.1 / 1.1 / 0.7 % (32 / 48 / 64 cells/D) at Re 100, where the boundary layers are thinner
+(fewer cells across them) and the deficit converges away with resolution. At Re 40 the
+stagnation cp is 1.12–1.15 (viscous flows have <span class="math">cp₀ &gt; 1</span> at moderate Re) and separation is
+at 126.0–126.5° from the front, i.e. 53.5–54.0° from the rear (Dennis &amp; Chang 1970: 53.8°;
+Coutanceau &amp; Bouard 1977: 53.5°). The split between pressure and friction depends on the
+probe placement by ±1–2 % each (probes at 1/2 h or 2/3 h instead of 1.5/2.5 h moved Cd_f by
++2.7 % / −2.0 % at Re 40, 32 cells/D); the total is more robust than either part.</p>
+<p><strong>Reference pressure.</strong> cp is relative to the mean pressure of the two inlet columns
+(DESIGN.md). In a confined domain the static pressure near the body is lower than at the
+inlet: in the 5 %-blockage cylinder domain of §11 the slip-wall pressure abeam the cylinder
+is cp = −0.09 (Re 40) and −0.05 (Re 100) relative to the inlet, with a local wall velocity
+of 1.04 and 1.02 U. Blockage and upstream length (the planner's domain choice) therefore
+shift cp near the body almost uniformly; forces are unaffected.</p>
+<h2 id="7-subgrid-models-2d-les">7. Subgrid models (2D LES)<a class="anchor" href="#7-subgrid-models-2d-les" aria-label="Link to this section">#</a></h2>
+<p><code>turbulence = "smagorinsky" | "wale" | "vreman"</code> adds <span class="math">∇·(2 ν<sub><i>t</i></sub> <i>S</i>)</span>, with <span class="math">ν<sub><i>t</i></sub></span> computed at
+cell centres from the velocity-gradient tensor (corner derivatives averaged to the centre)
+and the filter width Δ = h:</p>
+<ul>
+<li>Smagorinsky (Lilly): <span class="math">ν<sub><i>t</i></sub> = (<i>C</i><sub><i>s</i></sub> Δ)² √(2 <i>S</i>:<i>S</i>)</span>, <span class="math"><i>C</i><sub><i>s</i></sub> = 0.17</span>.</li>
+<li>WALE (Nicoud &amp; Ducros 1999): <span class="math">ν<sub><i>t</i></sub> = (<i>C</i><sub><i>w</i></sub> Δ)² (<i>S</i><sup><i>d</i></sup>:<i>S</i><sup><i>d</i></sup>)<sup>3/2</sup> / ((<i>S</i>:<i>S</i>)<sup>5/2</sup> + (<i>S</i><sup><i>d</i></sup>:<i>S</i><sup><i>d</i></sup>)<sup>5/4</sup>)</span>,
+<span class="math"><i>C</i><sub><i>w</i></sub> = 0.5</span>.</li>
+<li>Vreman (2004): <span class="math">ν<sub><i>t</i></sub> = <i>c</i> √(<i>B</i><sub>β</sub> / α:α)</span>, <code>c = 0.07</code> (≈ 2.5 C_s²); in 2D <span class="math"><i>B</i><sub>β</sub> = det(β)</span>.</li>
+</ul>
+<p>The 2D field is treated as a 3D field without a third component, so the textbook formulas
+apply unchanged. WALE and Vreman vanish in pure shear (no eddy viscosity in laminar
+boundary layers); Smagorinsky does not (tests). ν_t is multiplied by <span class="math">1 − χ<sub><i>c</i></sub></span>, i.e. it is
+zero inside solids, and its maximum enters the viscous time-step limit.</p>
+<p><strong>Caveat</strong>: 2D turbulence is not 3D turbulence (inverse energy cascade, no vortex
+stretching). In Aerolume these models are a <em>stabilising subgrid dissipation</em> for
+under-resolved high-Re runs, not a turbulence model in the physical sense; results at
+Re ≫ 10⁴ are qualitative (see §12).</p>
+<h2 id="8-passive-dye">8. Passive dye<a class="anchor" href="#8-passive-dye" aria-label="Link to this section">#</a></h2>
+<p>A cell-centred smoke scalar is injected at the inlet as a comb of thin streaks (about 40
+over the domain height) and advected once per step (forward Euler, final velocity) with a
+MUSCL flux limited by van Leer's harmonic mean slope, then clamped to [0, 1].
+Concentrations below 10⁻⁶ are set to zero: the limiter otherwise lets far tails decay into
+subnormal floats, which are ~100× slower on x86 CPUs (measured: the CPU solver fell from
+60 to under 10 steps/s as the dye tails spread). The dye is purely visual and does not
+affect the flow. It is set to zero inside solids (cells with χ &gt; ½) after each update, so
+smoke never appears to pass through a body; placed emitters, further channels and tracer
+particles are in §17.</p>
+<h2 id="9-start-up-perturbation">9. Start-up perturbation<a class="anchor" href="#9-start-up-perturbation" aria-label="Link to this section">#</a></h2>
+<p><code>perturb = True</code> adds a weak Lamb–Oseen vortex (peak swirl 5 % of U, core radius 0.75 ×
+the body height) centred on the bodies to the impulsive-start initial field, then projects.
+The bodies start with a small circulation, the near wake is asymmetric from the first step,
+and periodic shedding locks in after a few tens of convective times instead of waiting for
+round-off (which takes 100+ time units and differs between CPU and GPU). It depends only on
+the body bounding box, so runs are deterministic and reproducible.</p>
+<h2 id="10-performance-cuda-graphs-cpu-path">10. Performance: CUDA graphs, CPU path<a class="anchor" href="#10-performance-cuda-graphs-cpu-path" aria-label="Link to this section">#</a></h2>
+<p>A step launches a few hundred small kernels (three stages of padding, fluxes, Poisson
+transforms, penalisation, projection, plus dye and bookkeeping). Under Windows WDDM a
+kernel launch costs ~27 µs, so eager execution is launch-bound (59 steps/s at 1024×512).
+<code>FlowSolver</code> keeps the state in static buffers and captures blocks of 10 steps (plus a
+1-step graph for remainders) in <code>torch.cuda.CUDAGraph</code>s after a warm-up on a side stream
+(the warm-up steps are undone, so capturing never changes the trajectory). Nothing in a
+step synchronises with the host: dt is a device tensor, the history row is written into a
+device ring buffer with <code>index_copy_</code>, running means are accumulated in float64 device
+buffers. Live edits write into existing tensors (<code>nu</code>, <span class="math">η</span>, masks), so graphs survive
+them; a different body count or a window that must grow triggers a lazy re-capture; any
+capture/replay error falls back to eager execution with a warning. Graph and eager paths
+run the same kernels and agree to float32 round-off (test: 1e-6 after 34 steps).</p>
+<p>Measured throughput (float32, <code>FlowSolver.advance</code>, cylinder case, best of 3):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">device</th><th scope="col">grid</th><th scope="col">options</th><th class="r" scope="col">steps/s</th><th class="r" scope="col">target</th></tr></thead>
+<tbody>
+<tr><td>CUDA, RTX 4060 Ti</td><td>1024×512</td><td>default (upwind3, laminar, CUDA graphs)</td><td class="r"><strong>493</strong></td><td class="r">≥ 300</td></tr>
+<tr><td>CUDA</td><td>1024×512</td><td>eager (no graphs)</td><td class="r">59</td><td class="r"></td></tr>
+<tr><td>CUDA</td><td>1024×512</td><td>central advection</td><td class="r">619</td><td class="r"></td></tr>
+<tr><td>CUDA</td><td>1024×512</td><td>upwind3 + WALE</td><td class="r">317</td><td class="r"></td></tr>
+<tr><td>CUDA</td><td>1024×512</td><td>upwind3 + Smagorinsky</td><td class="r">373</td><td class="r"></td></tr>
+<tr><td>CUDA</td><td>2048×1024</td><td>default</td><td class="r">75</td><td class="r"></td></tr>
+<tr><td>CPU, i7-13700F</td><td>512×256</td><td>1 thread</td><td class="r">48</td><td class="r"></td></tr>
+<tr><td>CPU</td><td>512×256</td><td>4 threads</td><td class="r"><strong>61</strong></td><td class="r">≥ 15</td></tr>
+<tr><td>CPU</td><td>512×256</td><td>16 threads (torch default here)</td><td class="r">36</td><td class="r"></td></tr>
+</tbody>
+</table></div>
+<p>(<code>bench_ns2d.py perf</code>, cylinder in a 24 × 12 domain, dye on, 400 GPU / 60 CPU steps per
+repeat after a warm-up that includes the graph capture; repeated runs on the shared machine
+scatter by ±5 %.) Graphs give an 8× speed-up at 1024×512. At 2048×1024 (4× the cells) a
+step takes 6.6× longer: the large grid is memory-bound, and the extra factor is probably cache
+behaviour (not investigated).</p>
+<p>CPU notes. (1) <code>FlowSolver.advance</code> enables flush-to-zero on CPU
+(<code>torch.set_<wbr>flush_<wbr>denormal(True)</code>), see §8. (2) On a busy hybrid-core CPU, many intra-op
+threads can be <em>slower</em> than a few: each elementwise op on a 512×256 field takes ~10 µs,
+comparable to OpenMP fork/join and to the delay of a descheduled worker thread. 4 threads
+was the sweet spot on the development machine; the application may want to cap
+<code>torch.set_num_threads</code> for the solver process.</p>
+<h2 id="11-verification-and-validation">11. Verification and validation<a class="anchor" href="#11-verification-and-validation" aria-label="Link to this section">#</a></h2>
+<h3 id="verification-exact-answers">Verification (exact answers)<a class="anchor" href="#verification-exact-answers" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th scope="col">result</th><th scope="col">bar</th></tr></thead>
+<tbody>
+<tr><td>Poisson <span class="math">‖<i>L</i>ψ − <i>f</i>‖/‖<i>f</i>‖</span>, float64</td><td>4.1e-14</td><td>round-off</td></tr>
+<tr><td>projected divergence <span class="math">max|∇·<i>u</i>| <i>h</i>/<i>U</i></span>, float64</td><td>3.9e-16</td><td>&lt; 1e-10</td></tr>
+<tr><td>projected divergence, float32 (GPU)</td><td>1.8e-7</td><td>&lt; 1e-5</td></tr>
+<tr><td>Taylor–Green, central, observed order</td><td>1.97, 1.99, 2.00</td><td>≈ 2</td></tr>
+<tr><td>Taylor–Green energy decay rate / exact (N = 64)</td><td>0.9992</td><td>1</td></tr>
+<tr><td>inviscid energy drift, central, 50 steps</td><td>&lt; 1e-4</td><td>conservative</td></tr>
+<tr><td>outlet mass balance after 30 steps</td><td>&lt; 1e-10</td><td>exact</td></tr>
+<tr><td>gradient d(mean Cd over 20 steps)/d(shape), autograd vs central FD (float64)</td><td>5.030 vs 5.030, rel. err. 2.3e-7</td><td>&lt; 5 %</td></tr>
+<tr><td>control-volume drag (circles r = 0.75…2.5) / impulse drag, steady Re 10</td><td>within 0.3 % (test); Re 40: 0.1 % (§6.4)</td><td>consistent</td></tr>
+<tr><td>CUDA graph vs eager (34 steps, float32)</td><td>agree to 1e-6</td><td>same kernels</td></tr>
+</tbody>
+</table></div>
+<h3 id="validation-circular-cylinder">Validation: circular cylinder<a class="anchor" href="#validation-circular-cylinder" aria-label="Link to this section">#</a></h3>
+<p>Wide domain <span class="math">[−10, 20] × [−10, 10]</span> D (blockage 5 %, slip top and bottom), uniform inflow,
+upwind3, float32 on the GPU, perturbation on. Forces averaged over t ∈ [50, 60] (Re = 40) and
+[100, 200] (Re = 100). <code>L/D</code> is the recirculation length behind the cylinder (from the
+rear stagnation point). Reference values (unconfined): Re = 40: Cd 1.50–1.55, L/D 2.13–2.35;
+Re = 100: Cd 1.33–1.38, Cl′ ±0.32–0.34, St 0.164–0.167 (Dennis &amp; Chang 1970, Fornberg 1980,
+Coutanceau &amp; Bouard 1977, Williamson 1989, Liu et al. 1998, Linnick &amp; Fasel 2005,
+Taira &amp; Colonius 2007). The 5 % blockage raises Cd and St by a few per cent relative to
+unconfined values; the acceptance bands of the specification allow for that.</p>
+<p>Columns: <code>Cd</code> mean drag (penalisation impulse), <span class="math">Cl′</span> half the peak-to-peak lift, <code>St</code> from
+lift zero crossings, <code>L/D</code> recirculation length of the (mean) flow (in brackets for Re 100,
+where it is the mean-flow bubble), <code>Cd_surf</code> the drag integrated from <code>surface(720)</code> data
+(mean fields) and its deviation from <code>Cd</code>, <code>Cp_front</code> / <code>Cp_rear</code> the surface cp at the front
+and rear stagnation points (relative to the inlet pressure), <span class="math">θ<sub>sep</sub></span> the separation angle
+measured from the front (first cf sign change on the upper half). Wall time is the GPU time of
+<code>FlowSolver.advance</code> for the whole run (RTX 4060 Ti, float32, CUDA graphs, shared machine).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th class="r" scope="col">cells/D</th><th scope="col">grid</th><th class="r" scope="col">steps</th><th class="r" scope="col">wall [s]</th><th class="r" scope="col">Cd</th><th class="r" scope="col">Cl′</th><th class="r" scope="col">St</th><th class="r" scope="col">L/D</th><th class="r" scope="col">Cd_surf (vs Cd)</th><th class="r" scope="col">Cp_front</th><th class="r" scope="col">Cp_rear</th><th class="r" scope="col">θ_sep</th></tr></thead>
+<tbody>
+<tr><td>Re40</td><td class="r">16</td><td>480×320</td><td class="r">3600</td><td class="r">3</td><td class="r">1.6296</td><td class="r">0.010</td><td class="r">—</td><td class="r">2.320</td><td class="r">1.5619 (-4.2 %)</td><td class="r">1.092</td><td class="r">−0.615</td><td class="r">128.0°</td></tr>
+<tr><td>Re40</td><td class="r">24</td><td>720×480</td><td class="r">5200</td><td class="r">7</td><td class="r">1.6216</td><td class="r">0.009</td><td class="r">—</td><td class="r">2.286</td><td class="r">1.5925 (-1.8 %)</td><td class="r">1.109</td><td class="r">−0.606</td><td class="r">127.5°</td></tr>
+<tr><td>Re40</td><td class="r">32</td><td>960×640</td><td class="r">7000</td><td class="r">16</td><td class="r">1.6190</td><td class="r">0.009</td><td class="r">—</td><td class="r">2.280</td><td class="r">1.6190 (+0.0 %)</td><td class="r">1.122</td><td class="r">−0.603</td><td class="r">126.5°</td></tr>
+<tr><td>Re40</td><td class="r">48</td><td>1440×960</td><td class="r">14000</td><td class="r">90</td><td class="r">1.6155</td><td class="r">0.009</td><td class="r">—</td><td class="r">2.263</td><td class="r">1.6165 (+0.1 %)</td><td class="r">1.139</td><td class="r">−0.598</td><td class="r">126.0°</td></tr>
+<tr><td>Re40</td><td class="r">64</td><td>1920×1280</td><td class="r">24600</td><td class="r">399</td><td class="r">1.6141</td><td class="r">0.009</td><td class="r">—</td><td class="r">2.256</td><td class="r">1.6142 (+0.0 %)</td><td class="r">1.148</td><td class="r">−0.596</td><td class="r">126.0°</td></tr>
+<tr><td>Re100</td><td class="r">16</td><td>480×320</td><td class="r">13000</td><td class="r">30</td><td class="r">1.4798</td><td class="r">0.377</td><td class="r">0.1670</td><td class="r">(1.39)</td><td class="r">1.3533 (-8.5 %)</td><td class="r">1.053</td><td class="r">−0.836</td><td class="r">119.5°</td></tr>
+<tr><td>Re100</td><td class="r">24</td><td>720×480</td><td class="r">19400</td><td class="r">77</td><td class="r">1.4291</td><td class="r">0.355</td><td class="r">0.1689</td><td class="r">(1.39)</td><td class="r">1.3577 (-5.0 %)</td><td class="r">1.052</td><td class="r">−0.810</td><td class="r">119.0°</td></tr>
+<tr><td>Re100</td><td class="r">32</td><td>960×640</td><td class="r">25600</td><td class="r">59</td><td class="r">1.4123</td><td class="r">0.350</td><td class="r">0.1697</td><td class="r">(1.39)</td><td class="r">1.3829 (-2.1 %)</td><td class="r">1.052</td><td class="r">−0.802</td><td class="r">117.5°</td></tr>
+<tr><td>Re100</td><td class="r">48</td><td>1440×960</td><td class="r">38600</td><td class="r">262</td><td class="r">1.3993</td><td class="r">0.344</td><td class="r">0.1698</td><td class="r">(1.40)</td><td class="r">1.3841 (-1.1 %)</td><td class="r">1.058</td><td class="r">−0.792</td><td class="r">117.0°</td></tr>
+<tr><td>Re100</td><td class="r">64</td><td>1920×1280</td><td class="r">51400</td><td class="r">876</td><td class="r">1.3947</td><td class="r">0.342</td><td class="r">0.1698</td><td class="r">(1.40)</td><td class="r">1.3852 (-0.7 %)</td><td class="r">1.063</td><td class="r">−0.788</td><td class="r">117.0°</td></tr>
+</tbody>
+</table></div>
+<p>Reading the table:</p>
+<ul>
+<li><strong>Grid convergence.</strong> Re 40: Cd 1.6190 → 1.6155 → 1.6141 and L/D 2.280 → 2.263 → 2.256 from
+32 to 64 cells/D — monotone, changes of 0.2 % and 0.1 % in Cd. Re 100: Cd 1.4123 → 1.3993 →
+1.3947, Cl′ 0.350 → 0.344 → 0.342, St 0.1697 → 0.1698 → 0.1698 (changes of 0.9 % and 0.3 %
+in Cd). 32 cells/D is converged to well within the scatter of the reference data, which is
+why the slow validation tests use it. Below that the drag and lift amplitude rise: at 16
+cells/D Re 100 gives Cd +6 % and Cl′ +10 % relative to 64 cells/D.</li>
+<li><strong>Accuracy.</strong> At 32, 48 and 64 cells/D every value is inside the specification band (Re 40:
+Cd 1.50–1.62, L/D 2.1–2.3; Re 100: Cd 1.30–1.42, Cl′ 0.30–0.36, St 0.160–0.172). At 16 and
+24 cells/D drag (and at 16 also Cl′ and the Re 40 L/D) are slightly above it. Against
+unconfined references the drag is ~5 % high (Re 40: 1.61 vs 1.50–1.54; Re 100: 1.40 vs
+1.33–1.35) and St ~2 % high. That is the expected blockage effect: the 2D wake-blockage
+estimate ε ≈ (Cd/4)(D/H) ≈ 0.02 (Allen &amp; Vincenti 1944) raises the effective dynamic
+pressure by ≈ 4 %, and the measured slip-wall velocity abeam the cylinder is 1.04 U
+(Re 40) / 1.02 U (Re 100).</li>
+<li><strong>Surface data.</strong> <code>Cd_surf</code> matches the impulse to 0.1 % at Re 40 and is within
+2.1 / 1.1 / 0.7 % (32 / 48 / 64 cells/D) at Re 100, where the boundary layers are thinner.
+The front stagnation cp
+is 1.12–1.15 at Re 40 (&gt; 1 by viscous stagnation-flow effects) and 1.05–1.06 at Re 100, and
+separation sits at 126.0–126.5° from the front (53.5–54.0° from the rear; Dennis &amp; Chang
+1970: 53.8°; Coutanceau &amp; Bouard 1977: 53.5°). Base cp is −0.60 (Re 40) and −0.79 to
+−0.80 (Re 100) relative to the inlet; relative to the local free-stream pressure abeam
+the cylinder (§6.5) that is −0.51 and −0.74 to −0.75.</li>
+</ul>
+<h3 id="channel-and-sharp-edged-benchmarks">Channel and sharp-edged benchmarks<a class="anchor" href="#channel-and-sharp-edged-benchmarks" aria-label="Link to this section">#</a></h3>
+<p>The Schäfer–Turek channel benchmarks 2D-1 (Re 20) and 2D-2 (Re 100) — no-slip walls, parabolic
+inflow, an off-centre cylinder — and the square cylinder at Re 100 are run by
+<code>bench_ns2d.py channel</code> and <code>bench_ns2d.py square</code>; their results at two resolutions are in
+<a href="validation.html">the validation report</a>, section 3.</p>
+<h3 id="airfoil-sanity-check-not-a-quantitative-validation">Airfoil sanity check (not a quantitative validation)<a class="anchor" href="#airfoil-sanity-check-not-a-quantitative-validation" aria-label="Link to this section">#</a></h3>
+<p>NACA 0012, Re = 1000, 80/160 cells per chord: Cl(5°) = 0.20/0.23, Cd ≈ 0.13; Cl(10°) = 0.36
+(80 cells), in line with published low-Re DNS. NACA 4412 at 4°: Cl 0.21, Cm(c/4) −0.033 vs
+0012: Cl 0.18, Cm +0.006 — camber adds a nose-down moment, confirming the sign convention.</p>
+<h3 id="moving-ground">Moving ground<a class="anchor" href="#moving-ground" aria-label="Link to this section">#</a></h3>
+<p><code>moving_<wbr>ground_<wbr>config(256)</code> (<code>validation/ns2d_cases.py</code>): a rounded box 1.0 × 0.3 (corner
+radius 0.08) 0.08 above a road moving at U, two wheels of radius 0.07 that touch the road,
+overlap the body and roll with the road (<code>omega = +U/r</code>, counter-clockwise), Re = 10⁶,
+upwind3 + WALE, 1024 × 307 cells (256 per length), float32 on the GPU, t = 0 … 6.</p>
+<p>Result (<code>bench_ns2d.py ground</code>, slow test <code>test_<wbr>moving_<wbr>ground_<wbr>les_<wbr>re1e6_<wbr>stable</code>): the run
+completes without any instability. The step stays at the advective limit (Δt ≈ 3 × 10⁻⁴,
+19 000 steps, 43 s on an idle GPU), divergence stays at float32 round-off, ν_t peaks at
+3–4 × 10⁻⁴ (≈ 0.1 U h, i.e. the model is active only at the grid scale) and the instantaneous
+peak speed fluctuates between 3 and 4.7 U. Those peaks sit in intense 2D vortices shed from
+the roof leading edge and in the wake: 2D flow at this Re has no vortex stretching, so shear
+layers roll up into compact, long-lived vortices (without wheels the peaks are ~3 U). Mean
+Cd (t &gt; 3, reference height 0.3) is 2.3–2.9 between runs with different wheel spin; mean Cl
+is large and positive (5–7). The lift is <em>not</em> meaningful for this geometry: in 2D the
+touching wheels seal the underbody between them into a closed pocket whose pressure is set
+only by seepage through the diffuse walls. That is a property of 2D side-profile models, not
+of the solver; the planner should keep a gap of a few cells between wheels and road or body
+(or omit wheels) when it wants underbody flow. The early version of this case had the wheels
+spinning against the road (<span class="math">omega = −<i>U</i>/<i>r</i></span>); the sign convention is now documented on
+<code>ImmersedBody</code>.</p>
+<h2 id="12-limitations-what-to-trust">12. Limitations — what to trust<a class="anchor" href="#12-limitations-what-to-trust" aria-label="Link to this section">#</a></h2>
+<p>Summary of the validity range (details below):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">regime</th><th scope="col">what to trust</th><th scope="col">evidence</th></tr></thead>
+<tbody>
+<tr><td>Re ≤ ~200, ≥ 32 cells across the body</td><td>forces, Strouhal number, wake length, cp / cf distributions: quantitative (a few per cent, plus domain blockage)</td><td>cylinder Re 40 / 100, §11</td></tr>
+<tr><td>Re ≤ ~200, 16–24 cells across</td><td>Cd within 1–6 %, Cl′ within 4–10 %, St within 2 % of the converged values; surface-integrated drag 2–9 % low (cf under-resolved)</td><td>cylinder rows 16 and 24 cells/D, §11</td></tr>
+<tr><td>200 &lt; Re ≲ 10⁴</td><td>2D laminar physics (real flows are 3D above Re ≈ 190 for bluff bodies); needs cells/ref ∝ √Re for the boundary layers</td><td>airfoil check at Re 1000</td></tr>
+<tr><td>Re ≳ 10⁴ (vehicles, airfoils at flight Re)</td><td>qualitative: flow patterns, separation regions, <em>differences</em> between designs; not absolute drag. cf magnitudes meaningless</td><td>moving-ground run at Re 10⁶ is stable</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Resolution.</strong> Forces of bluff bodies are within a few per cent of reference data from
+~24–32 cells across the body (cylinder: 32 cells/D meets every target). Thin features
+(airfoil trailing edges, splitters) need at least ~3 cells across their thickness to be
+solid; airfoils need ≥ 128 cells per chord for useful drag, more as Re rises.</li>
+<li><strong>Wall position.</strong> The diffuse wall is placed to ±0.1 h on average and scatters by
+±0.2 h on grid-aligned straight walls (§6.3). At 32 cells/D that is &lt; 1 % of the diameter.</li>
+<li><strong>Surface cp and cf.</strong> <code>surface()</code> extrapolates from probes 1.5 and 2.5 cells off the wall
+(§6.5). Where the boundary layer spans ≳ 4 cells (cylinder Re ≤ 100 at ≥ 32 cells/D) the
+distributions integrate to the solver force within 0–3 %, the stagnation cp is above 1 as
+it must be at moderate Re, and the separation angle matches published data. Where it is thinner than ~3 cells (high Re, coarse grids) cf
+under-resolves the wall gradient — read its sign (separation, reattachment) and trends, not
+its magnitude; cp stays usable. cp is relative to the inlet pressure, which in a confined
+domain sits a few hundredths above the local free-stream pressure (§6.5). Probes that enter
+another body or leave the domain (wheel–road contact, gaps under ~3 cells) are undefined.
+Reported forces always come from the penalisation impulse.</li>
+<li><strong>Reynolds number.</strong> Laminar 2D results are physical up to Re ≈ 10³–10⁴ (bluff bodies
+become 3D at Re ≈ 190 — 2D results above that are a 2D idealisation). Above ~10⁴ the
+boundary layers are not resolved at affordable grids; with upwind3 + LES runs stay
+stable (moving-ground test at Re = 10⁶) and give qualitative flow patterns and
+comparative trends between designs, not absolute drag. There is no transition model; a
+Werner–Wengle wall model for the domain walls exists but is opt-in and off in every
+planned run (§18.4).</li>
+<li><strong>2D.</strong> No spanwise effects, tip vortices or 3D turbulence; LES in 2D is a subgrid
+dissipation, not a turbulence model.</li>
+<li><strong>Uniform grid.</strong> No stretching or refinement; domain size versus resolution is the
+planner's trade-off. Blockage and outlet proximity affect results at the per-cent level.</li>
+<li><strong>Compressibility.</strong> None (Mach → 0).</li>
+<li><strong>Placed physics</strong> (heat transfer, fans, ports, emitters): §22.</li>
+</ul>
+<h2 id="13-differentiability">13. Differentiability<a class="anchor" href="#13-differentiability" aria-label="Link to this section">#</a></h2>
+<p><code>step(state, geom, ops, dt)</code> is pure torch with static control flow. Everything between the
+polygon vertices and the force coefficients is differentiable: SDF (exact distance to edges)
+→ C¹ mask → penalisation → projection (linear, FFT-based) → force impulse. The upwind
+dissipation <code>|V|</code> and the van Leer limiter are the only non-smooth elements (measure-zero
+kinks). <code>rollout(state, geom, ops, n, dt, checkpoint_every=k)</code> advances n steps with
+<code>torch.utils.checkpoint</code> over chunks of k steps (memory O(n/k + k) fields), with a fixed dt
+(letting the CFL rule choose dt inside a differentiated rollout would make dt a non-smooth
+function of the design). <code>step</code> returns the coefficients <code>[Cd, Cl, Cm]</code> summed over the bodies
+(<code>step_full</code>: per body); multiply by <code>½ force_ref</code> for the non-dimensional force. Gradients
+with respect to body vertices (checked against central finite differences in float64:
+relative error 2.3e-7), the inflow profile (<code>ops.u_inlet</code>) and the initial state are tested.
+<code>build_geometry(..., window=…)</code> keeps the window fixed so finite-difference comparisons
+evaluate the same discrete function.</p>
+<h2 id="14-references">14. References<a class="anchor" href="#14-references" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Allen &amp; Vincenti (1944), Wall interference in a two-dimensional-flow wind tunnel, with
+consideration of the effect of compressibility, NACA Report 782.</li>
+<li>Angot, Bruneau &amp; Fabrie (1999), A penalization method to take into account obstacles in
+incompressible viscous flows, Numer. Math. 81.</li>
+<li>Coutanceau &amp; Bouard (1977), Experimental determination of the main features of the viscous
+flow in the wake of a circular cylinder in uniform translation, JFM 79.</li>
+<li>Dennis &amp; Chang (1970), Numerical solutions for steady flow past a circular cylinder at
+Reynolds numbers up to 100, JFM 42.</li>
+<li>Engels, Kolomenskiy, Schneider &amp; Sesterhenn (2016), FluSI: a novel parallel simulation tool
+for flapping insect flight using a Fourier method with volume penalization, SIAM J. Sci. Comput.</li>
+<li>Fornberg (1980), A numerical study of steady viscous flow past a circular cylinder, JFM 98.</li>
+<li>Harlow &amp; Welch (1965), Numerical calculation of time-dependent viscous incompressible flow
+of fluid with free surface, Phys. Fluids 8.</li>
+<li>Kolomenskiy &amp; Schneider (2009), A Fourier spectral method for the Navier–Stokes equations
+with volume penalization for moving solid obstacles, J. Comput. Phys. 228.</li>
+<li>Linnick &amp; Fasel (2005), A high-order immersed interface method for simulating unsteady
+incompressible flows on irregular domains, J. Comput. Phys. 204.</li>
+<li>Liu, Zheng &amp; Sung (1998), Preconditioned multigrid methods for unsteady incompressible
+flows, J. Comput. Phys. 139.</li>
+<li>Makhoul (1980), A fast cosine transform in one and two dimensions, IEEE Trans. ASSP 28.</li>
+<li>Morinishi, Lund, Vasilyev &amp; Moin (1998), Fully conservative higher order finite difference
+schemes for incompressible flow, J. Comput. Phys. 143.</li>
+<li>Nicoud &amp; Ducros (1999), Subgrid-scale stress modelling based on the square of the velocity
+gradient tensor, Flow Turb. Combust. 62.</li>
+<li>Ohtake, Nakae &amp; Motohashi (2007), Nonlinearity of the aerodynamic characteristics of NACA0012
+aerofoil at low Reynolds numbers, J. Japan Soc. Aero. Space Sci. 55.</li>
+<li>Shu &amp; Osher (1988), Efficient implementation of essentially non-oscillatory shock-capturing
+schemes, J. Comput. Phys. 77.</li>
+<li>Taira &amp; Colonius (2007), The immersed boundary method: a projection approach, J. Comput.
+Phys. 225.</li>
+<li>Vreman (2004), An eddy-viscosity subgrid-scale model for turbulent shear flow, Phys. Fluids 16.</li>
+<li>Williamson (1989), Oblique and parallel modes of vortex shedding in the wake of a circular
+cylinder at low Reynolds numbers, JFM 206.</li>
+<li>Kochkov, Smith, Alieva, Wang, Brenner &amp; Hoyer (2021), Machine learning–accelerated
+computational fluid dynamics, PNAS 118 (JAX-CFD, the differentiable-solver lineage AeroJAX
+builds on).</li>
+</ul>
+<hr>
+<h1 id="part-ii-placed-physics">Part II — placed physics</h1>
+<h2 id="15-placed-physics-design-rules">15. Placed physics: design rules<a class="anchor" href="#15-placed-physics-design-rules" aria-label="Link to this section">#</a></h2>
+<p>DESIGN.md §10 adds AeroJAX-style placed physics to the validated flow solver: smoke
+emitters and tracer particles, heat transfer with Boussinesq buoyancy, heated bodies and
+walls, volumetric heaters, fans (actuator strips), jets and vents, mouse-painted
+obstacles, live editing, diagnostics and a PID-controlled time step. Module
+<code>physics.py</code> (with <code>scalar.py</code>, <code>particles.py</code>, <code>diagnostics.py</code>); solver-unit specs in
+<code>config.py</code> (<code>EmitterSpec</code>, <code>ThermalConfig</code> + <code>WallBC</code>, <code>HeatSourceSpec</code>, <code>FanSpec</code>,
+<code>PortSpec</code>, <code>ImmersedBody.thermal</code>). Four rules keep the validated solver intact:</p>
+<ul>
+<li><strong>Off means absent.</strong> <code>ops.phys</code> is <code>None</code> unless a config asks for placed physics,
+and every branch in the step tests a static Python flag, so the default path runs the
+kernels it ran before. Measured with <code>torch.profiler</code> (cylinder, 1024×512, eager, median
+of three interleaved rounds): 524 kernels per step against 521 without the one addition
+to the default path — the default smoke is now cleared inside solids (§8; a few small
+window kernels) — and 3048 µs of GPU kernel time per step against 3034 µs (+0.5 %; an
+earlier session measured −0.3 %, i.e. the difference is within the noise of a GPU shared
+with other jobs). Re-measured with the final code, after the wall model of §18.4 joined
+the step behind its own static flag: still 524 kernels per step, and the clean-up's own
+kernels take 0.16–0.18 % of the step's GPU kernel time (medians of two runs of five
+interleaved rounds, all rounds within 0.14–0.23 %; <code>python validation/bench_ns2d.py default-cost</code>). That ratio is the robust figure: two whole-step kernel times measured
+separately differed by up to ±15 % between rounds on the shared GPU. Every test and
+validation number of the base solver is unchanged (the slow base-solver and placed-physics validations were re-run
+and pass).</li>
+<li><strong>Static structure, live values.</strong> Which features exist (heat transfer on, buoyancy on,
+the number of fans, smoke channels and emitter timing groups, whether ports or paint
+exist) is static and baked into a captured CUDA graph. Every <em>value</em> — footprints,
+positions, thrusts, wall temperatures, Ri, Pe — lives in a device tensor that
+<code>FlowSolver</code> rewrites in place, so dragging a heater or an emitter never re-captures a
+graph. A change of structure (a first fan, another smoke channel) rebuilds what it must
+and re-captures lazily on the next <code>advance</code>.</li>
+<li><strong>Exact totals.</strong> Every distributed source (heater power, fan thrust, port volume flow,
+a heat-flux body's heat) is normalised by the discrete integral of its footprint, so the
+released total is exactly the requested one on any grid and at any sub-cell position.
+Footprints use the bodies' C¹ step (<code>smooth_step</code>, half-width one cell for heaters and
+fans, half a cell for nozzles and ports), so they move continuously when an object moves
+by a fraction of a cell.</li>
+<li><strong>No host synchronisation</strong> inside a step: controllers, pulse clocks, particle release
+counters and diagnostics are device arithmetic, so all of it runs inside the CUDA graphs
+(graph and eager agree to 1e-5 with every feature on:
+<code>test_<wbr>cuda_<wbr>graphs_<wbr>match_<wbr>eager_<wbr>with_<wbr>all_<wbr>physics</code>).</li>
+</ul>
+<h2 id="16-heat-transfer">16. Heat transfer<a class="anchor" href="#16-heat-transfer" aria-label="Link to this section">#</a></h2>
+<h3 id="161-energy-equation-and-its-discretisation">16.1 Energy equation and its discretisation<a class="anchor" href="#161-energy-equation-and-its-discretisation" aria-label="Link to this section">#</a></h3>
+<p>With <span class="math">θ = (<i>T</i> − <i>T</i><sub>amb</sub>)/Δ<i>T</i><sub>ref</sub></span> the energy equation in solver units is</p>
+<div class="eq" role="math" aria-label="∂θ/∂t + ∇·(u θ) = ∇·((1/Pe + ν_t/Pr_t) ∇θ) + q, Pe = Re Pr, Pr_t = 0.85"><table role="presentation"><tr><td class="l">∂θ/∂<i>t</i> + ∇·(<i>u</i> θ)</td><td class="rel">=</td><td class="r">∇·((1/Pe + ν<sub><i>t</i></sub>/Pr<sub><i>t</i></sub>) ∇θ) + <i>q</i>,</td><td class="cond">Pe = Re Pr,  Pr<sub><i>t</i></sub> = 0.85</td></tr></table></div>
+<p>θ lives at cell centres, so the face velocities of the MAC grid are exactly the
+advecting velocities of a finite-volume flux. Advection is the MUSCL / van Leer flux of
+the smoke (§8) with boundary-aware ghosts (<code>scalar.tvd_fluxes</code>); diffusion is in flux
+form with the domain-wall conditions applied on the boundary faces themselves
+(<code>scalar.diffusive_fluxes</code>: Dirichlet over the half cell between wall and first centre,
+prescribed flux, or zero), so the heat rates the solver reports are the fluxes the scheme
+used. θ is integrated with the <strong>same SSP-RK3 stages as the momentum</strong> (each stage:
+explicit update, implicit penalisation toward hot bodies and jets, §16.2), and the
+Boussinesq force uses the stage temperature, so momentum and energy are coupled at third
+order in time.</p>
+<p><strong>Time step: a discrete maximum principle.</strong> A forward-Euler stage of the limited flux is a
+convex combination of neighbouring values when its coefficients sum to at most one: the
+MUSCL / van Leer flux contributes at most <code>2 c</code> (face Courant numbers summed over both
+directions; the limited slope ratio is ≤ 2) and the explicit diffusion <span class="math"><i>c</i><sub><i>d</i></sub> κ Δ<i>t</i> / <i>h</i>²</span>,
+where <span class="math"><i>c</i><sub><i>d</i></sub></span> is the largest diagonal coefficient of the discrete Laplacian with its wall
+conditions — 4 in the interior, 5 next to a Dirichlet wall (conductance 2 over the half
+cell), 6 in a corner between two Dirichlet walls (<code>physics.diffusion_<wbr>coefficient</code>). The
+temperature step is therefore</p>
+<div class="eq" role="math" aria-label="Δt ≤ 1 / ( 2 (max|u| + max|v|) / h + c_d (κ + max ν_t / Pr_t) / h² )"><table role="presentation"><tr><td class="l">Δ<i>t</i></td><td class="rel">≤</td><td class="r">1 / ( 2 (max|<i>u</i>| + max|<i>v</i>|) / <i>h</i>  +  <i>c</i><sub><i>d</i></sub> (κ + max ν<sub><i>t</i></sub> / Pr<sub><i>t</i></sub>) / <i>h</i>² )</td></tr></table></div>
+<p>and SSP-RK3, a convex combination of such stages, keeps θ within the bounds of its
+initial, boundary and body values. The momentum limits alone are not enough: each of them
+(advective <code>0.5 h / (|u| + |v|)</code> and viscous <span class="math">0.25 <i>h</i>² / κ</span>) can be satisfied while their
+sum exceeds one. The first implementation did exactly that, and the heated cylinder at
+Re 40, 32 cells/D blew up (θ reached 4 × 10³² after 410 steps). With the bound, θ stays in
+[0, 1] (<code>test_<wbr>temperature_<wbr>stays_<wbr>bounded_<wbr>in_<wbr>a_<wbr>tunnel</code>); the cost is a smaller step where
+advection and diffusion are both significant (heated cylinder Re 40, 32 cells/D:
+3.2 × 10⁻³ against the 6.9 × 10⁻³ the separate limits allowed; the Ra 10⁶ cavity on 128²
+cells needs 1.9 times as many steps per unit time, §21.1). A buoyant fluid parcel at rest
+accelerates at <span class="math">Ri |θ|</span>, so the step is also kept below <span class="math">cfl √(<i>h</i> / (Ri max|θ|))</span>.</p>
+<h3 id="162-temperature-bodies-implicit-penalisation-and-the-thermal-wall">16.2 Temperature bodies: implicit penalisation and the thermal wall<a class="anchor" href="#162-temperature-bodies-implicit-penalisation-and-the-thermal-wall" aria-label="Link to this section">#</a></h3>
+<p>A body held at θ_s ("temperature") is penalised exactly like the velocity:</p>
+<div class="eq" role="math" aria-label="θ ← (θ + k χ θ_s) / (1 + k χ), k = b_s Δt / η_θ"><table role="presentation"><tr><td class="l">θ</td><td class="rel">←</td><td class="r">(θ + <i>k</i> χ θ<sub><i>s</i></sub>) / (1 + <i>k</i> χ),</td><td class="cond"><i>k</i> = <i>b</i><sub><i>s</i></sub> Δ<i>t</i> / η<sub>θ</sub></td></tr></table></div>
+<p>on the same window and masks as the momentum (cell-centred χ, the calibrated inward
+shift δ = 0.32 h of §6.3). The penalised conduction problem is the penalised Stokes
+problem of §6.3 with Pe in place of Re, so the thermal permeability uses the momentum rule
+with Pe: <span class="math">η<sub>θ</sub> = min(0.05 <i>h</i>, <i>h</i>² Pe / 60)</span>. That this places the <em>thermal</em> wall where the
+momentum wall is was measured, not assumed: steady conduction between two penalised slabs
+(gap 1 = 16 cells, <code>thermal2d_<wbr>cases.run_<wbr>conduction_<wbr>slabs</code>, four sub-cell positions of the
+walls) gives the effective-wall offset (cells; positive = inside the solid; float64)</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">stiffness S = h²/(κ η_θ)</th><th scope="col">offsets at sub-cell shift 0, ¼, ½, ¾</th><th class="r" scope="col">mean</th><th class="r" scope="col">momentum (§6.3)</th></tr></thead>
+<tbody>
+<tr><td>60 (the default floor)</td><td>−0.038, +0.084, +0.060, +0.084</td><td class="r">+0.048</td><td class="r">+0.05</td></tr>
+<tr><td>250</td><td>−0.332, +0.022, +0.015, +0.022</td><td class="r">−0.068</td><td class="r"></td></tr>
+<tr><td>1000</td><td>−0.452, +0.006, +0.004, +0.006</td><td class="r">−0.109</td><td class="r">−0.11</td></tr>
+</tbody>
+</table></div>
+<p>— the same band as the momentum calibration. The heat a body puts into the fluid is the
+θ the penalisation adds, combined over the stages with the weights (⅙, ⅔, 1) of §6.4 and
+split between temperature bodies by their share of χ: like the force, it is the heat
+rate of the discrete solution, and in a steady state it equals the heat leaving through
+the walls to 10⁻⁶ (<code>test_<wbr>hot_<wbr>body_<wbr>heat_<wbr>rate_<wbr>balances_<wbr>the_<wbr>walls</code>).</p>
+<h3 id="163-heat-flux-and-adiabatic-bodies">16.3 Heat-flux and adiabatic bodies<a class="anchor" href="#163-heat-flux-and-adiabatic-bodies" aria-label="Link to this section">#</a></h3>
+<p>Every body that is not held at a temperature is <strong>insulated</strong>: the diffusivity on each face
+is multiplied by <span class="math">1 − χ</span> of those bodies (the Neumann penalisation of Kadoch et al. 2012),
+so no heat crosses an adiabatic body or a painted obstacle. A "heat_flux" body releases
+<span class="math"><i>G</i> = <i>q</i>″<i>L</i>/(<i>k</i> Δ<i>T</i><sub>ref</sub>)</span> through its surface as a volumetric source in its skin, with the weight
+<span class="math">−<i>d</i>χ/dd</span> (whose integral across the interface is exactly one) normalised per body so that
+the released heat is exactly <code>G P / Pe</code> (P the outline length inside the domain). Measured:
+in an adiabatic box the heat content grows at exactly that rate (1e-9,
+<code>test_<wbr>heat_<wbr>flux_<wbr>body_<wbr>releases_<wbr>its_<wbr>heat</code>). Its wall temperature is the skin-weighted mean of
+θ; against the exact conduction solution of a flux slab it reads high by 0.26 G h
+(16 and 32 cells per gap; 0.42 G h when the wall sits half a cell off a face) — a
+first-order bias of a quarter cell, 0.8 % of G D at 32 cells per D.</p>
+<h3 id="164-domain-walls-heat-rates-and-nusselt-numbers">16.4 Domain walls, heat rates and Nusselt numbers<a class="anchor" href="#164-domain-walls-heat-rates-and-nusselt-numbers" aria-label="Link to this section">#</a></h3>
+<p><code>WallBC</code> sets each side to adiabatic, temperature or heat flux; in a tunnel the inlet is
+held at <code>theta_inlet</code> and the outlet has zero diffusive flux. The wall heat rates are the
+boundary-face fluxes of the scheme (<span class="math">2 κ (θ<sub><i>w</i></sub> − θ<sub>1</sub>)</span> per cell for a held side, <span class="math">κ <i>G</i></span> per
+unit length for a flux side), so a steady state balances to round-off: conduction between
+two held walls reproduces the exact linear profile and <code>Nu = 1</code> to 1e-10
+(<code>test_<wbr>conduction_<wbr>between_<wbr>walls_<wbr>is_<wbr>exactly_<wbr>linear</code>), a flux wall the exact slope
+(<code>test_<wbr>heat_<wbr>flux_<wbr>wall_<wbr>profile_<wbr>and_<wbr>balance</code>). This conservative wall flux is also what makes
+the cavity Nusselt numbers converge at second order (§21.1).</p>
+<p><code>FlowSolver.heat_<wbr>transfer()</code> reports per body the heat rate (units ρ c_p U ΔT_ref L per
+span), the wall temperature and the mean Nusselt number based on the reference length,
+<span class="math">Nu = Pe <i>Q</i> / ((θ<sub><i>w</i></sub> − θ<sub>ref</sub>) <i>P</i>)</span> (DESIGN.md §10.2: <span class="math">Nu = <i>Q</i> <i>L</i> / (<i>k</i> Δ<i>T</i> <i>A</i>)</span>); <code>surface()</code> adds
+the local Nusselt number from the same two-probe quadratic as cf (§6.5).</p>
+<h3 id="165-buoyancy-and-scaling">16.5 Buoyancy and scaling<a class="anchor" href="#165-buoyancy-and-scaling" aria-label="Link to this section">#</a></h3>
+<p>The Boussinesq force <span class="math"><i>f</i> = −Ri θ ĝ</span> (<span class="math">Ri = <i>g</i> β Δ<i>T</i><sub>ref</sub> <i>L</i> / <i>U</i>²</span>, ĝ = −y by default, any
+direction allowed) is evaluated at the faces from the face average of θ; boundary faces
+carry no force. A temperature that depends only on the height is balanced exactly by the
+pressure: the force is then a discrete gradient that the projection removes, and a stably
+stratified box stays at rest to 1e-12 (<code>test_<wbr>stable_<wbr>stratification_<wbr>stays_<wbr>at_<wbr>rest</code>).</p>
+<p><strong>Buoyancy and bodies (changed in review round 5 before the release, as the 3D solver does, <a href="theory-ns3d.html#153-bodies-and-why-buoyancy-is-added-after-the-penalisation">Navier–Stokes solver (3D), §15.3</a>).</strong> The impulse <span class="math"><i>b</i> Δ<i>t</i> Ri θ</span> is added to each stage value <em>after</em> the body and port
+penalisation and <em>everywhere</em>, also inside solids (<code>core._add_buoyancy</code>). Until round 5 it
+was part of the explicit tendency, before the penalisation. The penalisation then removed
+the buoyancy of the fictitious fluid inside each body and booked it as a force on the body,
+and the forcing was no longer a gradient across the interface. Measured on a cylinder
+(D = 1, 32 cells/D, Ri 1, Re 100, closed 8D box):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th scope="col">true force</th><th scope="col">before</th><th scope="col">after</th></tr></thead>
+<tbody>
+<tr><td>θ = 1 everywhere (hydrostatic rest), |u|max after 20 steps</td><td>0</td><td>1.0 × 10⁻²</td><td>4.4 × 10⁻⁷ (float32 round-off)</td></tr>
+<tr><td>same, Cl</td><td>−Ri A / 0.5 = −1.5708</td><td>+0.0146</td><td>−1.5718</td></tr>
+<tr><td>hot body (θ_s = 1) in still cold fluid, Cl after 20 steps</td><td>≈ 0 at first</td><td>+1.766</td><td>+0.195 (a real plume forming, §16.5 note)</td></tr>
+</tbody>
+</table></div>
+<p>The force on a body is the penalisation impulse minus <span class="math">Ri ∫<sub>body</sub> θ dA</span>: each stage books the
+share <span class="math"><i>w</i> <i>b</i> Δ<i>t</i> Ri vol θ<sub><i>f</i></sub></span> into the impulse accumulators, with <code>vol</code> the smoothed indicator
+<em>without</em> the calibrated wall offset (<code>ThermalGeometry.vol_u</code> / <code>vol_v</code>), whose integral is
+the true area to second order: +1.2 %, +0.27 % and +0.08 % at 8, 16 and 32 cells/D, where the
+momentum mask (0.32 h inside the surface) under-counts by 14 %, 7.5 % and 3.9 %. Painted
+obstacles get the same share. A hot body in still cold fluid shows a short start-up transient:
+the penalisation removes the interface fluid's buoyancy over a few stages while the share is
+booked at once, so Cl reads −0.99, −0.66, −0.26, −0.08 over the first four steps and +0.005 at
+step 5 (default step; at a quarter of the step the transient takes more steps but a shorter
+time, 0.03 instead of 0.07 L/U). The slow rise after it, to +0.14 by step 12 (t = 0.20), is the
+rising warm boundary layer pulling on the cylinder. Tests: a uniformly warm fluid around
+a temperature or adiabatic body stays at rest to 10⁻¹⁰ (float64) with Cl = −Ri A_vol / 0.5 to
+10⁻⁶; a linear stratification around an insulated body stays at rest; the hot body's Cl is
+within ±0.3 from step 5 (<code>tests/<wbr>test_<wbr>physics_<wbr>round5.py</code>). The body-free validation rows
+(differentially heated cavity, Rayleigh–Bénard) see the same arithmetic as before: buoyancy
+was a uniform gradient-free addition there either way, and the round-5 validation run
+(<a href="validation.html#9-automated-validation-run">Validation report, §9</a>) reproduces them. Natural convection in a closed domain uses
+the free-fall velocity <span class="math"><i>U</i> = √(<i>g</i> β Δ<i>T</i> <i>L</i>)</span> as the reference (Ri = 1, <span class="math">Re = √(Ra/Pr)</span>,
+<span class="math">Pe = √(Ra Pr)</span>); the planner states Ra, Pr, Gr, Ri and Pe. Velocities convert to the
+benchmark's <span class="math">κ/<i>L</i></span> by multiplying by Pe, heat rates per unit wall length to Nusselt numbers
+by Pe.</p>
+<h3 id="166-heaters-and-the-energy-balance">16.6 Heaters and the energy balance<a class="anchor" href="#166-heaters-and-the-energy-balance" aria-label="Link to this section">#</a></h3>
+<p>A heater is a volumetric source of exact total power over a smooth rect or disc footprint
+(in an adiabatic box the heat content grows at exactly that power: 1e-10,
+<code>test_<wbr>heater_<wbr>energy_<wbr>budget_<wbr>is_<wbr>exact</code>). <code>FlowSolver.heat_<wbr>balance()</code> reports the terms of the
+energy budget with the keys <code>aerolume.analysis.physics</code> reads — heat in from bodies, walls,
+heaters, jets (the enthalpy their penalisation adds) and the inlet (advection +
+conduction), heat out through the outlet (advection) and vents, the storage rate, and the
+residual in − out − storage. The terms are the scheme's own fluxes at the end of the step:
+in a steady run with every heat path at once (a hot and a heat-flux body, a heater, a hot
+jet, a vent, a held and a cooled wall, inflow, outflow and buoyancy) the residual is
+1.8 × 10⁻⁶ of the heat input (64 × 32 cells, re-measured with the final code;
+<code>test_<wbr>energy_<wbr>balance_<wbr>closes_<wbr>in_<wbr>a_<wbr>tunnel</code> checks 10⁻⁵ on a coarser grid); during transients
+it is O(Δt) because the Runge–Kutta stages see intermediate fields.</p>
+<h2 id="17-emitters-smoke-channels-and-tracer-particles">17. Emitters: smoke channels and tracer particles<a class="anchor" href="#17-emitters-smoke-channels-and-tracer-particles" aria-label="Link to this section">#</a></h2>
+<p><strong>Smoke.</strong> Up to four channels (<code>dye</code>, <code>dye1..dye3</code>) share the bounded advection of §8 (one
+batched flux evaluation for all channels). Emitters — point, line (capsule), rake (nozzles),
+rect or disc footprints with an anti-aliased edge — relax their footprint toward their
+concentration <code>rate</code> while on; emitters of one channel with equal timing share one
+weight / target map, so many nozzles cost one fused update. The release clock
+(<code>start</code>, <code>stop</code>, <code>pulse_period</code>, <code>pulse_duty</code>) is device arithmetic on the simulated time,
+so pulsed puffs stay inside the CUDA graph. Smoke is zero inside solids (χ &gt; ½) and painted
+obstacles, vents remove it with their fluid, and jets can release it on a channel. With
+emitters placed, the inlet comb on channel 0 is optional (<code>dye_inlet</code>).</p>
+<p><strong>Tracer particles</strong> (<code>particles.py</code>). Each nozzle owns a fixed ring of slots in one pool
+(<code>particle_capacity</code>, default 32 768), so a release recycles the nozzle's oldest particle,
+memory is fixed and every update — advection, kill, release — has static shapes. Particles
+advance by the midpoint rule (RK2) with the end-of-step velocity sampled bilinearly from the
+staggered faces where u and v live; they die when they leave the domain or enter a solid. A
+continuous emitter releases one particle per nozzle each time its accumulated <span class="math">rate · Δ<i>t</i> / nozzles</span> passes an integer — up to four per nozzle and step, each placed along the local
+velocity by the time since its threshold crossing — so the released number is <span class="math">rate · <i>t</i></span>
+to within one particle and a fast streakline stays evenly spaced. A pulsed emitter releases
+one batch per period from all its nozzles: a timeline. In uniform flow the paths are exact
+(<span class="math"><i>x</i> = <i>x</i><sub><i>e</i></sub> + age</span> to 1e-9, <code>test_<wbr>particles_<wbr>follow_<wbr>uniform_<wbr>flow_<wbr>exactly</code>).
+<code>particle_lines()</code> returns streaklines (per nozzle, ordered by age) and timelines (per
+batch, ordered along the nozzles) as polylines. The planner keeps <code>frame="wind"</code> emitters
+fixed in the tunnel when it rotates the bodies for incidence; the solver itself has one frame.</p>
+<h2 id="18-fans-actuator-strips">18. Fans: actuator strips<a class="anchor" href="#18-fans-actuator-strips" aria-label="Link to this section">#</a></h2>
+<h3 id="181-momentum-source">18.1 Momentum source<a class="anchor" href="#181-momentum-source" aria-label="Link to this section">#</a></h3>
+<p>A fan is an actuator disc — in 2D a strip of <code>width</code> across and <code>thickness</code> along its
+<code>direction</code> (default width/8, at least two cells) — that adds the body force
+<span class="math"><i>f</i> = <i>T</i> φ <i>n</i>̂ / ∫φ dA</span> with φ the smooth box footprint evaluated on the u- and v-faces. The
+discrete integral of the force is exactly <code>T n̂</code>: in a periodic box (no walls, no outlet) the
+total momentum grows at exactly the thrust (1e-10,
+<code>test_<wbr>fan_<wbr>adds_<wbr>exactly_<wbr>its_<wbr>thrust_<wbr>in_<wbr>a_<wbr>periodic_<wbr>box</code>). "thrust" sets T (per unit span),
+"pressure_jump" sets <span class="math">Δ<i>P</i></span> with <span class="math"><i>T</i> = Δ<i>P</i> · width</span>.</p>
+<h3 id="182-velocity-mode-an-in-graph-pi-controller">18.2 Velocity mode: an in-graph PI controller<a class="anchor" href="#182-velocity-mode-an-in-graph-pi-controller" aria-label="Link to this section">#</a></h3>
+<p>"velocity" regulates ΔP so that the footprint-averaged speed along the axis, u_d, reaches
+the target. The plant's quasi-steady slope follows from momentum theory: with the
+free-stream component U along the axis, <span class="math">Δ<i>P</i> = <i>T</i>/<i>D</i> = 2 <i>u</i><sub><i>d</i></sub> (<i>u</i><sub><i>d</i></sub> − <i>U</i>)</span>, so
+<span class="math"><i>d</i>Δ<i>P</i>/du<sub><i>d</i></sub> = 2 |2 <i>u</i><sub><i>d</i></sub> − <i>U</i>|</span> (U = 0 in a closed room). The PI gains make the loop gain one
+(<span class="math"><i>k</i><sub><i>p</i></sub></span> = that slope) and the integral loop decay at <span class="math">ω = |target| / (2 <i>D</i>)</span>
+(<span class="math"><i>k</i><sub><i>i</i></sub> = 2 ω <i>k</i><sub><i>p</i></sub></span>), with anti-windup by clamping the integral so ΔP stays within
+<span class="math">50 max(target², 1)</span>. The controller state lives in the solver state (<code>ctrl</code>), so it runs
+inside the CUDA graph. Measured (tunnel, target 1.5, width 1, Re 100): 2.0 % short of the
+target at t = 3, 0.15 % at t = 7, 0.006 % at t = 12, no overshoot. The first gains were
+sized for the fan's own fluid mass only and ignored that most of an increment of thrust
+accelerates the far wake; that loop was four times too slow (2 % short of the target at
+t = 25).</p>
+<h3 id="183-fan-report">18.3 Fan report<a class="anchor" href="#183-fan-report" aria-label="Link to this section">#</a></h3>
+<p><code>fans_report()</code> gives per fan the delivered thrust, the pressure jump, the volume flow
+(u_d × width), the disc and induced velocity (u_d minus the free stream along the axis) and
+the ideal power T u_d (instantaneous or time-averaged), plus the per-step history.</p>
+<h3 id="184-fans-in-closed-2d-rooms-a-grid-study-and-the-wall-model">18.4 Fans in closed 2D rooms: a grid study, and the wall model<a class="anchor" href="#184-fans-in-closed-2d-rooms-a-grid-study-and-the-wall-model" aria-label="Link to this section">#</a></h3>
+<p><strong>What is measured.</strong> The app's fan room (<code>fan_room_case</code>: a 1 N/m thrust fan 0.5 m across,
+a third of the way along a 4 × 3 m air room with no-slip walls on every side; the planner
+picks WALE LES and upwind3 at Re = U L/ν = 3.1 × 10⁴ with U = 0.904 m/s, the fan's static
+momentum-theory velocity, and L = 0.5 m) was spun up from rest to 1200 L/U on three grids,
+with and without the wall model below (<code>run_fan_room</code>, <code>validation/bench_ns2d.py fan-room</code>;
+the configuration matches <code>api.plan</code> field by field). The room-mean speed is the mean of
+|u| over all cells; each value is the average of samples every 2 L/U over t ∈ [800, 1200],
+"spread" the range of the 100-L/U window means over [600, 1200], "drift" the change between
+the halves of [800, 1200]. RTX 4060 Ti, float32, GPU shared with other jobs.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">cells/L (h)</th><th scope="col">wall model</th><th class="r" scope="col">mean speed [m/s]</th><th class="r" scope="col">spread of 100-L/U means</th><th class="r" scope="col">max speed [m/s]</th><th class="r" scope="col">disc velocity [m/s]</th><th class="r" scope="col">drift</th></tr></thead>
+<tbody>
+<tr><td>6 (83 mm)</td><td>none</td><td class="r">2.37</td><td class="r">2.27–2.37</td><td class="r">8.3</td><td class="r">5.3</td><td class="r">−0 %</td></tr>
+<tr><td>6 (83 mm)</td><td>Werner–Wengle</td><td class="r">2.30</td><td class="r">2.29–2.30</td><td class="r">8.2</td><td class="r">5.2</td><td class="r">+0 %</td></tr>
+<tr><td>12 (42 mm, Draft)</td><td>none</td><td class="r">2.42</td><td class="r">1.96–3.76</td><td class="r">5.9</td><td class="r">−0.0</td><td class="r">−25 %</td></tr>
+<tr><td>12 (42 mm, Draft)</td><td>Werner–Wengle</td><td class="r">4.18</td><td class="r">3.99–4.30</td><td class="r">13.5</td><td class="r">2.7</td><td class="r">−4 %</td></tr>
+<tr><td>24 (21 mm, Fine)</td><td>none</td><td class="r">3.42</td><td class="r">3.01–3.70</td><td class="r">12.2</td><td class="r">1.5</td><td class="r">−4 %</td></tr>
+<tr><td>24 (21 mm, Fine)</td><td>Werner–Wengle</td><td class="r">3.35</td><td class="r">2.72–4.39</td><td class="r">15.9</td><td class="r">4.5</td><td class="r">+39 %</td></tr>
+</tbody>
+</table></div>
+<p>Without the model the settled mean speed rises with the resolution (2.37 → 2.42 → 3.42 m/s,
++44 % from 6 to 24 cells/L, no sign of levelling off): a finer grid has less numerical
+dissipation, and that dissipation is one of the room's two brakes. 4.6 × 10⁶ steps and
+103 min of GPU time in all for the six runs.</p>
+<p>Over the Draft run's own averaging window (t ∈ [120, 240] L/U) the rooms without the model
+average 1.65, 1.81 and 2.34 m/s on the three grids (20-L/U window means 1.36–2.31 on the
+Draft grid) — the 1.72 m/s a Draft run of the example reports is one sample of a transient.</p>
+<p><strong>What it shows.</strong> The 2D closed fan room has no grid-converged answer. Its mean speed
+changes by up to 82 % between grids and by nearly a factor of two within one run, the
+rooms take 500–900 L/U to leave their start-up transient (the Draft plan runs 240), only
+the coarsest rooms reach a steady state — on the finer grids the 100-L/U means keep
+wandering by 8–92 % over the last 600 L/U, switching between flow states (one room-filling
+vortex with the fan in its fast outer ring, or several cells with the fan in a slow core,
+which is why the disc velocity ranges from 0 to 5.3 m/s) — and every room runs at 2.5–4.6
+times the fan's own static velocity, with peaks of 6–16 m/s. A 1 N/m fan does not do that to a real room.
+The reason is the dimension, not the grid: the fan's power T u_d can only leave a 2D room
+through wall friction and the subgrid and upwind dissipation of the resolved eddies. 2D
+flow has no vortex stretching, so energy cascades to <em>large</em> scales (Kraichnan 1967) and
+gathers in a few room-sized vortices that dissipate little; in a 3D room the fan's jet
+breaks down into 3D turbulence, which dissipates the power in the jet and the room interior.
+The 2D numbers are therefore set by under-resolved wall friction and numerical
+dissipation, which is grid-dependent by construction.</p>
+<p><strong>The wall model, and why it is off.</strong> With no-slip ghost cells the wall stress is
+ν u₁ / y at y = h/2. On the Draft grid (h = 42 mm) the first face sits at y⁺ ≈ 170 for
+2 m/s near the wall, where the turbulent friction of the law below is 9.6 times the
+resolved one (5.7 times at 1 m/s, 16 times at 4 m/s), and the resolved one scales with 1/h — the obvious suspect for the grid dependence. <code>wall_<wbr>model="werner_<wbr>wengle"</code>
+adds the Werner &amp; Wengle (1991) law: inverting u⁺ = 8.3 (y⁺)^(1/7) for the friction velocity
+gives the explicit <span class="math">τ = (|<i>u</i>₁| (ν/<i>y</i>)^(1/7) / 8.3)^(7/4)</span>, which equals ν|u₁|/y at
+y⁺ = 8.3^(7/6) = 11.81 and exceeds it above; the solver adds the excess
+<span class="math">max(τ − ν|<i>u</i>₁|/<i>y</i>, 0)</span> as a force τ/h on the face row next to each no-slip domain wall (u
+next to the floor and ceiling — relative to a moving road — and v next to the side walls of
+a closed box). So a resolved wall (first face in the viscous sublayer) is left exactly as
+it was. Against the log law u⁺ = ln(y⁺)/0.41 + 5.2 the power law's stress is within +4.5 /
+−1.7 % for 30 ≤ y⁺ ≤ 1000 (−8.7 % at 3000, −8.4 % at y⁺ = 12). The model is exact in its own
+terms (tests: the stress is the power-law u_τ² to round-off above the crossover and zero
+below, it only removes kinetic energy, it reaches only the wall faces, it is
+differentiable; <code>tests/<wbr>test_<wbr>ns2d_<wbr>wallmodel.py</code>).</p>
+<p>It does not rescue the 2D room. With the turbulent friction in place the rooms organise into
+one strong vortex sooner and the 12-cell room <em>speeds up</em> (4.18 m/s against 2.42): once the
+wall is the sink, the steady speed follows from T u_d ≈ τ(U) U × perimeter, which for
+τ ∝ U^(7/4) gives several m/s, and the 24-cell room still drifts by 39 %. Its three grids
+(2.30, 4.18, 3.35 m/s) are no closer to agreement than the three without it. Correct wall
+friction cannot replace the missing 3D interior dissipation. The model therefore stays
+opt-in (<code>SolverConfig.wall_model</code>, default "none"), so every validated case — and every
+planned run — is unchanged; it is the right tool for a 2D flow whose losses really are at
+the walls (a channel or a lid-driven cavity at high Re), not for a room.</p>
+<p><strong>What to tell the user.</strong> In a 2D closed room with fans, the delivered thrust is exact
+(§18.1) and the <em>pattern</em> (where the jet goes, where it recirculates) is meaningful, but
+speeds, the disc velocity and anything derived from them (volume flow, ideal power,
+convective heat transfer) are qualitative and grid-dependent, and Froude momentum theory
+does not apply (the fan recirculates its own wake). Use the 3D solver for rooms.</p>
+<h2 id="19-ports-jets-and-vents-and-painted-obstacles">19. Ports (jets and vents) and painted obstacles<a class="anchor" href="#19-ports-jets-and-vents-and-painted-obstacles" aria-label="Link to this section">#</a></h2>
+<h3 id="191-jets-and-vents">19.1 Jets and vents<a class="anchor" href="#191-jets-and-vents" aria-label="Link to this section">#</a></h3>
+<p>A jet creates fluid and blows it out of its open face; a vent sucks fluid in and removes it.
+The port body — a region <code>depth</code> deep (default three cells) behind the face of a jet, beyond
+it for a vent — carries a uniform mass source of exactly <span class="math">speed × size</span> per unit span, and the
+projection solves <span class="math">∇·<i>u</i> = source</span> instead of zero (<span class="math"><i>L</i> ψ = ∇·û − <i>s</i></span>). The velocity inside the
+body is penalised (with the momentum η) toward the field of that source: zero at the closed
+back, <code>speed</code> along the direction at the open face (a linear ramp, the continuity solution of
+a uniform source). Measured: the flux through the first face line past a jet's open face is
+<span class="math">speed × size</span> to round-off (10⁻¹⁶ relative in float64; the test checks 10⁻⁹,
+<code>test_<wbr>jet_<wbr>and_<wbr>vent_<wbr>in_<wbr>a_<wbr>closed_<wbr>box_<wbr>conserve_<wbr>mass</code>), the velocity there is 0.9987 <code>speed</code>,
+and the momentum flux two widths downstream is 1.023 × that of a top-hat (§21.5). A jet can
+carry a temperature (penalised in its body) and smoke; a vent removes smoke and heat with
+its fluid.</p>
+<h3 id="192-mass-balance-and-the-neumann-compatibility">19.2 Mass balance and the Neumann compatibility<a class="anchor" href="#192-mass-balance-and-the-neumann-compatibility" aria-label="Link to this section">#</a></h3>
+<p>A tunnel's outlet is corrected so that outflow = inflow + the ports' net volume flow (to
+1e-10, <code>test_<wbr>jet_<wbr>in_<wbr>a_<wbr>tunnel_<wbr>balances_<wbr>at_<wbr>the_<wbr>outlet</code>). In a closed (or periodic) domain the
+all-Neumann pressure problem needs a zero-sum right-hand side; a balanced set of ports
+satisfies that exactly, and an unbalanced one is made compatible by spreading the excess as
+a uniform sink over the domain (the planner warns: physically the box would pressurise). The
+projection then stays exact (residual and divergence below 1e-10 in float64,
+<code>test_<wbr>unbalanced_<wbr>port_<wbr>in_<wbr>a_<wbr>closed_<wbr>box_<wbr>keeps_<wbr>the_<wbr>projection_<wbr>exact</code>).</p>
+<p>The fluid that uniform sink removes takes its heat and smoke with it (review round 5 before the release): when
+the ports' net flow q is positive, the scalar sink <code>src_neg</code> (the vents' own <code>m &lt; 0</code>) also
+carries <span class="math">−<i>q</i>/<i>A</i></span> on every cell, so θ and smoke lose <span class="math"><i>q</i> θ / <i>A</i></span> locally and the reported vent heat
+includes the leak. Before, the conservative scalar update kept them — a source <span class="math">+θ <i>q</i>/<i>A</i></span>
+everywhere — and a 64² closed adiabatic box fed by a θ = 1 jet (q = 0.1) with no vent climbed
+to mean θ 2.05 and max 2.77 by t = 21.4 while its heat balance still "closed" (heat out of the
+ports 0). Now max θ stays at 0.988, the mean reaches 0.910 (the well-mixed estimate
+1 − exp(−q t / V) is 0.882; the jet's penalised footprint puts in a little more than q·1),
+heat out of the ports is 0.091 against 0.100 in, and the residual is 1.6 × 10⁻⁶. A net sink
+(only vents) needs nothing: the fluid the solve creates evenly arrives at θ = 0 and dilutes
+through the conservative flux.</p>
+<h3 id="193-painted-obstacles-explore-mode">19.3 Painted obstacles (explore mode)<a class="anchor" href="#193-painted-obstacles-explore-mode" aria-label="Link to this section">#</a></h3>
+<p><code>paint_disc(center, radius, erase=False)</code> and <code>paint_polygon(points)</code> add or remove solid in a
+brush footprint; <code>clear_paint()</code> removes all. The paint layer is penalised to rest with the
+momentum η, insulates heat and clears smoke, and stays outside the differentiable body
+geometry (sensitivities never see it). Its solid fraction is evaluated on each grid's own
+points (centres, u-faces, v-faces) with the bodies' calibrated interface (one-cell C¹ step
+shifted 0.32 h inside the outline), and its force is the penalisation impulse weighted by the
+paint's share of the penalisation at each face — exactly the bodies' force rule. A painted disc
+is therefore the same obstacle as an <code>ImmersedBody</code> of that outline: drag 2.1338 against
+2.1337 (+0.006 %), the same mask to 10⁻⁴ and the same residual velocity inside
+(<code>test_<wbr>paint_<wbr>erase_<wbr>and_<wbr>clear</code>, which allows 1 % and 0.02). (A first version averaged the
+face fractions from the centres and weighted the impulse by the solid fraction itself, which
+discounted the interface where most momentum is removed: half the body's drag.) Brush
+strokes rewrite tensors in place, so after the first stroke no graph is re-captured.</p>
+<h2 id="20-live-editing-diagnostics-solver-trace-and-the-pid-time-step">20. Live editing, diagnostics, solver trace and the PID time step<a class="anchor" href="#20-live-editing-diagnostics-solver-trace-and-the-pid-time-step" aria-label="Link to this section">#</a></h2>
+<h3 id="201-live-edits">20.1 Live edits<a class="anchor" href="#201-live-edits" aria-label="Link to this section">#</a></h3>
+<p><code>set_inflow(re=…)</code> (ν, η, and with heat transfer κ = 1/(Re Pr) and η_θ), <code>set_bodies</code>,
+<code>set_emitters</code>, <code>set_sources(heat_sources=, fans=, ports=)</code> and <code>set_thermal(richardson=, prandtl=, walls=, theta_inlet=)</code> apply without reallocating the grid or the flow: an edit that
+keeps the structure rewrites the existing tensors (tests check the <code>Physics</code> object is the same
+one and, on CUDA, that no graph is re-captured); a structural change rebuilds the placed
+physics, keeps u, v, p, θ and the smoke already in the flow, and re-captures lazily.</p>
+<h3 id="202-pid-controlled-time-step">20.2 PID-controlled time step<a class="anchor" href="#202-pid-controlled-time-step" aria-label="Link to this section">#</a></h3>
+<p><code>adaptive_dt="pid"</code> replaces the jumpy CFL rule (it follows every change of max|u|, e.g. a
+vortex passing the location of the maximum) by a PID controller in log space that steers the
+step toward 0.9 × the stability limit: error <span class="math"><i>e</i> = log(0.9 Δ<i>t</i><sub>lim</sub> / Δ<i>t</i><sub>prev</sub>)</span>, update
+<span class="math">Δ<i>t</i> = Δ<i>t</i><sub>prev</sub> exp(<i>k</i><sub><i>I</i></sub> <i>e</i> + <i>k</i><sub><i>P</i></sub> (<i>e</i> − <i>e</i>₁) + <i>k</i><sub><i>D</i></sub> (<i>e</i> − 2e₁ + <i>e</i>₂))</span> with (k_P, k_I, k_D) =
+(0.10, 0.25, 0.02), growth at most 3 % per step and never above the instantaneous limit
+(including the temperature bound of §16.1). Measured (cylinder, 300 steps): largest growth
+1.0019 per step, largest CFL number 0.459 (<code>test_<wbr>pid_<wbr>time_<wbr>step_<wbr>is_<wbr>smooth_<wbr>and_<wbr>stable</code> holds
+1.03 and 0.5).</p>
+<h3 id="203-diagnostics-and-the-solver-trace">20.3 Diagnostics and the solver trace<a class="anchor" href="#203-diagnostics-and-the-solver-trace" aria-label="Link to this section">#</a></h3>
+<p><code>SolverConfig.diagnostics=True</code> records, on the last step of every block of 10 steps (the
+CUDA-graph block) and without a host sync: t, Δt, the CFL number, RMS and max divergence
+(minus the port sources), the relative residual <span class="math">‖<i>L</i>ψ − <i>f</i>‖/‖<i>f</i>‖</span> of the last pressure solve,
+and the L2, RMS, max and relative change per step of u, v, p and θ, into a float64 device ring
+copied to the host once per <code>advance</code>; throughput (steps/s per <code>advance</code>) is measured on the
+host. The pressure solve is direct (exact DCT), so its residual is a round-off number: it
+proves the solve exact on this grid and would expose a broken compatibility condition at once
+(below 1e-10 in every float64 test). <code>diagnostics()</code> returns the table,
+<code>latest_diagnostics()</code> the last row (for <code>CFDResult.diagnostics</code>), <code>diagnostics_csv(path)</code>
+writes it.</p>
+<p>Cost of each feature (<code>bench_ns2d.py physics-perf</code>: the cylinder case of §10 at 1024 × 512,
+float32, CUDA graphs, variants interleaved over three rounds, median; measured while another
+process kept the GPU at 100 % utilisation, so the absolute rates are about 4× below the
+idle-machine figures of §10 and the relative costs are indicative):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">variant</th><th class="r" scope="col">steps/s</th><th class="r" scope="col">vs default</th></tr></thead>
+<tbody>
+<tr><td>default (no placed physics)</td><td class="r">113.2</td><td class="r">—</td></tr>
+<tr><td><code>diagnostics=True</code></td><td class="r">111.1</td><td class="r">−1.8 %</td></tr>
+<tr><td><code>adaptive_dt="pid"</code></td><td class="r">111.9</td><td class="r">−1.1 %</td></tr>
+<tr><td>two smoke channels (point + 8-nozzle rake)</td><td class="r">93.5</td><td class="r">−17 %</td></tr>
+<tr><td>tracer particles, 8 nozzles</td><td class="r">95.0</td><td class="r">−16 %</td></tr>
+<tr><td>heat transfer, forced (hot cylinder)</td><td class="r">73.2</td><td class="r">−35 %</td></tr>
+<tr><td>heat transfer + buoyancy</td><td class="r">69.2</td><td class="r">−39 %</td></tr>
+<tr><td>fan, velocity mode</td><td class="r">104.2</td><td class="r">−8 %</td></tr>
+<tr><td>jet + vent</td><td class="r">99.7</td><td class="r">−12 %</td></tr>
+<tr><td>everything at once</td><td class="r">47.7</td><td class="r">−58 %</td></tr>
+</tbody>
+</table></div>
+<p>Temperature costs most: a second transported field with its own TVD fluxes, wall
+conditions, penalisation and heat-rate bookkeeping in each of the three Runge–Kutta stages.</p>
+<p><code>trace_step(commit=False)</code> runs one step eagerly and returns every stage as cell-centred fields:
+the explicit update (advection, diffusion, forces), the penalised field, the Poisson right-hand
+side (the divergence to remove), the pressure potential, the correction (−∇ψ) and the projected
+field, with θ before and after its penalisation, and the final u, v, p, θ. By default the run is
+untouched (the step is computed on the side); the stages satisfy projected = penalised +
+correction exactly (<code>test_<wbr>trace_<wbr>step_<wbr>stages_<wbr>are_<wbr>consistent</code>).</p>
+<h2 id="21-validation-of-the-placed-physics">21. Validation of the placed physics<a class="anchor" href="#21-validation-of-the-placed-physics" aria-label="Link to this section">#</a></h2>
+<p>The cases live in <code>validation/<wbr>thermal2d_<wbr>cases.py</code>, whose docstring names the source every
+reference number was read from; <code>python validation/bench_ns2d.py thermal</code> runs the grid
+studies below and the slow tests <code>tests/<wbr>test_<wbr>ns2d_<wbr>physics_<wbr>validation.py</code> (<code>-m slow</code>) hold
+one resolution of each to a tolerance band. Float32 on the GPU unless stated, upwind3 advection,
+CUDA graphs. Exact-balance checks (answers known to round-off) are in §21.6.</p>
+<h3 id="211-differentially-heated-square-cavity-de-vahl-davis-1983">21.1 Differentially heated square cavity (de Vahl Davis 1983)<a class="anchor" href="#211-differentially-heated-square-cavity-de-vahl-davis-1983" aria-label="Link to this section">#</a></h3>
+<p>Unit square, no-slip walls, hot left wall θ = +½, cold right wall θ = −½, adiabatic top and
+bottom, Pr = 0.71, Boussinesq buoyancy with the free-fall scaling of §16.5 (<code>cavity_config</code>).
+Each run is integrated until the hot-wall Nusselt number changes by less than 10⁻⁶ per
+free-fall time over two consecutive checks (<code>run_cavity</code>). Quantities, in de Vahl Davis'
+units (velocities in κ/L): <code>Nu</code> the hot-wall mean from the scheme's own boundary fluxes (the
+cold wall gives the same value to ≤ 4 × 10⁻⁷ relative in every run: the energy balance of a
+steady state), <span class="math">Nu½</span> the horizontal heat flux uθ − ∂θ/∂x averaged over the vertical mid-plane
+(the benchmark's Nu₁/₂), <span class="math"><i>u</i><sub>max</sub></span> on the vertical mid-plane with its height y, <span class="math"><i>v</i><sub>max</sub></span> on the
+horizontal mid-plane with its position x (peaks refined by a parabola through the three
+largest samples), <span class="math">ψ<sub>mid</sub></span> the stream function at the centre. Reference: de Vahl Davis (1983),
+Table V (the bench-mark solution), in the last row of each block; <code>ext.</code> is the Richardson
+extrapolation of the three grids above it with the observed order p (<code>richardson</code>).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Ra</th><th class="r" scope="col">grid</th><th class="r" scope="col">Nu</th><th class="r" scope="col">Nu½</th><th class="r" scope="col">u_max (y)</th><th class="r" scope="col">v_max (x)</th><th class="r" scope="col">ψ_mid</th></tr></thead>
+<tbody>
+<tr><td>10³</td><td class="r">32²</td><td class="r">1.1201 (+0.19 %)</td><td class="r">1.1196</td><td class="r">3.663 (0.8135)</td><td class="r">3.711 (0.1785)</td><td class="r">1.183</td></tr>
+<tr><td></td><td class="r">64²</td><td class="r">1.1184 (+0.03 %)</td><td class="r">1.1182</td><td class="r">3.653 (0.8133)</td><td class="r">3.700 (0.1784)</td><td class="r">1.177</td></tr>
+<tr><td></td><td class="r">128²</td><td class="r">1.1179 (−0.01 %)</td><td class="r">1.1179</td><td class="r">3.650 (0.8132)</td><td class="r">3.698 (0.1783)</td><td class="r">1.175</td></tr>
+<tr><td></td><td class="r">ext. (p)</td><td class="r">1.1177 (1.90)</td><td class="r"></td><td class="r">3.6497 (2.19)</td><td class="r">3.6978 (2.30)</td><td class="r">1.1747 (2.02)</td></tr>
+<tr><td></td><td class="r">dVD</td><td class="r">1.118</td><td class="r">1.118</td><td class="r">3.649 (0.813)</td><td class="r">3.697 (0.178)</td><td class="r">1.174</td></tr>
+<tr><td>10⁴</td><td class="r">32²</td><td class="r">2.2690 (+1.16 %)</td><td class="r">2.2691</td><td class="r">16.239 (0.8230)</td><td class="r">19.710 (0.1186)</td><td class="r">5.108</td></tr>
+<tr><td></td><td class="r">64²</td><td class="r">2.2507 (+0.34 %)</td><td class="r">2.2506</td><td class="r">16.195 (0.8232)</td><td class="r">19.641 (0.1189)</td><td class="r">5.082</td></tr>
+<tr><td></td><td class="r">128²</td><td class="r">2.2462 (+0.14 %)</td><td class="r">2.2462</td><td class="r">16.187 (0.8232)</td><td class="r">19.631 (0.1188)</td><td class="r">5.076</td></tr>
+<tr><td></td><td class="r">ext. (p)</td><td class="r">2.2448 (2.05)</td><td class="r"></td><td class="r">16.185 (2.49)</td><td class="r">19.629 (2.76)</td><td class="r">5.074 (2.10)</td></tr>
+<tr><td></td><td class="r">dVD</td><td class="r">2.243</td><td class="r">2.243</td><td class="r">16.178 (0.823)</td><td class="r">19.617 (0.119)</td><td class="r">5.071</td></tr>
+<tr><td>10⁵</td><td class="r">64²</td><td class="r">4.5624 (+0.96 %)</td><td class="r">4.5615</td><td class="r">34.936 (0.8546)</td><td class="r">68.713 (0.0657)</td><td class="r">9.165</td></tr>
+<tr><td></td><td class="r">128²</td><td class="r">4.5315 (+0.28 %)</td><td class="r">4.5313</td><td class="r">34.790 (0.8546)</td><td class="r">68.672 (0.0659)</td><td class="r">9.128</td></tr>
+<tr><td></td><td class="r">256²</td><td class="r">4.5238 (+0.11 %)</td><td class="r">4.5242</td><td class="r">34.760 (0.8546)</td><td class="r">68.649 (0.0658)</td><td class="r">9.120</td></tr>
+<tr><td></td><td class="r">ext. (p)</td><td class="r">4.5213 (2.01)</td><td class="r"></td><td class="r">34.752 (2.26)</td><td class="r">68.620 (0.86)</td><td class="r">9.118 (2.24)</td></tr>
+<tr><td></td><td class="r">dVD</td><td class="r">4.519</td><td class="r">4.519</td><td class="r">34.73 (0.855)</td><td class="r">68.59 (0.066)</td><td class="r">9.111</td></tr>
+<tr><td>10⁶</td><td class="r">64²</td><td class="r">9.1051 (+3.47 %)</td><td class="r">9.1035</td><td class="r">66.585 (0.8499)</td><td class="r">222.47 (0.0379)</td><td class="r">16.737</td></tr>
+<tr><td></td><td class="r">128²</td><td class="r">8.8903 (+1.03 %)</td><td class="r">8.8904</td><td class="r">65.255 (0.8499)</td><td class="r">221.33 (0.0377)</td><td class="r">16.473</td></tr>
+<tr><td></td><td class="r">256²</td><td class="r">8.8409 (+0.46 %)</td><td class="r">8.8410</td><td class="r">64.941 (0.8499)</td><td class="r">220.72 (0.0378)</td><td class="r">16.408</td></tr>
+<tr><td></td><td class="r">ext. (p)</td><td class="r">8.8262 (2.12)</td><td class="r"></td><td class="r">64.844 (2.08)</td><td class="r">220.00 (0.89)</td><td class="r">16.386 (2.00)</td></tr>
+<tr><td></td><td class="r">dVD</td><td class="r">8.800</td><td class="r">8.799</td><td class="r">64.63 (0.850)</td><td class="r">219.36 (0.0379)</td><td class="r">16.32</td></tr>
+</tbody>
+</table></div>
+<p>Reading the table:</p>
+<ul>
+<li><strong>Order.</strong> Nu, u_max and ψ_mid converge monotonically at the formal second order (observed
+p = 1.9–2.5). The conservative wall flux of §16.4 matters here: the Nusselt number is the
+flux the scheme used, not a one-sided gradient re-computed afterwards. v_max at Ra 10⁵ and
+10⁶ converges irregularly (p ≈ 0.9): its peak sits 0.066 and 0.038 L from the wall, 4–17
+cells on these grids, where the parabolic peak refinement is itself first order; read the
+extrapolation of v_max there as indicative only.</li>
+<li><strong>Accuracy.</strong> The extrapolated values are within 0.08 % of de Vahl Davis for Ra 10³–10⁵
+(Nu, u_max, v_max, ψ_mid) and within 0.3–0.4 % at Ra 10⁶; the fine-grid values are within
+0.15 % (Ra ≤ 10⁵, 128²–256²) and 0.6 % (Ra 10⁶, 256²). The peak positions agree to the
+third decimal everywhere. de Vahl Davis' values are themselves extrapolated from finite-
+difference solutions and quoted to three or four significant figures, so differences of a
+few 10⁻⁴ are below what the reference resolves.</li>
+<li><strong>Grid study of the uncertainty machinery.</strong> <code>validation/run_all.py</code> (case <code>gci_cavity</code>)
+feeds the Ra 10³ runs at 16², 32², 64² and 128² to <code>aerolume.analysis.gci</code> and checks that
+the GCI band of the 64² value holds the 128² value — the cavity is the case where that can
+be tested against a known answer.</li>
+<li><strong>Cost and reproducibility.</strong> The temperature step bound of §16.1 (the discrete maximum
+principle) is the binding limit in these cavities: Ra 10⁶ on 128² cells takes 27 000 steps
+to t = 130 (85 s, GPU shared with other jobs); with the momentum limits alone the same run
+took 14 000 steps to t = 125, 1.9 times fewer per unit time. The table above was
+produced before that bound was added; re-running Ra 10⁴ on 64² and Ra 10⁶ on 128² with the
+final code (smaller steps, the same steady state) reproduces it to 2 × 10⁻⁵ relative
+(Nu 2.2507 and 8.8901 against 2.2507 and 8.8903).</li>
+</ul>
+<h3 id="212-forced-convection-from-a-heated-cylinder">21.2 Forced convection from a heated cylinder<a class="anchor" href="#212-forced-convection-from-a-heated-cylinder" aria-label="Link to this section">#</a></h3>
+<p>The momentum validation's cylinder (§11: domain [−10, 20] × [−10, 10] D, slip top and bottom,
+5 % blockage, uniform inflow) with the cylinder held at θ = 1 in a θ = 0 stream, Pr = 0.71,
+no buoyancy, averaged over t ∈ [50, 60] (<code>heated_cylinder_config</code>, <code>run_heated_cylinder</code>).
+<code>Nu</code> is the mean Nusselt number from the penalisation heat rate (§16.4), <code>Nu_surf</code> the
+integral of the local Nusselt number of <code>surface()</code> (the two-probe wall gradient), <code>Nu_front</code>
+/ <code>Nu_rear</code> the local values at the stagnation points. References (unconfined, Pr 0.71, as
+tabulated by Singhal, Dutta &amp; Kalita 2023, Table 2): Re 20: 2.4483 (Biswas &amp; Sarkar 2009),
+2.433 (Jafroudi &amp; Yang 1986); Re 40: 3.2351 (Biswas &amp; Sarkar), 3.2 (Jafroudi &amp; Yang), 3.255
+(Apelt &amp; Ledwich 1979).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Re</th><th class="r" scope="col">cells/D</th><th scope="col">grid</th><th class="r" scope="col">Nu</th><th class="r" scope="col">Nu_surf</th><th class="r" scope="col">Cd</th><th class="r" scope="col">Nu_front</th><th class="r" scope="col">Nu_rear</th><th class="r" scope="col">vs Biswas &amp; Sarkar</th></tr></thead>
+<tbody>
+<tr><td>20</td><td class="r">16</td><td>480×320</td><td class="r">2.4998</td><td class="r">2.5993</td><td class="r">2.1664</td><td class="r">4.633</td><td class="r">1.084</td><td class="r">+2.10 %</td></tr>
+<tr><td>20</td><td class="r">32</td><td>960×640</td><td class="r">2.5034</td><td class="r">2.5206</td><td class="r">2.1663</td><td class="r">4.456</td><td class="r">1.067</td><td class="r">+2.25 %</td></tr>
+<tr><td>40</td><td class="r">16</td><td>480×320</td><td class="r">3.3439</td><td class="r">3.4874</td><td class="r">1.6203</td><td class="r">6.943</td><td class="r">1.319</td><td class="r">+3.36 %</td></tr>
+<tr><td>40</td><td class="r">32</td><td>960×640</td><td class="r">3.3355</td><td class="r">3.3600</td><td class="r">1.6120</td><td class="r">6.448</td><td class="r">1.300</td><td class="r">+3.10 %</td></tr>
+</tbody>
+</table></div>
+<p>Domain study at Re 40, 16 cells/D: half-height 20 D (blockage 2.5 %, upstream 15 D,
+downstream 25 D) gives Nu 3.3129 (−0.93 %), half-height 40 D (blockage 1.25 %, upstream 20 D,
+downstream 30 D) 3.3014 (−1.27 %); Cd falls from 1.620 to 1.563 and 1.543.</p>
+<ul>
+<li><strong>Grid.</strong> Nu changes by +0.14 % (Re 20) and −0.25 % (Re 40) from 16 to 32 cells/D, so the
+discrete heat rate is converged to a few tenths of a per cent at 16 cells/D. The local wall-
+gradient value <code>Nu_surf</code> converges more slowly (4.0–4.3 % above the heat-rate value at 16
+cells/D, 0.7 % at 32): like cf (§6.5) it differentiates a field across the diffuse interface. The
+reported Nu always comes from the heat rate.</li>
+<li><strong>Accuracy.</strong> At 5 % blockage the heat rate is 2.1–3.4 % above the unconfined references —
+most of it the same blockage that raises the drag (§11). Shrinking the blockage to 1.25 %
+lowers Nu by 1.3 %, leaving +2.0 % against Biswas &amp; Sarkar and +1.4 % against Apelt &amp;
+Ledwich at Re 40. The published values themselves spread by that much (3.20–3.255 at
+Pr 0.71, and up to 3.28 at Pr 0.70, below); the Pr 0.70 study below places the
+extrapolated unconfined value inside that spread. The slow tests hold Nu to ± 4 % of
+Biswas &amp; Sarkar at 16 cells/D and 5 % blockage, and at Pr 0.70 on the 2.5 % domain to
+± 1.5 % of Bharti et al. (Re 20) and of Lange et al.'s correlation (Re 40)
+(<code>test_<wbr>heated_<wbr>cylinder_<wbr>pr070_<wbr>references</code>).</li>
+<li><strong>Physics.</strong> The local Nusselt number (<code>surface()["nu_local"]</code>) at the front stagnation
+point is 4.2–5.3 times that at the rear (the thin front boundary layer against the
+recirculating wake).</li>
+</ul>
+<p><strong>At Pr 0.70, against Lange et al. and the Pr 0.70 solutions.</strong> The same case at Pr 0.70, the
+Prandtl number of Lange, Durst &amp; Breuer's (1998) correlation <code>Nu = 0.082 Re^0.5 + 0.734 Re^x</code>,
+<code>x = 0.05 + 0.226 Re^0.085</code> (2.4087, 2.8774 and 3.2805 at Re 20, 30, 40), at 16 cells/D on
+the three domains of the study above (<code>CYLINDER_DOMAINS</code>; <code>bench_ns2d.py thermal</code>). The
+other Pr 0.70 references are secondary tabulations (the originals were not accessible):
+Bharti, Chhabra &amp; Eswaran (2007) 2.4653 and 3.2825, and Paramane &amp; Sharma (2009) 2.4189 and
+3.2465 at Re 20 and 40, as tabulated by Sharma &amp; Dhiman (2012, Tables 1–2); Dennis, Hudson &amp;
+Smith (1968) 2.5216 and Lange et al. 2.4087 at Re 20, as tabulated by the Notus CFD validation
+pages. The correlation as implemented reproduces Notus' value for Lange et al. to its four
+decimals (2.40868; <code>test_<wbr>cylinder_<wbr>reference_<wbr>data_<wbr>and_<wbr>lange_<wbr>correlation</code>), which is the check
+that its form is theirs. "drift" is the relative change of the heat rate between the halves
+of the averaging window t ∈ [50, 60]. RTX 4060 Ti, float32, GPU shared with other jobs.</p>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">Re</th><th class="r" scope="col">blockage</th><th class="r" scope="col">grid</th><th class="r" scope="col">Nu</th><th class="r" scope="col">vs Lange</th><th class="r" scope="col">vs Bharti</th><th class="r" scope="col">vs Paramane &amp; Sharma</th><th class="r" scope="col">vs Dennis</th><th class="r" scope="col">Cd</th><th class="r" scope="col">drift</th><th class="r" scope="col">wall</th></tr></thead>
+<tbody>
+<tr><td class="r">20</td><td class="r">5 %</td><td class="r">480×320</td><td class="r">2.4879</td><td class="r">+3.29 %</td><td class="r">+0.92 %</td><td class="r">+2.85 %</td><td class="r">−1.34 %</td><td class="r">2.166</td><td class="r">−5 × 10⁻⁶</td><td class="r">41 s</td></tr>
+<tr><td class="r"></td><td class="r">2.5 %</td><td class="r">640×640</td><td class="r">2.4635</td><td class="r">+2.28 %</td><td class="r">−0.07 %</td><td class="r">+1.84 %</td><td class="r">−2.30 %</td><td class="r">2.085</td><td class="r">−3 × 10⁻⁵</td><td class="r">69 s</td></tr>
+<tr><td class="r"></td><td class="r">1.25 %</td><td class="r">800×1280</td><td class="r">2.4542</td><td class="r">+1.89 %</td><td class="r">−0.45 %</td><td class="r">+1.46 %</td><td class="r">−2.67 %</td><td class="r">2.055</td><td class="r">−6 × 10⁻⁵</td><td class="r">112 s</td></tr>
+<tr><td class="r"></td><td class="r">→ 0</td><td class="r">extrapolated</td><td class="r"><strong>2.4484</strong></td><td class="r"><strong>+1.65 %</strong></td><td class="r"><strong>−0.68 %</strong></td><td class="r"><strong>+1.22 %</strong></td><td class="r"><strong>−2.90 %</strong></td><td class="r"></td><td class="r"></td><td class="r"></td></tr>
+<tr><td class="r">30</td><td class="r">5 %</td><td class="r">480×320</td><td class="r">2.9430</td><td class="r">+2.28 %</td><td class="r"></td><td class="r"></td><td class="r"></td><td class="r">1.818</td><td class="r">−1 × 10⁻⁵</td><td class="r">33 s</td></tr>
+<tr><td class="r">40</td><td class="r">5 %</td><td class="r">480×320</td><td class="r">3.3270</td><td class="r">+1.42 %</td><td class="r">+1.36 %</td><td class="r">+2.48 %</td><td class="r"></td><td class="r">1.620</td><td class="r">−3 × 10⁻⁵</td><td class="r">26 s</td></tr>
+<tr><td class="r"></td><td class="r">2.5 %</td><td class="r">640×640</td><td class="r">3.2962</td><td class="r">+0.48 %</td><td class="r">+0.42 %</td><td class="r">+1.53 %</td><td class="r"></td><td class="r">1.563</td><td class="r">−9 × 10⁻⁵</td><td class="r">44 s</td></tr>
+<tr><td class="r"></td><td class="r">1.25 %</td><td class="r">800×1280</td><td class="r">3.2848</td><td class="r">+0.13 %</td><td class="r">+0.07 %</td><td class="r">+1.18 %</td><td class="r"></td><td class="r">1.543</td><td class="r">−1.4 × 10⁻⁴</td><td class="r">64 s</td></tr>
+<tr><td class="r"></td><td class="r">→ 0</td><td class="r">extrapolated</td><td class="r"><strong>3.2781</strong></td><td class="r"><strong>−0.07 %</strong></td><td class="r"><strong>−0.13 %</strong></td><td class="r"><strong>+0.97 %</strong></td><td class="r"></td><td class="r"></td><td class="r"></td><td class="r"></td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Domain.</strong> Halving the blockage twice lowers Nu by 0.0244 then 0.0093 (Re 20) and 0.0308
+then 0.0114 (Re 40): an observed order of 1.39 and 1.44 in the blockage. Richardson-
+extrapolating the three domains to zero blockage (as a proxy for the unconfined cylinder;
+the inflow and outflow move out with the walls) gives 2.4484 and 3.2781, 1.6 % and 1.5 %
+below the 5 % domain's values and 0.2 % below the 1.25 % domain's. With the grid effect
+measured at Pr 0.71 above (+0.14 % and −0.25 % from 16 to 32 cells/D), the discretisation
+and domain uncertainty of the extrapolated values is about ± 0.3 %. The largest domain is
+also the slowest to settle (its heat rate still falls by 1.4 × 10⁻⁴ across the averaging
+window), which is two orders below the differences discussed here.</li>
+<li><strong>Agreement.</strong> The extrapolated unconfined Nusselt numbers lie inside the spread of the
+published Pr 0.70 values (Re 20: 2.4087–2.5216, 4.7 %; Re 40: 3.2465–3.2825, 1.1 %): at
+Re 40 within 0.13 % of both Bharti et al. and Lange et al.'s correlation; at Re 20 0.7 %
+below Bharti et al., 1.7 % above the correlation (a fit to Lange et al.'s own solutions)
+and 2.9 % below Dennis et al., which bracket it. Against the correlation the difference
+falls steadily with Re: +3.29, +2.28 and +1.42 % at 5 % blockage for Re 20, 30, 40.</li>
+<li><strong>Prandtl number.</strong> At 5 % blockage Nu(Pr 0.70) / Nu(Pr 0.71) = 0.9952 (Re 20) and 0.9949
+(Re 40), i.e. Nu ∝ Pr^0.34 and Pr^0.36 — the Pr^(1/3) of a thin thermal boundary layer.
+The Pr 0.71 table and the Pr 0.70 table are therefore consistent with each other.</li>
+</ul>
+<h3 id="213-rayleigh-bénard-onset">21.3 Rayleigh–Bénard onset<a class="anchor" href="#213-rayleigh-bénard-onset" aria-label="Link to this section">#</a></h3>
+<p>Linear stability between rigid isothermal plates predicts onset at Ra_c = 1707.76 with wave
+number k_c = 3.117 (Chandrasekhar 1961; Reid &amp; Harris 1958), independent of Pr. The case
+(<code>rb_config</code>, <code>run_rb_growth</code>) is one convection roll: a box of width π/k_c with stress-free,
+adiabatic side walls (which hold exactly that mode), no-slip plates at θ = ±½, Pr 0.71,
+float64. It starts from the conduction profile plus a 10⁻⁴ roll perturbation, fits the
+exponential growth of the kinetic energy over the second half of 120 free-fall times, and
+interpolates the growth rates at Ra 1600 and 1800 to zero (<code>rb_onset</code>).</p>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">cells across the layer</th><th class="r" scope="col">σ(1600) [κ/L²]</th><th class="r" scope="col">σ(1800) [κ/L²]</th><th class="r" scope="col">Ra_c</th><th class="r" scope="col">error</th></tr></thead>
+<tbody>
+<tr><td class="r">16</td><td class="r">−0.503</td><td class="r">+0.850</td><td class="r">1674.4</td><td class="r">−1.96 %</td></tr>
+<tr><td class="r">32</td><td class="r">−0.678</td><td class="r">+0.671</td><td class="r">1700.6</td><td class="r">−0.42 %</td></tr>
+</tbody>
+</table></div>
+<p>The error falls by 4.7× per halving of h, consistent with second order; assuming p = 2 the
+two grids extrapolate to 1709.3 (+0.09 %). (The validation runner's quick case, 24 cells
+and growth rates at Ra 1500 and 2000, gives 1701.)</p>
+<h3 id="214-actuator-strip-in-a-channel-momentum-theory">21.4 Actuator strip in a channel (momentum theory)<a class="anchor" href="#214-actuator-strip-in-a-channel-momentum-theory" aria-label="Link to this section">#</a></h3>
+<p>A fan of width D = 1 and thickness D/8 normal to the flow in a slip-walled tunnel of height
+10 D (blockage B = 0.1), "thrust" mode with T = C_T · ½ρU²D, Re = 500, averaged over
+t ∈ [30, 60] (<code>run_actuator_disc</code>). The disc velocity u_t is the fan report's footprint-
+averaged axial speed. Reference: quasi-inviscid confined momentum theory (the streamtube
+model of Garrett &amp; Cummins 2007: continuity, Bernoulli in the core and the bypass, channel
+momentum balance; <code>channel_disc_theory</code>, cross-checked against the independent
+implementation in <code>validation/run_all.py</code> to 10⁻⁶), which for B → 0 recovers Froude's
+C_T = 4a(1 + a) (propeller) and 4a(1 − a) (turbine).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">fan</th><th class="r" scope="col">C_T</th><th class="r" scope="col">cells/D</th><th class="r" scope="col">u_t</th><th class="r" scope="col">theory</th><th class="r" scope="col">error</th><th class="r" scope="col">induction a</th><th class="r" scope="col">theory a</th><th class="r" scope="col">error a</th><th class="r" scope="col">Froude a (B = 0)</th></tr></thead>
+<tbody>
+<tr><td>propeller (blows with the stream)</td><td class="r">0.5</td><td class="r">16</td><td class="r">1.0998</td><td class="r">1.1030</td><td class="r">−0.29 %</td><td class="r">0.0998</td><td class="r">0.1030</td><td class="r">−3.1 %</td><td class="r">0.1124</td></tr>
+<tr><td></td><td class="r">0.5</td><td class="r">32</td><td class="r">1.1013</td><td class="r">1.1030</td><td class="r">−0.15 %</td><td class="r">0.1013</td><td class="r">0.1030</td><td class="r">−1.6 %</td><td class="r"></td></tr>
+<tr><td></td><td class="r">0.8</td><td class="r">16</td><td class="r">1.1530</td><td class="r">1.1576</td><td class="r">−0.40 %</td><td class="r">0.1530</td><td class="r">0.1576</td><td class="r">−2.9 %</td><td class="r">0.1708</td></tr>
+<tr><td></td><td class="r">0.8</td><td class="r">32</td><td class="r">1.1553</td><td class="r">1.1576</td><td class="r">−0.20 %</td><td class="r">0.1553</td><td class="r">0.1576</td><td class="r">−1.4 %</td><td class="r"></td></tr>
+<tr><td>turbine (blows against it)</td><td class="r">0.5</td><td class="r">16</td><td class="r">0.8794</td><td class="r">0.8736</td><td class="r">+0.66 %</td><td class="r">0.1206</td><td class="r">0.1264</td><td class="r">−4.6 %</td><td class="r">0.1464</td></tr>
+<tr><td></td><td class="r">0.5</td><td class="r">32</td><td class="r">0.8775</td><td class="r">0.8736</td><td class="r">+0.45 %</td><td class="r">0.1225</td><td class="r">0.1264</td><td class="r">−3.1 %</td><td class="r"></td></tr>
+<tr><td></td><td class="r">0.8</td><td class="r">16</td><td class="r">0.7901</td><td class="r">0.7782</td><td class="r">+1.54 %</td><td class="r">0.2099</td><td class="r">0.2218</td><td class="r">−5.4 %</td><td class="r">0.2764</td></tr>
+<tr><td></td><td class="r">0.8</td><td class="r">32</td><td class="r">0.7871</td><td class="r">0.7782</td><td class="r">+1.15 %</td><td class="r">0.2129</td><td class="r">0.2218</td><td class="r">−4.0 %</td><td class="r"></td></tr>
+</tbody>
+</table></div>
+<p>The delivered thrust equals the set thrust to 10⁻⁷ in every run (§18.1). The disc velocity
+is within 0.4 % (propeller) and 1.5 % (turbine) of the inviscid theory; the induction, a
+small difference u_t − 1, is within 1.4–5.4 % and converges toward the theory with the
+grid. The remaining shortfall is expected from what the theory leaves out: viscosity at
+Re 500 (the wake mixes with the bypass and the core never reaches its inviscid far-wake
+speed), the finite thickness and smooth edges of the strip. The confinement matters — the
+unconfined Froude values are 8–25 % larger — so the comparison is made with the confined
+model.</p>
+<h3 id="215-plane-jet-from-a-port">21.5 Plane jet from a port<a class="anchor" href="#215-plane-jet-from-a-port" aria-label="Link to this section">#</a></h3>
+<p>A jet port of width b = 1 at speed 1 (Re_j = 25) blows along +x into a closed box 80 b
+long and 80 b tall, 8 cells per b; a vent across the far wall removes the jet's volume
+flow as a uniform drift. Mean fields over t ∈ [300, 400] (<code>run_plane_jet</code>, <code>jet_measures</code>).
+Reference: Bickley's (1937) similarity solution of the plane laminar jet, u_c =
+0.4543 (K²/(νx))^(1/3) with the kinematic momentum flux K = ∫u² dy conserved, the half-width
+b½ = (0.8814/0.2752)(ν²/K)^(1/3) x^(2/3) and a sech² profile.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">quantity (8 ≤ x/b ≤ 24)</th><th class="r" scope="col">measured</th></tr></thead>
+<tbody>
+<tr><td>K at x/b = 4, 12, 24</td><td class="r">1.023, 0.970, 0.929</td></tr>
+<tr><td>change of K over the span</td><td class="r">−6.0 %</td></tr>
+<tr><td>— shear of the return flow on the jet core, ∫ν[∂u/∂y]edges dx</td><td class="r">−3.6 %</td></tr>
+<tr><td>— the box's streamwise pressure gradient on the core, −∫W dp_edge/dx dx</td><td class="r">−2.5 %</td></tr>
+<tr><td><strong>momentum-budget residual</strong> of the core</td><td class="r"><strong>−0.27 %</strong></td></tr>
+<tr><td>centreline decay slope of u_c⁻³ / Bickley</td><td class="r">−4.7 %</td></tr>
+<tr><td>half-width b½ at x/b = 20 (30) / Bickley, fitted virtual origin 1.61 b</td><td class="r">−3.9 % (−5.4 %)</td></tr>
+<tr><td>rms deviation of u/u_c from sech² at x/b = 20</td><td class="r">0.016</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Momentum is conserved; the jet is confined.</strong> The flux through the first face line past
+a port is speed × width to round-off and the momentum flux two widths downstream is 1.023 × a
+top-hat's (§19.1). Downstream, K = ∫u² dy over the jet's forward-flow core falls by 6 %
+between 8 and 24 port widths. Integrating the steady x-momentum equation across the core
+(<code>jet_measures</code>, docstring) splits that change into the shear of the counter-flow with
+which the closed box returns the entrained fluid (3.6 %) and the adverse pressure gradient
+that drives that counter-flow (2.5 %); the remaining 0.27 % is the budget's residual — the
+scheme conserves momentum, the drift is the box. A first version of the case integrated K
+over the whole box height and over 12 ≤ x/b ≤ 40 and reported a 17.5 % drift. A box twice
+as tall and 100 b long (800 × 1280 cells, averaged over t ∈ [350, 500], 515 s on a shared
+GPU) reduces the drift to 5.2 % with the same budget residual (−0.20 %).</li>
+<li><strong>Similarity.</strong> The centreline decay and the half-width follow Bickley within 4–5 %, and
+the profile is sech² to 0.016 rms. The jet is slightly narrower and decays slightly faster
+than the free jet, both consistent with the momentum it loses to the confinement.</li>
+<li>The validation runner (<code>validation/run_all.py</code>, case <code>plane_jet</code>) and the slow test
+(<code>test_<wbr>plane_<wbr>jet_<wbr>momentum_<wbr>flux</code>) hold the budget residual below 1 % of K — the
+conservation statement that can be held tight — and the raw drift of K below 8 % over the
+same span. (An earlier runner held the raw drift to 5 % and failed at 6.2 % although the
+budget closed to −0.27 %.)</li>
+</ul>
+<h3 id="216-exact-balances-tests-teststest_ns2d_physicspy">21.6 Exact balances (tests, <code>tests/<wbr>test_<wbr>ns2d_<wbr>physics.py</code>)<a class="anchor" href="#216-exact-balances-tests-teststest_ns2d_physicspy" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th scope="col">result</th></tr></thead>
+<tbody>
+<tr><td>conduction between two held walls: linear profile, Nu = 1</td><td>1e-10</td></tr>
+<tr><td>heat-flux wall: exact slope, heat in = heat out</td><td>to round-off</td></tr>
+<tr><td>heater in an adiabatic box: d(heat content)/dt = power</td><td>1e-10</td></tr>
+<tr><td>heat-flux body: released heat = G P / Pe</td><td>1e-9</td></tr>
+<tr><td>hot body in a box: body heat rate = wall heat rate (steady)</td><td>1e-6</td></tr>
+<tr><td>energy budget, every heat path at once, steady (tunnel, 64 × 32)</td><td>residual 1.8e-6 of the input</td></tr>
+<tr><td>temperature bounded by its boundary and body values (tunnel, heated cylinder)</td><td>θ ∈ [0, 1]</td></tr>
+<tr><td>stably stratified box stays at rest</td><td>1e-12</td></tr>
+<tr><td>fan in a periodic box: d(momentum)/dt = thrust</td><td>1e-10</td></tr>
+<tr><td>velocity-mode fan: footprint speed vs target (tunnel, target 1.5)</td><td>0.15 % at t = 7, 0.006 % at t = 12</td></tr>
+<tr><td>jet and vent in a closed box: flux past the open face = speed × size</td><td>1e-16</td></tr>
+<tr><td>tunnel with a jet: outflow = inflow + ports</td><td>1e-10</td></tr>
+<tr><td>unbalanced port in a closed box: projection residual and divergence</td><td>&lt; 1e-10 (float64)</td></tr>
+<tr><td>painted disc vs the same <code>ImmersedBody</code>: drag</td><td>2.1338 vs 2.1337 (+0.006 %)</td></tr>
+<tr><td>particles in uniform flow: x = x_e + age</td><td>1e-9</td></tr>
+<tr><td>CUDA graphs vs eager with every feature on</td><td>1e-5</td></tr>
+<tr><td>trace stages: projected = penalised + correction</td><td>to round-off</td></tr>
+<tr><td>live edits keep the <code>Physics</code> object and do not re-capture graphs</td><td>identity / capture count</td></tr>
+</tbody>
+</table></div>
+<h2 id="22-limitations-of-the-placed-physics">22. Limitations of the placed physics<a class="anchor" href="#22-limitations-of-the-placed-physics" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Boussinesq, constant properties.</strong> Density differences enter only the buoyancy term
+(valid for β ΔT ≪ 1, i.e. temperature differences of tens of kelvin in air); viscosity,
+conductivity and heat capacity do not depend on temperature. No radiation, no
+compressibility, no conjugate conduction inside solids: a body is isothermal, releases a
+prescribed flux, or is insulated.</li>
+<li><strong>Thermal wall.</strong> The penalised thermal wall sits within ±0.1 cell of the momentum wall
+(§16.2), but the wall temperature of a heat-flux body reads 0.26 G h high (§16.3, first
+order in h). Heat rates are second order; local wall gradients (<code>nu_local</code>) need ≳ 32 cells
+across the body to be within 1 % of the heat-rate Nusselt number.</li>
+<li><strong>Forced convection.</strong> Extrapolated to zero blockage, the cylinder's mean Nusselt number
+lies inside the spread of the published values (Re 40: within 0.13 % of Bharti et al. and
+of Lange et al.'s correlation; Re 20: −0.7 % and +1.7 %; §21.2). A finite domain raises it:
++1.5 to +1.6 % at 5 % blockage, +0.2 % at 1.25 %. The published values themselves spread
+by 1–5 %, so quote Nusselt numbers with ± 2 % plus the blockage effect of the domain used.</li>
+<li><strong>Natural convection</strong> is validated for steady laminar cavities up to Ra 10⁶ (§21.1).
+Above that, flows become unsteady and the boundary layers thin as Ra^(−1/4): 256² cells
+at Ra 10⁶ already need 40 000 explicit steps, and turbulent natural convection (Ra ≳ 10⁸)
+is outside what a uniform explicit 2D grid resolves.</li>
+<li><strong>Fans</strong> are actuator strips: thrust and the momentum-theory induction are reproduced
+(§21.4); there are no blades, no swirl (2D), no fan curve beyond the "velocity" mode's
+regulated pressure jump. Induction is within 1.4–5.4 % of inviscid theory at Re 500.</li>
+<li><strong>Fans in closed 2D rooms</strong> are qualitative. The thrust is exact, but the room's speeds
+are not grid-converged (settled mean speed 2.4 → 3.4 m/s from 6 to 24 cells per fan width
+for a 1 N/m fan in a 4 × 3 m room, 2.3–4.2 m/s with the wall model, still drifting by up
+to 39 % after 1200 L/U; §18.4): with no vortex
+stretching the fan's power can only leave through under-resolved wall friction and
+numerical dissipation, so a 2D room spins up into room-sized vortices. Momentum theory
+does not apply in a closed room. Use 3D for rooms.</li>
+<li><strong>Ports</strong> impose a uniform source over the port body and a top-hat velocity at the open
+face (momentum flux 1.023 × the top-hat value two widths downstream). An unbalanced set of
+ports in a closed domain is made solvable by a uniform sink (the planner warns); the real
+box would pressurise. Jets in closed boxes lose momentum to the return flow (§21.5).</li>
+<li><strong>Emitters</strong> are visualisation: smoke is a passive scalar with the numerical diffusion of
+the TVD scheme (streaks narrower than ~2.5 cells smear); tracer particles are massless,
+follow the bilinearly interpolated velocity with RK2, and carry no diffusion or inertia —
+use them for streaklines and timelines, not for particle statistics.</li>
+<li><strong>Painted obstacles</strong> are outside the differentiable geometry by design: sensitivities and
+optimisation see only <code>ImmersedBody</code> outlines.</li>
+<li><strong>PID time step.</strong> <code>adaptive_dt="pid"</code> smooths the step for live viewing; every
+validation run above uses the CFL rule, and the PID step has been checked for stability
+(CFL ≤ 0.5), not for accuracy of transients.</li>
+</ul>
+<h2 id="23-references-placed-physics">23. References (placed physics)<a class="anchor" href="#23-references-placed-physics" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Apelt &amp; Ledwich (1979), Heat transfer in transient and unsteady flows past a circular
+cylinder in the range 1 &lt; R &lt; 40, JFM 95, 761–777.</li>
+<li>Bharti, Chhabra &amp; Eswaran (2007), A numerical study of the steady forced convection heat
+transfer from an unconfined circular cylinder, Heat Mass Transfer 43, 639–648 (Pr 0.7 values
+as tabulated by Sharma &amp; Dhiman 2012, §21.2).</li>
+<li>Bickley (1937), The plane jet, Phil. Mag. (7) 23, 727–731.</li>
+<li>Biswas &amp; Sarkar (2009), Effect of thermal buoyancy on vortex shedding past a circular
+cylinder in cross-flow at low Reynolds numbers, Int. J. Heat Mass Transfer 52, 1897–1912.</li>
+<li>Celik, Ghia, Roache, Freitas, Coleman &amp; Raad (2008), Procedure for estimation and reporting
+of uncertainty due to discretization in CFD applications, J. Fluids Eng. 130, 078001.</li>
+<li>Chandrasekhar (1961), Hydrodynamic and Hydromagnetic Stability, Oxford University Press.</li>
+<li>de Vahl Davis (1983), Natural convection of air in a square cavity: a bench mark numerical
+solution, Int. J. Numer. Meth. Fluids 3, 249–264.</li>
+<li>Dennis, Hudson &amp; Smith (1968), Steady laminar forced convection from a circular cylinder at
+low Reynolds numbers, Phys. Fluids 11, 933–940 (Re 20 value as tabulated by the Notus CFD
+validation, §21.2).</li>
+<li>Garrett &amp; Cummins (2007), The efficiency of a turbine in a tidal channel, JFM 588, 243–251.</li>
+<li>Jafroudi &amp; Yang (1986), Steady laminar forced convection from a circular cylinder,
+J. Comput. Phys. 65, 46–56.</li>
+<li>Kadoch, Kolomenskiy, Angot &amp; Schneider (2012), A volume penalization method for
+incompressible flows and scalar advection–diffusion with moving obstacles, J. Comput.
+Phys. 231, 4365–4383.</li>
+<li>Kraichnan (1967), Inertial ranges in two-dimensional turbulence, Phys. Fluids 10,
+1417–1423 (the inverse energy cascade of 2D flow, §18.4).</li>
+<li>Lange, Durst &amp; Breuer (1998), Momentum and heat transfer from cylinders in laminar
+crossflow at 10⁻⁴ ≤ Re ≤ 200, Int. J. Heat Mass Transfer 41, 3409–3430 (the correlation of
+§21.2; original not accessible, its form checked against the value the Notus CFD validation
+tabulates for it at Re 20).</li>
+<li>Notus CFD, validation documentation, "Heated cylinder flow" (Re 20, Pr 0.70; table of mean
+Nusselt numbers with Dennis et al. 1968 and Lange et al. 1998),
+https://doc.notus-cfd.org/d2/d1e/group__doc__validation__heated__cylinder__flow.html.</li>
+<li>Paramane &amp; Sharma (2009), Numerical investigation of heat and fluid flow across a rotating
+circular cylinder maintained at constant temperature in 2-D laminar flow regime, Int. J. Heat
+Mass Transfer 52, 3205–3216 (rotation rate 0, as tabulated by Sharma &amp; Dhiman 2012).</li>
+<li>Reid &amp; Harris (1958), Some further results on the Bénard problem, Phys. Fluids 1, 102–110.</li>
+<li>Roache (1998), Verification and Validation in Computational Science and Engineering,
+Hermosa.</li>
+<li>Sharma &amp; Dhiman (2012), Heat transfer from a rotating circular cylinder in the steady regime:
+effects of Prandtl number, Thermal Science 16(1), 79–91, Tables 1 and 2 (the Pr 0.7 values of
+Bharti et al. and of Paramane &amp; Sharma used in §21.2).</li>
+<li>Singhal, Dutta &amp; Kalita (2023), Int. J. Thermal Sciences 194, 108588 (arXiv:2303.17562),
+Table 2: the compilation of cylinder Nusselt numbers used in §21.2.</li>
+<li>Valli, Carey &amp; Coutinho (2005), Control strategies for timestep selection in finite element
+simulation of incompressible flows and coupled reaction–convection–diffusion processes,
+Int. J. Numer. Meth. Fluids 47, 201–231 (the PID step-size controller family of §20.2).</li>
+<li>van Leer (1979), Towards the ultimate conservative difference scheme V. A second-order
+sequel to Godunov's method, J. Comput. Phys. 32, 101–136 (MUSCL).</li>
+<li>Werner &amp; Wengle (1993), Large-eddy simulation of turbulent flow over and around a cube in
+a plate channel, in Turbulent Shear Flows 8 (Durst et al., eds.), Springer, 155–168
+(presented 1991; the power-law wall model of §18.4).</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="methods.html"><span>Previous</span><b>Methods</b></a><a class="next" href="theory-ns3d.html"><span>Next</span><b>Navier–Stokes solver (3D)</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-equations-and-scaling">1. Equations and scaling</a></li><li class="l2"><a href="#2-grid-and-boundary-conditions">2. Grid and boundary conditions</a></li><li class="l2"><a href="#3-spatial-discretisation">3. Spatial discretisation</a></li><li class="l2"><a href="#4-pressure-exact-projection-with-a-direct-dct-poisson-solver">4. Pressure: exact projection with a direct DCT Poisson solver</a></li><li class="l2"><a href="#5-time-integration-and-time-step">5. Time integration and time step</a></li><li class="l2"><a href="#6-immersed-boundaries-brinkman-volume-penalisation">6. Immersed boundaries: Brinkman volume penalisation</a></li><li class="l3"><a href="#61-masks">6.1 Masks</a></li><li class="l3"><a href="#62-implicit-penalisation">6.2 Implicit penalisation</a></li><li class="l3"><a href="#63-choosing-η-and-placing-the-effective-wall">6.3 Choosing η and placing the effective wall</a></li><li class="l3"><a href="#64-force-evaluation">6.4 Force evaluation</a></li><li class="l3"><a href="#65-surface-distributions-cp-cf">6.5 Surface distributions (cp, cf)</a></li><li class="l2"><a href="#7-subgrid-models-2d-les">7. Subgrid models (2D LES)</a></li><li class="l2"><a href="#8-passive-dye">8. Passive dye</a></li><li class="l2"><a href="#9-start-up-perturbation">9. Start-up perturbation</a></li><li class="l2"><a href="#10-performance-cuda-graphs-cpu-path">10. Performance: CUDA graphs, CPU path</a></li><li class="l2"><a href="#11-verification-and-validation">11. Verification and validation</a></li><li class="l3"><a href="#verification-exact-answers">Verification (exact answers)</a></li><li class="l3"><a href="#validation-circular-cylinder">Validation: circular cylinder</a></li><li class="l3"><a href="#channel-and-sharp-edged-benchmarks">Channel and sharp-edged benchmarks</a></li><li class="l3"><a href="#airfoil-sanity-check-not-a-quantitative-validation">Airfoil sanity check (not a quantitative validation)</a></li><li class="l3"><a href="#moving-ground">Moving ground</a></li><li class="l2"><a href="#12-limitations-what-to-trust">12. Limitations — what to trust</a></li><li class="l2"><a href="#13-differentiability">13. Differentiability</a></li><li class="l2"><a href="#14-references">14. References</a></li><li class="l2"><a href="#15-placed-physics-design-rules">15. Placed physics: design rules</a></li><li class="l2"><a href="#16-heat-transfer">16. Heat transfer</a></li><li class="l3"><a href="#161-energy-equation-and-its-discretisation">16.1 Energy equation and its discretisation</a></li><li class="l3"><a href="#162-temperature-bodies-implicit-penalisation-and-the-thermal-wall">16.2 Temperature bodies: implicit penalisation and the thermal wall</a></li><li class="l3"><a href="#163-heat-flux-and-adiabatic-bodies">16.3 Heat-flux and adiabatic bodies</a></li><li class="l3"><a href="#164-domain-walls-heat-rates-and-nusselt-numbers">16.4 Domain walls, heat rates and Nusselt numbers</a></li><li class="l3"><a href="#165-buoyancy-and-scaling">16.5 Buoyancy and scaling</a></li><li class="l3"><a href="#166-heaters-and-the-energy-balance">16.6 Heaters and the energy balance</a></li><li class="l2"><a href="#17-emitters-smoke-channels-and-tracer-particles">17. Emitters: smoke channels and tracer particles</a></li><li class="l2"><a href="#18-fans-actuator-strips">18. Fans: actuator strips</a></li><li class="l3"><a href="#181-momentum-source">18.1 Momentum source</a></li><li class="l3"><a href="#182-velocity-mode-an-in-graph-pi-controller">18.2 Velocity mode: an in-graph PI controller</a></li><li class="l3"><a href="#183-fan-report">18.3 Fan report</a></li><li class="l3"><a href="#184-fans-in-closed-2d-rooms-a-grid-study-and-the-wall-model">18.4 Fans in closed 2D rooms: a grid study, and the wall model</a></li><li class="l2"><a href="#19-ports-jets-and-vents-and-painted-obstacles">19. Ports (jets and vents) and painted obstacles</a></li><li class="l3"><a href="#191-jets-and-vents">19.1 Jets and vents</a></li><li class="l3"><a href="#192-mass-balance-and-the-neumann-compatibility">19.2 Mass balance and the Neumann compatibility</a></li><li class="l3"><a href="#193-painted-obstacles-explore-mode">19.3 Painted obstacles (explore mode)</a></li><li class="l2"><a href="#20-live-editing-diagnostics-solver-trace-and-the-pid-time-step">20. Live editing, diagnostics, solver trace and the PID time step</a></li><li class="l3"><a href="#201-live-edits">20.1 Live edits</a></li><li class="l3"><a href="#202-pid-controlled-time-step">20.2 PID-controlled time step</a></li><li class="l3"><a href="#203-diagnostics-and-the-solver-trace">20.3 Diagnostics and the solver trace</a></li><li class="l2"><a href="#21-validation-of-the-placed-physics">21. Validation of the placed physics</a></li><li class="l3"><a href="#211-differentially-heated-square-cavity-de-vahl-davis-1983">21.1 Differentially heated square cavity (de Vahl Davis 1983)</a></li><li class="l3"><a href="#212-forced-convection-from-a-heated-cylinder">21.2 Forced convection from a heated cylinder</a></li><li class="l3"><a href="#213-rayleigh-bénard-onset">21.3 Rayleigh–Bénard onset</a></li><li class="l3"><a href="#214-actuator-strip-in-a-channel-momentum-theory">21.4 Actuator strip in a channel (momentum theory)</a></li><li class="l3"><a href="#215-plane-jet-from-a-port">21.5 Plane jet from a port</a></li><li class="l3"><a href="#216-exact-balances-tests-teststest_ns2d_physicspy">21.6 Exact balances (tests, tests/test_ns2d_physics.py)</a></li><li class="l2"><a href="#22-limitations-of-the-placed-physics">22. Limitations of the placed physics</a></li><li class="l2"><a href="#23-references-placed-physics">23. References (placed physics)</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Design guidelines</title>
+<meta name="description" content="The visual and interaction rules of the desktop application.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Design guidelines">
+<meta property="og:description" content="The visual and interaction rules of the desktop application.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html" aria-current="page">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html" aria-current="page">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-what-to-avoid-the-generated-app-look">1. What to avoid (the "generated app" look)</a></li><li class="l2"><a href="#2-colour-semantic-tokens-with-tested-contrast">2. Colour: semantic tokens with tested contrast</a></li><li class="l2"><a href="#3-type">3. Type</a></li><li class="l2"><a href="#3b-panels-rails-and-workspaces">3b. Panels, rails and workspaces</a></li><li class="l2"><a href="#4-pages">4. Pages</a></li><li class="l2"><a href="#4b-live-editing-explore-aerojax-style">4b. Live editing (Explore, AeroJAX-style)</a></li><li class="l2"><a href="#5-plots-and-fields">5. Plots and fields</a></li><li class="l2"><a href="#5b-3d-viewer">5b. 3D viewer</a></li><li class="l2"><a href="#5c-the-assistant">5c. The assistant</a></li><li class="l2"><a href="#5d-start-up-tour-errors">5d. Start-up, tour, errors</a></li><li class="l2"><a href="#6-copy">6. Copy</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Project</p>
+<h1 id="aerolume-ui-guidelines-v4">Aerolume UI guidelines (v4)</h1>
+<p>Aerolume should look like engineering software that people have used for years —
+the lineage of ParaView, Qt Creator, JetBrains IDEs, Ansys Discovery, XFLR5 — not
+like a generated dashboard. It must still be easy: the workflow stays guided
+(Geometry → Setup → Simulate → Results → Compare → Report), but guidance comes
+from layout, defaults and precise labels, not from decoration and chatty copy.</p>
+<p>v3 adopts semantic colour tokens whose contrast is tested in both themes, Atkinson
+Hyperlegible type, and dockable panels with saved workspaces. Everything below is binding;
+the code contract is <code>src/<wbr>aerolume/<wbr>app/<wbr>theme.py</code> (tokens, hooks) and
+<code>src/<wbr>aerolume/<wbr>app/<wbr>widgets/<wbr>docks.py</code> (panels, workspaces).</p>
+<p>v4 (0.1.0) brings the app closer to the website: it carries over the site's language, not
+its layout. The chrome takes the site's monochrome palette, ink
+on paper in light and near-black in dark (<code>theme.SITE_LIGHT</code> / <code>SITE_DARK</code> record the
+<code>website/assets/site.css</code> value each token came from, and <code>tests/test_tokens.py</code> checks them
+against the file), the site's 6 px controls and 8 px frames, its two buttons (filled ink,
+outline) and its ink focus ring with an offset. Every page, panel, workflow, shortcut and data
+colour stays as it was: plots, colour maps, status colours and the blue marks in the data views
+keep their meaning.</p>
+<h2 id="1-what-to-avoid-the-generated-app-look">1. What to avoid (the "generated app" look)<a class="anchor" href="#1-what-to-avoid-the-generated-app-look" aria-label="Link to this section">#</a></h2>
+<p>Each of these is a defect, not a style choice:</p>
+<ul>
+<li>Navy backgrounds with neon teal/purple accents, glows, gradients, glass effects. (The dark
+theme's neutral near-black is the website's, with no glow or colour on it.)</li>
+<li>Hero banners, animated art, marketing taglines or feature cards inside the app.</li>
+<li>Cards everywhere; corner radii above 8 px (controls 6 px, framed blocks 8 px, as on the
+website); drop shadows.</li>
+<li>Decorative pill badges. More than one status chip in view is a smell; status is text.</li>
+<li>Dashboard KPI tiles with oversized digits. Results are tables with units and uncertainty.</li>
+<li>Two-line navigation items with subtitles; numbered circles; coloured icon tiles; emoji.</li>
+<li>Rainbow / jet colormaps.</li>
+<li>Vague or cute helper text ("Watch the flow live", "Rank your variants", "What can I do?").
+Explanations go in tooltips or the docs; labels are nouns, buttons are verbs.</li>
+<li>Centered layouts and large empty margins in a desktop tool; inconsistent spacing.</li>
+<li>A colour that is not a token. Pages set style hooks or read <code>theme.tokens()</code>.</li>
+</ul>
+<p>The Start page's study tiles are the one place with boxes side by side: they are a
+choice list with a schematic of what each study sets up (section 4), not feature cards. The
+Start page's flow motif beside the product name is the one drawing that carries no
+information: static, faint (<code>line_strong</code>) and a computed flow (section 4), the website's own
+motif, never animated and on no other page.</p>
+<h2 id="2-colour-semantic-tokens-with-tested-contrast">2. Colour: semantic tokens with tested contrast<a class="anchor" href="#2-colour-semantic-tokens-with-tested-contrast" aria-label="Link to this section">#</a></h2>
+<p><strong>Themes.</strong> Light is the default: the website's ink on paper, neutral greys with no colour
+cast (the norm for CAE tools, and the site's look). The dark theme is the website's
+near-black, and <em>System</em> (Preferences ▸ Theme, View ▸ Theme) follows the operating system's
+light / dark setting and switches when it does. No navy, no saturated backgrounds.</p>
+<p><strong>Switching must be quick.</strong> A theme switch is one application style sheet, applied by
+<code>theme.apply()</code> in two linear passes (clear, then set): Qt's own "replace the sheet"
+path re-polishes every widget once per ancestor, which measured 2.1 s on a window with
+every page built (1,933 widgets) and 3.5 s with six results open (5,305 widgets); the
+two-pass swap measured 0.27 s and 0.60 s. <code>tests/<wbr>test_<wbr>app_<wbr>shell_<wbr>perf.py</code> keeps it under
+0.8 s offscreen. Never walk widgets to re-polish them after a theme change; a widget that
+paints by hand re-reads its tokens in a slot on <code>theme.changed</code>. Every token is an
+opaque <code>#rrggbb</code>; <code>theme.semantic_<wbr>tokens(name)</code> lists them, <code>theme.tokens()</code> adds the
+v1/v2 names as aliases (<code>text</code> = <code>fg</code>, <code>panel</code> = <code>surface_2</code>, <code>border</code> = <code>line</code>,
+<code>accent_fill</code> = <code>primary</code>, <code>good</code> / <code>bad</code> = <code>success</code> / <code>danger</code>, ...).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">token</th><th scope="col">light</th><th scope="col">dark</th><th scope="col">use</th><th scope="col">website (light / dark)</th></tr></thead>
+<tbody>
+<tr><td>bg</td><td><code>#efefef</code></td><td><code>#0a0a0a</code></td><td>window chrome: toolbars, status bar, dock rails</td><td>a step darker than <code>--bg</code> / <code>--bg</code> lifted a notch</td></tr>
+<tr><td>bg_subtle</td><td><code>#e9e9e9</code></td><td><code>#151515</code></td><td>panel headers, title rows</td><td><code>--code-bg</code> / —</td></tr>
+<tr><td>surface</td><td><code>#ffffff</code></td><td><code>#1a1a1a</code></td><td>inputs, tables, plot and viewport wells</td><td><code>--surface</code> / <code>--code-bg</code> lifted a notch</td></tr>
+<tr><td>surface_2</td><td><code>#f6f6f6</code></td><td><code>#111111</code></td><td>side panels, inspectors (alias <code>panel</code>)</td><td><code>--bg</code> / —</td></tr>
+<tr><td>fg</td><td><code>#0e0e0e</code></td><td><code>#f1f1f1</code></td><td>primary text (alias <code>text</code>)</td><td><code>--fg</code></td></tr>
+<tr><td>fg2</td><td><code>#474747</code></td><td><code>#b1b1b1</code></td><td>secondary text: property labels, captions (alias <code>text2</code>)</td><td><code>--muted</code></td></tr>
+<tr><td>muted</td><td><code>#5c5c5c</code></td><td><code>#a3a3a3</code></td><td>hints and units — still text, so ≥ 4.5:1</td><td><code>--faint</code> / —</td></tr>
+<tr><td>faint</td><td><code>#8e8e8e</code></td><td><code>#6b6b6b</code></td><td>disabled text and icons only</td><td></td></tr>
+<tr><td>line</td><td><code>#d6d6d6</code></td><td><code>#2b2b2b</code></td><td>decorative 1 px separators (alias <code>border</code>)</td><td>about <code>--line</code></td></tr>
+<tr><td>line_strong</td><td><code>#b8b8b8</code></td><td><code>#3d3d3d</code></td><td>table grid, stronger separators, the rule under table headers</td><td></td></tr>
+<tr><td>control</td><td><code>#858585</code></td><td><code>#7a7a7a</code></td><td>outline of inputs, buttons, check boxes, sliders, the off switch</td><td><code>--line-strong</code> / —</td></tr>
+<tr><td>primary</td><td><code>#0e0e0e</code></td><td><code>#f1f1f1</code></td><td>primary button and checked-box fill: ink</td><td><code>--btn-bg</code></td></tr>
+<tr><td>primary_fg</td><td><code>#ffffff</code></td><td><code>#0a0a0a</code></td><td>text on primary (dark text on the dark theme's light fill)</td><td><code>--btn-fg</code></td></tr>
+<tr><td>primary_soft</td><td><code>#e2e2e2</code></td><td><code>#2e2e2e</code></td><td>selected rows and items, checked segments</td><td></td></tr>
+<tr><td>accent</td><td><code>#2463c4</code></td><td><code>#7fb1f7</code></td><td>blue marks in the data views: the selected item of a canvas, the seed rake, the running state</td><td>(none: the site has no blue)</td></tr>
+<tr><td>highlight</td><td><code>#b87508</code></td><td><code>#e2a640</code></td><td>amber, non-text marks only: heat, the live state, emitters</td><td></td></tr>
+<tr><td>success / warn / danger</td><td><code>#17703c</code> <code>#8f5a0b</code> <code>#b02d27</code></td><td><code>#6dcb93</code> <code>#e6b765</code> <code>#f5928a</code></td><td>status text and small glyphs</td><td></td></tr>
+<tr><td>*_soft</td><td><code>#e3f1e8</code> <code>#fbf0db</code> <code>#fae4e2</code></td><td><code>#13271b</code> <code>#2b2213</code> <code>#331b1a</code></td><td>the background an inline notice sits on</td><td></td></tr>
+<tr><td>focus</td><td><code>#0e0e0e</code></td><td><code>#f1f1f1</code></td><td>keyboard focus border / ring</td><td><code>--focus</code></td></tr>
+</tbody>
+</table></div>
+<p>Plot series (unchanged in v4: they are data): light <code>#2463c4 #d9730d #2f855a #b8322b #6b46c1 #5f6b7a</code> (also the report figures); dark one step lighter <code>#5e9df4 #f0943f #4fb47b #f0716a #a68af2 #a3acb9</code>, because the light-theme blue was 2.6:1 on the v3 graphite surface (on v4's
+near-black the lightest steps measure 6.0:1 and up). Field-view chrome: <code>field_bg</code>,
+<code>field_grid</code>, <code>field_text</code>, <code>field_solid</code> (neutral mid-grey solids), <code>field_solid_line</code>.</p>
+<p><strong>Contrast rule</strong> (WCAG 2.x, enforced by <code>tests/test_tokens.py</code> in both themes: 73 rules over
+68 colour pairings, listed in <code>theme.CONTRAST_RULES</code>; a pairing may serve two rules, as text and as a
+checked border):</p>
+<ul>
+<li>text (<code>fg</code>, <code>fg2</code>, <code>muted</code>) on every background it is drawn on, and blue text, resting
+(<code>accent</code>: "Running", data labels) and the step further (<code>accent2</code>): <strong>≥ 4.5:1</strong> (links
+are ink since v4 and hover to <code>fg2</code>, both text tokens);</li>
+<li>status text on the surfaces and on its own <code>*_soft</code> background, and <code>*_fg</code> on a solid
+status fill: <strong>≥ 4.5:1</strong>;</li>
+<li>control outlines (<code>control</code>, also the scroll-bar handle), the focus indicator and the
+primary fill against the surfaces they sit on, the <code>highlight</code> marks, the field view's
+solids and every plot series: <strong>≥ 3:1</strong> (WCAG 1.4.11);</li>
+<li><code>faint</code> is for disabled controls only (exempt under WCAG 1.4.3) and stays ≥ 2.2:1;</li>
+<li><code>line</code> is decorative (1.4:1 light, 1.2:1 dark) and never the only edge of a control.</li>
+</ul>
+<p>Measured on <code>surface</code> (v4): light <code>fg</code> 19.3, <code>fg2</code> 9.3, <code>muted</code> 6.7 (5.8 on <code>bg</code>, 5.5 on
+<code>bg_subtle</code>), <code>accent</code> 5.7, <code>control</code> 3.7 (3.2 on <code>bg</code>, 3.04 on <code>bg_subtle</code>, the closest
+pairing in the table, as the site's own <code>--line-strong</code> is); dark <code>fg</code> 15.4, <code>fg2</code> 8.1,
+<code>muted</code> 6.9, <code>accent</code> 7.9, <code>control</code> 4.1. Plot series at least 3.3:1 (light) and 6.0:1 (dark).
+v3 measured light <code>fg</code> 16.5, <code>muted</code> 6.2, <code>control</code> 3.9; dark <code>fg</code> 10.7, <code>muted</code> 6.2.</p>
+<p><strong>Rules of use.</strong> The chrome's interactive states are ink, as on the website: the primary
+button, checked boxes and radios, the current tab and step (a 2 px ink underline), links
+(ink, underlined), checked icons (<code>theme.ACTIVE_ICON_TOKEN</code> maps a call site's <code>"accent"</code> to
+<code>fg</code>), the focus ring and slider fills. The blue <code>accent</code> is kept for marks in the data views,
+where the selected or live item has to stand apart from ink outlines (the selected body in the
+geometry canvas, the seed rake, the drawn obstacle, "Running" and its progress bar). Status
+colours are for text, small glyphs and text on their soft background (<code>QFrame[notice=...]</code>),
+never a solid fill behind body text. <code>highlight</code> is for marks that mean "heat" or "live" — the
+radiator in a schematic, a running indicator — and never carries text.</p>
+<h2 id="3-type">3. Type<a class="anchor" href="#3-type" aria-label="Link to this section">#</a></h2>
+<p><strong>Atkinson Hyperlegible Next</strong> for the interface and <strong>Atkinson Hyperlegible Mono</strong> for
+numbers in tables, code and the log (SIL OFL, bundled as TrueType in
+<code>app/resources/fonts</code>; provenance and checksums in its README). They were drawn for
+low-vision readers: 0 / O, 1 / l / I and 5 / S cannot be confused, which matters in a
+tool whose output is numbers. Qt cannot load the published WOFF2 files, so they are
+converted once (<code>build_fonts.py</code>). The Latin subsets have no Greek, superscripts above
+³ or arrows: every font stack ends with Segoe UI, which Qt uses glyph by glyph (α, ν, ω,
+10⁵, →). Preferences ▸ Interface font ▸ System uses Segoe UI throughout.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">role</th><th scope="col">size</th><th scope="col">weight</th><th scope="col">hook</th></tr></thead>
+<tbody>
+<tr><td>body, controls</td><td>9 pt (12 px)</td><td>Regular</td><td>default</td></tr>
+<tr><td>footnotes, units in tight places</td><td>8 pt</td><td>Regular</td><td><code>role="small"</code></td></tr>
+<tr><td>group and section titles</td><td>9 pt</td><td>SemiBold</td><td><code>role="h3"</code>, PropertyGrid headers</td></tr>
+<tr><td>page and dialog titles, Start tile titles</td><td>10 / 11 pt</td><td>Medium</td><td><code>role="h2"</code> / <code>"h1"</code></td></tr>
+<tr><td>the product name (Start, splash)</td><td>14 pt</td><td>Medium</td><td><code>role="title"</code></td></tr>
+<tr><td>numbers in tables and logs</td><td>9 pt Mono</td><td>Regular</td><td><code>role="mono"</code>, <code>theme.mono_font()</code></td></tr>
+</tbody>
+</table></div>
+<p>Nothing larger than 14 pt anywhere; Bold is not used at 9 pt (its hinting fills
+counters). Titles from 10 pt up are Medium, as the website sets its headings (v4; SemiBold
+before); 9 pt group titles stay SemiBold, where Medium is too close to Regular to rank. Atkinson SemiBold is about 7 % wider than Segoe UI Semibold on Windows and the
+Mono 14 % wider than Consolas: size columns from <code>QFontMetrics</code>, not constants. Numbers
+right-aligned in tables; proper symbols (α, C<sub>d</sub>, Re = 8.2×10⁵, m/s, N/m).</p>
+<p><strong>Shape and spacing.</strong> 4 px grid. Controls 24 px high; table rows 22–24 px; radius 6 px
+on inputs and buttons (<code>theme.RADIUS</code>, the website's controls), 8 px on framed blocks — Start
+tiles, cards, the tour's step box (<code>RADIUS_LG</code>, the site's frames) — 3 px on marks inside a
+control (check-box indicators, scroll-bar handles), 0 on panels (panels are separated by 1 px
+lines). Buttons are the site's two: secondary is an outline in <code>control</code> that turns ink on
+hover, primary is filled ink. Table headers have no fill of their own and a <code>line_strong</code>
+rule under them. No shadows, no gradients. Focus: a 1 px <code>focus</code> (ink) border on inputs and
+buttons; the primary button and a checked box, whose fill is the focus ink, get the website's
+offset ring instead — a 1 px <code>fg</code> ring with one pixel of the panel showing inside it (the fill
+is clipped to the content box; the geometry does not change, so nothing moves when focus
+arrives); custom-painted widgets use <code>theme.paint_focus_ring</code>, and the Start page's study
+tiles paint it only for keyboard focus (Tab, Shift+Tab, F6 or a key press: the site's
+<code>:focus-visible</code>), not for the window's initial focus or a click. <strong>Checked state</strong>: a
+checked tool button or segment is a <code>primary_soft</code> fill inside a 1 px <code>fg</code> border — the
+fill alone is 1.1–1.5:1 against the panels, the border ≥ 3:1 (WCAG 1.4.11, the
+"checked indicator" rules). A focused checked tool button shows the panel in its 2 px
+padding between ring and fill; a focused segment gets a 2 px ring (border and padding
+always add up, so nothing moves). Rich-text links are re-laid out on a theme switch
+(<code>theme.apply</code>), since Qt bakes the link colour in when the text is set. Widgets with no border of
+their own get a stronger mark: a group header (text on the panel) paints a 2 px <code>focus</code>
+ring around its arrow and title, a slider's handle a 2 px <code>focus</code> ring, and borderless
+item views (<code>flat</code>, <code>pane</code>: the Project tree, the Start page lists) keep a transparent
+1 px border that focus colours, so the content never moves. Every focusable widget of
+the Setup and Start pages changes pixels on focus in both themes
+(<code>tests/<wbr>test_<wbr>app_<wbr>shell_<wbr>release.py</code>); v3.3 found the "Heat transfer" header, the angle
+slider, the Project tree and both Start lists unchanged.</p>
+<p>An independent audit of the pairs the style sheet draws beyond the rule list (v3.1) found
+three that the list had missed, all fixed and now in it: hovered links in <code>primary_hover</code>
+(4.37:1 on the dark surface; then <code>accent2</code>, <code>fg2</code> since links turned ink in v4), scroll-bar
+handles in <code>line_strong</code> (1.7–1.9:1; now <code>control</code>), and the primary button's 1 px focus ring
+(above; since v4 the offset ring).</p>
+<p><strong>Icons.</strong> 16 px monochrome line icons with a 1.25 px stroke in <code>fg2</code>; ink (<code>fg</code>) for the
+active state (v4; it was the blue <code>accent</code>). One coherent set, drawn as SVG (<code>resources/icons</code>, tests enforce it).
+Every icon engine applies the active-state mapping: the theme's bundled set, the hand-drawn
+glyphs of the parameter forms (Points, Dimensions), the live-edit tools and the 3D camera
+presets (<code>tests/test_tokens.py</code> checks all four in both themes).</p>
+<p><strong>Motion.</strong> None except progress indication. (The Start page's flow motif is a still
+picture, drawn once per size and theme.)</p>
+<p><strong>Accessibility</strong> (WCAG 2.1 AA, desktop reading; checked by an automated pass over the
+shell in both themes - every visible widget of the Start page, each workspace on four
+pages, the tour and Preferences):</p>
+<ul>
+<li>Every input has a name a screen reader can read. A label merely placed beside a field
+does not give it one in Qt (measured: <code>QAccessible...text(Name)</code> is empty), so form
+rows go through <code>PropertyGroup.add_row</code>, <code>common.tie_label(label, field)</code> or a
+<code>QFormLayout</code> row with a <em>string</em> label. A composite editor's buddy is its first
+focusable part; its other parts (a unit selector) are named "&lt;label&gt;: &lt;tooltip&gt;".
+A page the window hosts but does not build (Preferences ▸ Assistant) is passed through
+<code>common.tie_<wbr>form_<wbr>labels(page)</code>, which does the same for every <code>addRow(QLabel, field)</code>.</li>
+<li>Everything a pointer can do has a keyboard path: a toolbar button through its menu
+action, a panel through View ▸ Panels (Alt+1 … Alt+7), the account menu through its
+shortcut, the tour through Esc / arrows / Enter.</li>
+<li><strong>Focus order follows the screen, page first</strong> (WCAG 2.4.3). Tab goes step bar → page →
+the panels (left rail, right rail, bottom rail, each in rail order) and wraps round;
+<code>MainWindow.focusNextPrevChild</code> sorts Qt's chain by region and keeps Qt's order inside
+each. Qt's chain is creation order, and the panels are built before most of a page, so
+v3.4 counted 29 stops of panel chrome, Messages filters and Diagnostics between the step
+bar and the Setup form's first field. The panel headers' collapse, ⋯ and × buttons are not
+Tab stops at all: <strong>F6 / Shift+F6</strong> cycle the regions as in Office and VS Code (step bar,
+page, then each panel on screen), land on a panel's <em>header</em> (2 px focus ring), where
+Enter or Space collapses or expands it, Shift+F10 or the Menu key opens its ⋯ menu, Delete
+hides it and Tab goes on into its content. F6 back to the page returns to the field that
+last had focus there. The header takes focus only from F6, never from a click, so
+dragging a panel never takes focus from the editor beside it.</li>
+<li>Text contrast comes from the tokens (above); the automated pass measures the pixels of
+every fully visible label and button text, cropped from a grab of the whole window
+(a transparent label grabbed alone renders on black).</li>
+<li>Scroll areas are not Tab stops of their own when their content takes focus, or when it
+fits: Tab reaches the fields and the area scrolls each into view. <code>common. unfocus_scroll_areas</code> runs after every page switch; a read-only area that overflows
+keeps its stop for keyboard scrolling and is named after its first heading. v3.3
+counted four nameless stops on Setup (the rail holder and three scroll areas).</li>
+<li>Target size (WCAG 2.2 SC 2.5.8): every button is at least 24 × 24 px (<code>theme. MIN_TARGET</code>; <code>IconButton</code> never goes below it, whatever size is asked: the panel
+headers asked for 22, the Messages bar for 20), or meets the spacing exception: a
+24 px circle on its centre meets no other target's. The test measures it on Setup and
+Geometry. Since v3.4 the style sheet makes the common controls 24 px tall outright rather
+than leaning on the exception: a check box's whole row (<code>min-height: 24px</code>; it was 16 px,
+the indicator's height), the segments of <code>SegmentedControl</code> (borderless, so the 18 px
+content height every bordered button uses left them at 22 px) and the main toolbar's
+buttons (they were 22 px; the window chrome grew by 2 px). The account button in the menu
+bar is still 35 × 22 px — the menu bar sizes its corner widget to its own row — and passes
+by the spacing exception, with no other target within 24 px.</li>
+</ul>
+<p>v3.1 pass (both themes, 1600 × 1000; Start, the four workspaces on Geometry / Results /
+Simulate / Setup, the tour, the three Preferences tabs): no text under its WCAG ratio
+except behind the tour's scrim, which dims the window on purpose while the step box (at
+full contrast) is read. Unnamed controls found and fixed in the shell: the nine fields of
+Preferences ▸ Assistant. Still unnamed, in pages the shell does not own: the Geometry
+page's parts table and one combo box, the Assistant's goal box, and the Script panel's
+editor, output, script list and "More" button.</p>
+<h2 id="3b-panels-rails-and-workspaces">3b. Panels, rails and workspaces<a class="anchor" href="#3b-panels-rails-and-workspaces" aria-label="Link to this section">#</a></h2>
+<pre class="diagram"><code>┌ Menu: File  Edit  View  Simulation  Tools  Help                              [account] ┐
+│ Toolbar: New Open Save │ Import <span class="g">▾</span> │ <span class="g">▶</span> Run <span class="g">■</span> Stop │ Report │ Assistant Script   Workspace <span class="g">▾</span> │
+│ Steps:  Geometry   Setup   Simulate   Results   Compare   Report        3D │ design <span class="g">›</span> sim │
+├──────────────┬──────────────────────────────────────────────────────┬───────────────────┤
+│ <span class="g">˅</span> Project <span class="g">⋯</span> <span class="g">×</span>│                                                      │ <span class="g">˅</span> Assistant   <span class="g">⋯</span> <span class="g">×</span> │
+│  <span class="g">▾</span> NACA 2412 │            page content / viewport                   │   (right rail)    │
+│     <span class="g">●</span> <span class="g">α</span> 4<span class="g">°</span>   │            (each page keeps its own inspector)       │ <span class="g">˅</span> Diagnostics <span class="g">●</span><span class="g">⋯</span> <span class="g">×</span>│
+├──────────────┴──────────────────────────────────────────────────────┴───────────────────┤
+│ <span class="g">˃</span> Messages  0 errors  2 warnings  <span class="g">…</span>newest line<span class="g">…</span>                                     <span class="g">⋯</span> <span class="g">×</span> │
+├──────────────────────────────────────────────────────────────────────────────────────────┤
+│ Status: Ready │ Running NACA 2412 <span class="g">α</span> 4<span class="g">°</span> 43 % <span class="g">·</span> 1.25 M cells <span class="g">·</span> 61 steps/s │ CUDA <span class="g">·</span> RTX 4060 Ti │ SI │
+└──────────────────────────────────────────────────────────────────────────────────────────┘</code></pre>
+<p>Every side panel — Project, Messages, Assistant, Script, Properties, Flow visualisation,
+Diagnostics — is a dock with the same header: collapse chevron, title (9 pt SemiBold on
+<code>bg_subtle</code>), optional extras (the Messages counters), an optional on/off <strong>switch</strong>, the
+⋯ menu and ×. What a user can do with any panel:</p>
+<ul>
+<li><strong>collapse</strong> it to its header (chevron, double-click on the header, or ⋯ ▸ Collapse);</li>
+<li><strong>reorder</strong> it in its rail (⋯ ▸ Move up / Move down, or drag the header);</li>
+<li><strong>move</strong> it to the left, right or bottom rail (⋯ menu);</li>
+<li><strong>hide</strong> it (× or ⋯ ▸ Hide panel) and bring it back from <strong>View ▸ Panels</strong>
+(Alt+1 … Alt+7);</li>
+<li>run a rail in <strong>solo mode</strong> (⋯ ▸ Solo mode): opening one panel collapses the others there;</li>
+<li>resize a rail by its edge; a double-click on the edge restores the workspace's widths.</li>
+</ul>
+<p><strong>Header switches</strong> toggle a panel's <em>effect</em> while keeping every value (an A/B
+switch): Diagnostics ▸ record on/off; flow-visualisation layers. A setting that is part of
+a form stays a check box. The switch is a 28 × 16 track: off = <code>control</code> outline, on =
+<code>primary</code> fill with the knob at the right (the state never relies on colour alone). A
+switch belongs to the content it was enabled for (<code>DockPanel.enable_switch(..., content=)</code>, default: the content on screen), so a page's switch shows only while that
+page fills the panel and never stands in for the window's own.</p>
+<p><strong>Workspaces</strong> (toolbar right end, View ▸ Workspace): <em>Default</em> (Project left, the log
+folded at the bottom), <em>Analysis</em> (Assistant and the open log beside the results),
+<em>Live</em> (Flow visualisation on the right of a live run, Diagnostics under it), <em>Scripting</em>
+(the Script panel takes 40 % of the window height, the Assistant on the right). Each keeps
+its own arrangement across restarts; Reset puts the preset back. Panels never float. A preset that changes gets a
+higher <code>rev</code>, and an arrangement saved from an older revision is replaced by the new
+preset once (Live is rev 2: Diagnostics' list-beside-plots content needs 592 px, which in
+the right rail left the 3D Simulate page 798 of 1600 px and, capped at 1280 px, hid its
+plots behind a sideways scroll bar). Scripting's bottom rail is a <em>share</em> of the window
+height, not pixels (rev 2): stored in pixels and re-learnt from the rail's geometry, it
+shrank to whatever a small window had left (173 px after a 1280 × 800 session) and the
+editor showed three lines at 1600 × 1000. A share-sized rail is learnt only from a drag of
+its edge (accepted between 15 and 60 %), and the Script console keeps the same share across
+window resizes. Rev 3 lowered the share from 54 to 40 % (<code>"shares": {"bottom": 0.40}</code>, at
+least 300 px): at 54 % the Setup page above kept about 300 px, a 180 px 3D preview and
+truncated Estimate and Planner lists (v3.4). Measured over a Heated room's Setup page: the
+Script panel 400 of 1000 px with 20.6 editor lines and the page 448 px at 1600 × 1000;
+314 of 800 px with 15.2 lines and the page 334 px at 1280 × 800.</p>
+<p><strong>A new study never opens in a tool workspace.</strong> Scripting is for a task, not a study's
+starting layout: a study created there opened with an empty "Untitled" script over half
+the window. <code>DockManager.study_<wbr>workspace()</code> names the workspace a new study opens in — the
+current one, or when that is Scripting, the last other workspace the user had (kept in the
+settings file as <code>workspaces/last_study</code>; Default when there was none). The Messages log
+says so, and View ▸ Workspace ▸ Scripting brings the Script panel back with its text.</p>
+<p><strong>The page area reports the current page's minimum.</strong> A <code>QStackedWidget</code> takes its
+minimum from every page it holds, so after a visit to Results (432 px minimum height) the
+bottom rail could never have the height Setup (334) or Simulate (274) give up.
+<code>main_window._PageStack</code> reports only the page on screen; a switch to a taller page hands
+the height back from the rails. The Geometry page still needs 431 px, so at 1280 × 800
+the Script panel over it shows about 9 lines.</p>
+<p><strong>Narrow windows.</strong> Below 1180 px the right rail folds into the left one as tabs and comes
+back at 1220 px, where it was. Below 1400 px each side rail is capped at 28 % of the
+window width (a panel's own minimum, the Assistant's 320 px, still wins): at 1280 px a
+content minimum used to widen the Live workspace's right rail to 400 px and leave the 3D
+view about 350 px wide. At every width a side rail is also held to what leaves the page
+its own minimum width beside the other rail (<code>DockManager.page_<wbr>guard_<wbr>caps</code>): without it a
+592 px panel moved to the right rail at 1400–1520 px squeezed the 3D Simulate page to
+598–640 px against its 711 px minimum and cut it off. Pages must still work at 1280 × 800
+with one rail open.</p>
+<p><strong>Sharing the bottom rail.</strong> Opening Script or Diagnostics folds Messages to its title row
+(its counters and newest line stay visible); two open panels plus the log left the page
+160-250 px of height at 800 px.</p>
+<p><strong>On the Start page</strong> the project panels step aside, but the Assistant and Script panels
+(which need no project) stay when wanted: a lit toolbar toggle always means a panel on
+screen.</p>
+<p><strong>Panels with nothing to show</strong> (Properties, Flow visualisation and Diagnostics on a page
+that provides none) are hidden and their View entry is disabled with the reason as its
+tooltip — never an empty panel. Pages fill them through <code>dock_panels()</code> (docks.py).</p>
+<ul>
+<li><strong>Project tree</strong> (left): designs with their simulations nested; status glyph per
+simulation (not run, queued, running with %, done, failed, stopped); context menu (new
+simulation, run, duplicate, rename, delete). Names elide at the end; the tooltip has the
+whole name. Selection drives <code>AppState</code>.</li>
+<li><strong>Step bar</strong>: flat tabs with a 2 px ink underline on the active step and a small check
+on completed ones. No numbers in circles, no subtitles. The breadcrumb at its right end
+names the design and the simulation, once when both carry the same name (the physics
+templates name a case's simulation after its design; "Heated cylinder · d 10 mm · ΔT
+10 K › Heated cylinder · d 10 mm · ΔT 10 K" took 400 px).</li>
+<li><strong>Properties</strong> (in a page or the Properties panel): a property grid — label column
+(<code>fg2</code>), editor right, groups with a thin header line and a collapse arrow; units inside
+or right of the editor.</li>
+<li><strong>Messages</strong>: what the planner decided and why, warnings, errors, the run log. Folded to
+its header by default (counts and the newest line); it opens by itself for errors only.</li>
+<li><strong>Status bar</strong> carries device, run progress and units — no device chip in the toolbar.</li>
+</ul>
+<h2 id="4-pages">4. Pages<a class="anchor" href="#4-pages" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Start</strong> (no project open): the product line (mark, 14 pt name, one sentence) with the
+website's flow motif in the room to its right (<code>pages.start.FlowMotif</code>: short streaks along
+the streamlines of inviscid flow past a cambered Joukowski airfoil at 4°, the same flow the
+website draws, in <code>line_strong</code>, fading in from the left; one cached pixmap per size and
+theme, no timer, no focus, no accessible name; the mark inverts on the dark theme); <strong>New
+study</strong> as one row of tiles — Airfoil (2D), Vehicle (2D), 3D body from a mesh, Wing (3D),
+Heated room (3D, heat transfer), Electronics enclosure (2D, heat transfer: the room takes
+tens of minutes on a Draft GPU run, the enclosure 204 s, so a first heat study can finish
+while the user watches). When the width cannot hold every tile at its title's width (beside
+the Assistant at 1280 px) the row wraps into balanced rows (three and three), never wider
+than the window. Every tile has one height, the tallest description's at the tiles'
+current width; each tile reports its own width change and the page re-fits after the grid
+has settled (fitting on the page's resize used the old, wider widths, and on the first show
+at 1600 × 1000 the descriptions lost their third line). Measuring and painting share one
+text box (<code>StudyTile._text_width</code>): they had differed by the 1 px border inset, enough to
+wrap a line one word earlier when painted than when measured. Each tile has a line schematic of what the study sets up
+(free stream or closed box, the body, the heated part in <code>highlight</code>), its dimension and
+one sentence of what it starts with; the tiles are buttons (Tab, Enter, Space) with the
+sentence as their accessible description. Below: Recent projects (name, type, folder,
+modified) and Examples (3D first) beside an <strong>Open</strong> column (Open project…, Open example,
+More study types…) and <strong>Learn</strong> (Welcome tour, Scripting guide, Experiment assistant,
+Driving Aerolume from Claude, Keyboard shortcuts). Footer: Documentation, Validation,
+Licence and the version. Each help link once. At 1280 × 800 the tiles, Recent projects
+and the first examples (the heat-transfer ones among them) are above the fold; the rest
+scrolls (131 px with five recent projects and seven examples). Seven examples ship with finished results: the 3D sedan, the tapered
+wing, the NACA 2412 section and the sedan-fastback pair, plus three heat-transfer ones
+(the de Vahl Davis cavity at Ra 10⁵, the heated cylinder at Re 40 and a 2D room with a
+fan, a heater, a supply jet and a vent), listed after the 3D ones with a thermometer, so
+every Results tab (Heat transfer, Fans) has a finished study to show.</li>
+<li><strong>Geometry</strong>: CAD-like viewport — <code>field_bg</code>, light grid, outline in <code>fg</code> with a light grey
+fill, dimension lines in <code>fg2</code>, hatched road. Inspector = property grid.</li>
+<li><strong>Setup</strong>: property grid groups (Analysis, Flow, Attitude, Ground, Mesh &amp; time, Physics:
+emitters, heat, fans, ports; Solver (collapsed)). Right column: the Estimate table and the
+planner's messages as plain lines with a small glyph.</li>
+<li><strong>Simulate</strong>: the viewport takes the space. Small viewport toolbar (field, colormap,
+overlays, fit). Vertical colour bar at the right edge of the viewport. Right panel "Run":
+thin progress bar, phase, t, steps/s, ETA; "Monitors" plot; "Explore" (live) collapsed.</li>
+<li><strong>Results</strong>: one header line of facts plus a single warning line when needed, then tabs.</li>
+<li><strong>Compare</strong>: table first (metrics × variants, deltas and %), plots below.</li>
+<li><strong>Report</strong>: form + list of generated files.</li>
+</ul>
+<h2 id="4b-live-editing-explore-aerojax-style">4b. Live editing (Explore, AeroJAX-style)<a class="anchor" href="#4b-live-editing-explore-aerojax-style" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Drawing obstacles, moving emitters, fans and heaters happens in the viewport with the
+tools of a small tool strip (brush, polygon, eraser, move; brush size; undo / redo /
+clear). A tool is a checkable icon button with a tooltip naming it and its key.</li>
+<li>What is drawn shows as the solids do (neutral grey, 1 px outline); a placed item shows
+as its glyph with handles while selected. Heat sources and hot bodies use <code>highlight</code>.</li>
+<li>Changes apply to the running flow without a restart; the Run panel says so in one line
+("Obstacle added at t = 12.4") rather than with a toast.</li>
+<li>Diagnostics (divergence, change per step, CFL, dt, residual) live in the Diagnostics
+panel, logarithmic where they span decades, exportable as CSV; the solver trace opens
+as its own tab of that panel.</li>
+</ul>
+<h2 id="5-plots-and-fields">5. Plots and fields<a class="anchor" href="#5-plots-and-fields" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><p>pyqtgraph styled like publication plots: surface background, 1 px axes in <code>fg2</code>, grid
+alpha ≈ 0.15, small boxed legend, axis labels with units. Averaging windows are a light
+grey band, not a saturated fill.</p></li>
+<li><p>Colormaps: speed <code>viridis</code>; Cp <code>coolwarm</code> (centred on 0); vorticity <code>RdBu_r</code> (centred);
+smoke greyscale on a dark-grey field; ν_t <code>magma</code>; temperature θ <code>inferno</code> from the
+ambient (heat is the one field where warm colours mean warm). Never jet/rainbow.</p></li>
+<li><p>Solids are drawn in <code>field_solid</code> with a 1 px <code>field_solid_line</code> outline.</p></li>
+<li><p><strong>3D colour maps</strong> (<code>viz3d.colors.FIELD_<wbr>INFO_<wbr>3D</code>; the same lookup tables as 2D):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">field</th><th scope="col">map</th><th scope="col">range</th></tr></thead>
+<tbody>
+<tr><td>speed |V|, velocity u</td><td><code>viridis</code></td><td>speed from 0</td></tr>
+<tr><td>velocity v, w; pressure p; Cp</td><td><code>coolwarm</code></td><td>centred on 0</td></tr>
+<tr><td>skin friction Cf (and the wall-shear magnitude τ)</td><td><code>viridis</code></td><td>from 0</td></tr>
+<tr><td>vorticity |ω| (a magnitude in 3D)</td><td><code>magma</code></td><td>from 0</td></tr>
+<tr><td>Q-criterion; sensitivity dJ/dn</td><td><code>RdBu_r</code></td><td>centred on 0</td></tr>
+<tr><td>eddy viscosity ν_t</td><td><code>magma</code></td><td>from 0</td></tr>
+<tr><td>solid fraction</td><td>greyscale</td><td>0–1</td></tr>
+</tbody>
+</table></div>
+<p>Ranges are robust percentiles; diverging fields are symmetric about 0.</p></li>
+</ul>
+<h2 id="5b-3d-viewer">5b. 3D viewer<a class="anchor" href="#5b-3d-viewer" aria-label="Link to this section">#</a></h2>
+<p>The 3D view (<code>app/widgets/view3d.py</code>) follows the same restraint as the 2D canvases; it
+should read like ParaView or a CAD viewport, not a game.</p>
+<ul>
+<li><strong>Background</strong> is <code>field_bg</code>, flat — no gradient, no skybox, no vignette. A ground plane
+with a light grid only where there is a road.</li>
+<li><strong>Bodies</strong> without a field are the neutral <code>field_solid</code> grey, smooth-shaded under a white
+light kit with low specular, crease edges at 45°; triangle edges only on request.</li>
+<li><strong>Fields on surfaces and slices</strong> use the maps above. Slices are unlit, so a colour matches
+its colour bar exactly. Streamlines are thin tubes coloured by speed; smoke is greyscale.
+Emitters show as small <code>highlight</code> glyphs where they release.</li>
+<li><strong>Colour bar</strong> vertical at the right edge, title with units, end triangles when values
+exceed the range. It never covers the model.</li>
+<li><strong>Camera</strong>: perspective 25° (parallel on request); presets Iso, Front, Side, Top, Back,
+Bottom; turntable orbit; left drag orbits, right / middle or Shift+left pans, the wheel
+zooms toward the cursor, double-click or F fits.</li>
+<li><strong>Symmetry-plane results are always shown whole</strong> (mirrored).</li>
+<li><strong>Empty and failed states</strong> are plain text in the viewport ("3D view unavailable" with
+the reason). Never a blank grey rectangle.</li>
+</ul>
+<h2 id="5c-the-assistant">5c. The assistant<a class="anchor" href="#5c-the-assistant" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>A suggestion arrives as a card listing every change, old value → new value; nothing is
+applied without a click; every value is re-validated against the editor's limits; one
+suggestion is one undo step.</li>
+<li>Project data reaches a model only with consent, and the panel says which provider runs
+(Claude, or a local Ollama model). No API key is ever shown back.</li>
+<li>Claude Desktop and Claude Code can drive Aerolume without a key in the app through the
+<code>aerolume-mcp</code> stdio server (Help ▸ Driving Aerolume from Claude).</li>
+</ul>
+<h2 id="5d-start-up-tour-errors">5d. Start-up, tour, errors<a class="anchor" href="#5d-start-up-tour-errors" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Splash</strong> (while PyTorch and VTK load): a plain 520 × 300 panel — mark, name, one
+sentence, the step being loaded ("Loading PyTorch…") and a thin bar. No art.</li>
+<li><strong>Welcome tour</strong> (first start; Help ▸ Welcome tour): steps over the real window, each
+dimming everything but the widget it is about; Back, Next, Skip tour; Esc skips. A tour
+explains only what is on screen, so it has two parts: on the Start page three steps
+(New study, Examples, Learn); with a project open five (step bar, Project panel, Run and
+Stop, workspaces, Script and Assistant). Finishing the Start part runs the project part
+the first time a project opens; skipping either part ends the tour for good. A step
+whose widget is hidden (a panel the user closed) says how to show it instead of
+pointing at nothing. A step about two controls outlines both (Run and Stop; Assistant
+and Script), and a box for a toolbar control sits below the whole toolbar, never over
+the neighbouring buttons.</li>
+<li><strong>Unexpected errors</strong> open one dialog per burst: the one-line error, a warn notice that
+the app keeps running and where the report was saved, the redacted report (home folder
+as <code>~</code>) with Copy report and Open log folder.</li>
+<li><strong>One instance</strong>: opening a project while Aerolume runs opens it in the running window.</li>
+<li><strong>The desktop</strong>: creating or opening a project writes its <code>project.aerolume</code> marker (the
+file the installer's association opens) and, in an installed build, adds it to the
+taskbar jump list; folders inside the program (the bundled examples) are never written.</li>
+<li><strong>Check for updates</strong> (Help) is off until a release feed is set (Preferences ▸ Release
+feed; there is no published feed yet). It is one GET of that address on a worker thread
+and sends nothing; the answer says the version found, or why the feed could not be read.</li>
+</ul>
+<h2 id="6-copy">6. Copy<a class="anchor" href="#6-copy" aria-label="Link to this section">#</a></h2>
+<p>Sentence case. Labels are nouns ("Angle of attack", "Ground clearance"); buttons are
+verbs ("Run", "Import…", "Export CSV…", "Copy report"). Status is factual ("Not run",
+"Running 43 %", "Done in 3 min 24 s", "Failed — see Messages"). An action keeps its name
+through the flow (the Run button, F5 and "Run again" all say Run). Errors say what
+happened and what to do, never apologise. No exclamation marks, no emoji, no
+second-person cheerleading. Explanations live in tooltips and the user guide; a number the
+program filled in is shown, not hidden.</p>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="validation-wing.html"><span>Previous</span><b>Finite-wing validation</b></a><a class="next" href="contributing.html"><span>Next</span><b>Contributing</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-what-to-avoid-the-generated-app-look">1. What to avoid (the "generated app" look)</a></li><li class="l2"><a href="#2-colour-semantic-tokens-with-tested-contrast">2. Colour: semantic tokens with tested contrast</a></li><li class="l2"><a href="#3-type">3. Type</a></li><li class="l2"><a href="#3b-panels-rails-and-workspaces">3b. Panels, rails and workspaces</a></li><li class="l2"><a href="#4-pages">4. Pages</a></li><li class="l2"><a href="#4b-live-editing-explore-aerojax-style">4b. Live editing (Explore, AeroJAX-style)</a></li><li class="l2"><a href="#5-plots-and-fields">5. Plots and fields</a></li><li class="l2"><a href="#5b-3d-viewer">5b. 3D viewer</a></li><li class="l2"><a href="#5c-the-assistant">5c. The assistant</a></li><li class="l2"><a href="#5d-start-up-tour-errors">5d. Start-up, tour, errors</a></li><li class="l2"><a href="#6-copy">6. Copy</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

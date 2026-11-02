@@ -1,0 +1,207 @@
+{
+ "name": "Room · fan 1 N/m · heater 60 W/m",
+ "design_id": "a6cb2595510d",
+ "analysis": "cfd",
+ "conditions": {
+  "fluid": {
+   "name": "Air, ISA sea level",
+   "density": 1.225000018124288,
+   "viscosity": 1.7892976260350732e-05
+  },
+  "speed": 0.9035078962213993,
+  "alpha_deg": 0.0,
+  "yaw_deg": 0.0
+ },
+ "ground": {
+  "enabled": false,
+  "moving": true,
+  "rotate_wheels": false
+ },
+ "cfd": {
+  "quality": "draft",
+  "cells_per_ref": null,
+  "domain_upstream": null,
+  "domain_downstream": null,
+  "domain_height": null,
+  "duration": null,
+  "average_from": null,
+  "turbulence": "auto",
+  "reynolds_mode": "real",
+  "reynolds_cap": null,
+  "precision": "auto",
+  "device": "auto",
+  "compute_sensitivity": false,
+  "sensitivity_objective": "cd",
+  "symmetry": "auto",
+  "domain_width": null,
+  "domain_mode": "closed",
+  "domain_box": [
+   0.0,
+   4.0,
+   0.0,
+   3.0
+  ],
+  "record_diagnostics": true,
+  "adaptive_dt": "cfl"
+ },
+ "airfoil": {
+  "alpha_start": -4.0,
+  "alpha_end": 14.0,
+  "alpha_step": 1.0,
+  "ncrit": 9.0,
+  "xtr_upper": 1.0,
+  "xtr_lower": 1.0,
+  "mach": 0.0,
+  "panels": 199
+ },
+ "id": "e03c3508ca53",
+ "status": "done",
+ "created": "2026-10-31T23:33:56",
+ "finished": "2026-10-31T23:35:42",
+ "notes": "",
+ "error": null,
+ "wing": {
+  "alpha_start": -4.0,
+  "alpha_end": 12.0,
+  "alpha_step": 1.0,
+  "method": "vlm",
+  "viscous": true,
+  "ncrit": 9.0,
+  "mach": 0.0
+ },
+ "emitters": [
+  {
+   "name": "Smoke rake",
+   "species": "dye",
+   "kind": "rake",
+   "position": [
+    0.4,
+    0.4
+   ],
+   "end": [
+    0.4,
+    2.6
+   ],
+   "size": [],
+   "normal": null,
+   "count": 8,
+   "radius": 0.0,
+   "rate": 1.0,
+   "color": "#f0a040",
+   "pulse_period": 0.0,
+   "pulse_duty": 0.5,
+   "start": 0.0,
+   "stop": null,
+   "frame": "wind",
+   "enabled": true
+  },
+  {
+   "name": "Plume tracer",
+   "species": "dye",
+   "kind": "point",
+   "position": [
+    3.0,
+    0.45
+   ],
+   "end": null,
+   "size": [],
+   "normal": null,
+   "count": 8,
+   "radius": 0.0,
+   "rate": 1.0,
+   "color": "#e04040",
+   "pulse_period": 0.0,
+   "pulse_duty": 0.5,
+   "start": 0.0,
+   "stop": null,
+   "frame": "wind",
+   "enabled": true
+  }
+ ],
+ "thermal": {
+  "enabled": true,
+  "t_ambient": 15.0,
+  "buoyancy": true,
+  "gravity": 9.80665,
+  "beta": null,
+  "prandtl": null,
+  "conductivity": null,
+  "cp": null,
+  "walls": []
+ },
+ "heat_sources": [
+  {
+   "name": "Heater",
+   "kind": "rect",
+   "position": [
+    3.0,
+    0.25
+   ],
+   "size": [
+    0.4,
+    0.2
+   ],
+   "power": 60.0,
+   "frame": "body",
+   "enabled": true
+  }
+ ],
+ "fans": [
+  {
+   "name": "Fan",
+   "position": [
+    1.3333333333333333,
+    1.5
+   ],
+   "direction": [
+    1.0,
+    0.0
+   ],
+   "diameter": 0.5,
+   "thickness": null,
+   "mode": "thrust",
+   "value": 1.0,
+   "swirl": 0.0,
+   "frame": "body",
+   "enabled": true
+  }
+ ],
+ "ports": [
+  {
+   "name": "Supply",
+   "kind": "jet",
+   "position": [
+    0.05,
+    2.7
+   ],
+   "direction": [
+    1.0,
+    0.0
+   ],
+   "size": 0.2,
+   "speed": 0.5,
+   "temperature": null,
+   "dye": false,
+   "frame": "body",
+   "enabled": true
+  },
+  {
+   "name": "Vent",
+   "kind": "vent",
+   "position": [
+    3.95,
+    2.7
+   ],
+   "direction": [
+    1.0,
+    0.0
+   ],
+   "size": 0.2,
+   "speed": 0.5,
+   "temperature": null,
+   "dye": false,
+   "frame": "body",
+   "enabled": true
+  }
+ ]
+}

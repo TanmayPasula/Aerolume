@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Airfoil validation</title>
+<meta name="description" content="Polars compared with NACA 0012, 2412 and 4412 wind-tunnel data.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Airfoil validation">
+<meta property="og:description" content="Polars compared with NACA 0012, 2412 and 4412 wind-tunnel data.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html" aria-current="page">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html" aria-current="page">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#reference-data">Reference data</a></li><li class="l2"><a href="#cross-check-against-xfoil-699">Cross-check against XFOIL 6.99</a></li><li class="l2"><a href="#naca-0012-re-6106-tripped-ladson-nasa-tm-4074">NACA 0012, Re 6×10⁶, tripped — Ladson (NASA TM-4074)</a></li><li class="l2"><a href="#naca-0012-re-3106-tripped-gregory-oreilly-rm-3726">NACA 0012, Re 3×10⁶, tripped — Gregory &amp; O'Reilly (R&amp;M 3726)</a></li><li class="l2"><a href="#naca-0012-re-6106-free-transition-abbott-von-doenhoff-smooth-model">NACA 0012, Re 6×10⁶, free transition — Abbott &amp; von Doenhoff (smooth model)</a></li><li class="l2"><a href="#naca-2412-and-4412-re-6106-free-transition-abbott-von-doenhoff">NACA 2412 and 4412, Re 6×10⁶, free transition — Abbott &amp; von Doenhoff</a></li><li class="l2"><a href="#surface-distributions">Surface distributions</a></li><li class="l2"><a href="#performance">Performance</a></li><li class="l2"><a href="#convergence-robustness">Convergence robustness</a></li><li class="l2"><a href="#summary-against-the-quality-bar">Summary against the quality bar</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Validation</p>
+<h1 id="airfoil-polar-solver-validation">Airfoil polar solver: validation</h1>
+<p>This page compares Aerolume's viscous–inviscid airfoil analysis (the <strong>Polar</strong> analysis; method in
+<a href="theory-airfoil.html">Airfoil analysis</a>) with wind-tunnel data for NACA 0012, 2412 and 4412.
+Everything here is regenerated by</p>
+<pre><code>python validation/airfoil_validation.py</code></pre>
+<p>which prints the tables below and renders the figures to <code>docs/img/airfoil_*.png</code>. The same cases
+and reference values are asserted in <code>tests/<wbr>test_<wbr>airfoil_<wbr>validation.py</code>
+(<code>pytest tests/test_airfoil_validation.py -m slow</code>); the XFOIL cross-check is asserted in
+<code>tests/<wbr>test_<wbr>airfoil_<wbr>polar_<wbr>regularity.py</code>. Numbers below are from the run of 2026-10-05 (199 panels,
+Ncrit = 9; all points converged).</p>
+<h2 id="reference-data">Reference data<a class="anchor" href="#reference-data" aria-label="Link to this section">#</a></h2>
+<p>Only the values that are compared were transcribed (see the docstring of the validation script).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Data set</th><th scope="col">Conditions</th><th scope="col">Source</th></tr></thead>
+<tbody>
+<tr><td>NACA 0012 cl, cd</td><td>Re 6×10⁶, M 0.15, transition tripped (80-grit)</td><td>C. L. Ladson, NASA TM-4074 (1988), tabulated; via the NASA Turbulence Modeling Resource</td></tr>
+<tr><td>NACA 0012 cl</td><td>Re 3×10⁶, tripped</td><td>D. Gregory, C. L. O'Reilly, ARC R&amp;M 3726 (1970); digitised from the report's plot by the NASA TMR (≈ ±0.01)</td></tr>
+<tr><td>NACA 0012 cl, cd–cl</td><td>Re 6×10⁶, smooth model (free transition)</td><td>Abbott &amp; von Doenhoff, <em>Theory of Wing Sections</em>, App. IV; digitised by the NASA TMR ("digitizing only approximate")</td></tr>
+<tr><td>NACA 2412, 4412: α_L0, cl(0), cl,max, cm</td><td>Re ≈ 6×10⁶, smooth</td><td>Abbott &amp; von Doenhoff App. IV plots, as read in Marchman, <em>Aerodynamics and Aircraft Performance</em> (App.), and Anderson, <em>Fundamentals of Aerodynamics</em>. Plot readings: ±0.3°, ±0.03 in cl, ±0.01 in cm</td></tr>
+<tr><td>NACA 0012, 2412, 4412: cl, cd, cm, transition</td><td>Re 1×10⁶ and 3×10⁶, free transition, Ncrit 9, −4…12° in 0.5° steps</td><td>XFOIL 6.99 (M. Drela, MIT), run on the identical coordinates; code-to-code reference, not experiment</td></tr>
+</tbody>
+</table></div>
+<p>Modelling of the tests: tripped cases force transition at x/c = 0.05 on both surfaces (the trip
+location is our assumption: grit strips sit near the leading edge); free-transition cases use
+Ncrit = 9; Ladson's Mach 0.15 is included (Kármán–Tsien).</p>
+<h2 id="cross-check-against-xfoil-699">Cross-check against XFOIL 6.99<a class="anchor" href="#cross-check-against-xfoil-699" aria-label="Link to this section">#</a></h2>
+<p>Wind-tunnel data tell whether the <em>model</em> is right; XFOIL tells whether the <em>implementation</em>
+reproduces the model. XFOIL 6.99 was run on exactly the coordinates the viscous solver analyses
+(<code>naca4(code, 200)</code> after <code>prepare_coords</code>, trailing edge opened to 0.05 % c), 200 nodes, Ncrit 9,
+free transition; the reference values are stored in the validation script (<code>XFOIL_REF</code>, regenerate
+with <code>--xfoil PATH</code>). Angles where XFOIL itself did not converge (1–3 per polar) are left out.</p>
+<figure><img src="img/airfoil_xfoil.png" alt="Aerolume vs XFOIL" width="1430" height="770" loading="lazy"><figcaption>Aerolume vs XFOIL</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Section</th><th scope="col">Re</th><th class="r" scope="col">angles compared</th><th class="r" scope="col">max |Δcl|</th><th class="r" scope="col">max |Δcm|</th><th class="r" scope="col">max |Δcd|</th><th class="r" scope="col">max |Δ(dcl/dα)| per 0.5°</th><th class="r" scope="col">unconverged</th></tr></thead>
+<tbody>
+<tr><td>0012</td><td>10⁶</td><td class="r">30</td><td class="r">0.0054</td><td class="r">0.0012</td><td class="r">1.7 %</td><td class="r">0.013 /deg</td><td class="r">0 of 33</td></tr>
+<tr><td>0012</td><td>3×10⁶</td><td class="r">32</td><td class="r">0.0062</td><td class="r">0.0012</td><td class="r">1.4 %</td><td class="r">0.018 /deg</td><td class="r">0 of 33</td></tr>
+<tr><td>2412</td><td>10⁶</td><td class="r">32</td><td class="r">0.0116</td><td class="r">0.0024</td><td class="r">1.7 %</td><td class="r">0.009 /deg</td><td class="r">0 of 33</td></tr>
+<tr><td>2412</td><td>3×10⁶</td><td class="r">33</td><td class="r">0.0059</td><td class="r">0.0014</td><td class="r">2.0 %</td><td class="r">0.014 /deg</td><td class="r">0 of 33</td></tr>
+<tr><td>4412</td><td>10⁶</td><td class="r">30</td><td class="r">0.0121</td><td class="r">0.0026</td><td class="r">2.4 %</td><td class="r">0.011 /deg</td><td class="r">0 of 33</td></tr>
+<tr><td>4412</td><td>3×10⁶</td><td class="r">32</td><td class="r">0.0104</td><td class="r">0.0023</td><td class="r">1.7 %</td><td class="r">0.007 /deg</td><td class="r">0 of 33</td></tr>
+</tbody>
+</table></div>
+<p>The largest differences are at 10–12°, where they grow smoothly with angle (Aerolume's lift is up to
+0.012 lower and its moment less nose-down; the wake and trailing-edge treatments of mfoil and XFOIL
+differ in detail). Below 8° (1° steps) Cl agrees to 0.006 and the lower-surface transition location
+to 0.004 x/c.</p>
+<p><strong>The kink in the lift curve is the model, not a bug.</strong> Every polar above has a stretch where the
+lift slope rises by 20–50 % and Cm turns nose-down by 0.005–0.015, followed by a lower slope: it
+happens where the pressure-side transition point runs off the trailing edge (at Re 10⁶: NACA 0012
+4–8°, 2412 2–4.5°, 4412 1–2°; at 3×10⁶ about 2° later), and XFOIL shows it at the same angles with
+the same size.
+Just before the transition point leaves the surface, the laminar boundary layer ahead of it
+separates a few per cent of chord before the trailing edge (shape factor H rises to 6–7), and its
+displacement thickness acts as extra aft camber (<a href="theory-airfoil.html#5-validity-limits-read-before-trusting-a-number">Airfoil analysis, §5</a>). NACA 2412, Re 10⁶:</p>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">α [deg]</th><th class="r" scope="col">cl XFOIL</th><th class="r" scope="col">cl</th><th class="r" scope="col">cm XFOIL</th><th class="r" scope="col">cm</th><th class="r" scope="col">cd XFOIL</th><th class="r" scope="col">cd</th><th class="r" scope="col">lower xtr XFOIL</th><th class="r" scope="col">lower xtr</th></tr></thead>
+<tbody>
+<tr><td class="r">−1</td><td class="r">0.1328</td><td class="r">0.1326</td><td class="r">−0.0525</td><td class="r">−0.0525</td><td class="r">0.00594</td><td class="r">0.00593</td><td class="r">0.480</td><td class="r">0.481</td></tr>
+<tr><td class="r">0</td><td class="r">0.2347</td><td class="r">0.2329</td><td class="r">−0.0502</td><td class="r">−0.0498</td><td class="r">0.00555</td><td class="r">0.00555</td><td class="r">0.682</td><td class="r">0.681</td></tr>
+<tr><td class="r">1</td><td class="r">0.3351</td><td class="r">0.3323</td><td class="r">−0.0471</td><td class="r">−0.0465</td><td class="r">0.00541</td><td class="r">0.00539</td><td class="r">0.852</td><td class="r">0.852</td></tr>
+<tr><td class="r">2</td><td class="r">0.4440</td><td class="r">0.4430</td><td class="r">−0.0456</td><td class="r">−0.0454</td><td class="r">0.00573</td><td class="r">0.00573</td><td class="r">0.956</td><td class="r">0.955</td></tr>
+<tr><td class="r">3</td><td class="r">0.5797</td><td class="r">0.5795</td><td class="r">−0.0506</td><td class="r">−0.0505</td><td class="r">0.00634</td><td class="r">0.00634</td><td class="r">0.988</td><td class="r">0.986</td></tr>
+<tr><td class="r">4</td><td class="r">0.7316</td><td class="r">0.7324</td><td class="r">−0.0596</td><td class="r">−0.0597</td><td class="r">0.00704</td><td class="r">0.00704</td><td class="r">1.000</td><td class="r">0.999</td></tr>
+<tr><td class="r">5</td><td class="r">0.8196</td><td class="r">0.8239</td><td class="r">−0.0550</td><td class="r">−0.0559</td><td class="r">0.00797</td><td class="r">0.00797</td><td class="r">1.000</td><td class="r">1.000</td></tr>
+<tr><td class="r">6</td><td class="r">0.9029</td><td class="r">0.9052</td><td class="r">−0.0497</td><td class="r">−0.0502</td><td class="r">0.00931</td><td class="r">0.00930</td><td class="r">1.000</td><td class="r">1.000</td></tr>
+<tr><td class="r">8</td><td class="r">1.0749</td><td class="r">1.0723</td><td class="r">−0.0407</td><td class="r">−0.0401</td><td class="r">0.01240</td><td class="r">0.01232</td><td class="r">1.000</td><td class="r">1.000</td></tr>
+<tr><td class="r">10</td><td class="r">1.2488</td><td class="r">1.2440</td><td class="r">−0.0332</td><td class="r">−0.0320</td><td class="r">0.01571</td><td class="r">0.01550</td><td class="r">1.000</td><td class="r">1.000</td></tr>
+</tbody>
+</table></div>
+<p>How it was ruled out as a numerical artefact (2026-10-05): (1) the pristine <code>third_party/mfoil</code>
+run cold at each angle on its own NACA 2412 geometry gives Cl 0.4494 / 0.7191 / 0.9024 at 2 / 4 / 6°,
+identical to Aerolume's sweep on that geometry to four digits, so neither the warm starts nor the
+vectorised kernels in <code>_fast.py</code> cause it; (2) cold single-angle solves at 3, 4 and 5° equal the
+warm-started sweep values; (3) XFOIL agrees as shown. Below the run-off the slope is nearly
+constant (0.099–0.110 /deg over −4…1° for all six polars); above it, it is lower (0.08–0.09 /deg)
+and falls as the upper-surface transition moves forward. Whether a real section shows the kink this
+strongly depends on the tunnel's disturbance level, which Ncrit only approximates; no wind-tunnel
+data at Re 1–3×10⁶ were available here to check its size. The polar's notes name the angles where it
+occurs, so users do not mistake it for a convergence failure.</p>
+<p><code>tests/<wbr>test_<wbr>airfoil_<wbr>polar_<wbr>regularity.py</code> pins this: Cl, Cm, Cd and the 1°-interval lift slopes of all
+six polars against XFOIL (tolerances 0.02, 0.004, 3.5 %, 0.015 /deg), a near-constant slope
+(±15 % of the median, median 0.095–0.115 /deg) below the run-off, no Cm step above 0.012 per degree,
+cold start = sweep in the kink, and the note.</p>
+<p><strong>Known issue outside the solver: NACA sections created as a Design are rotated slightly.</strong>
+<code>design_from_airfoil</code> re-chords the outline through the nose point farthest from the trailing edge
+(found on a spline), which for a cambered NACA section is not the published chord line's origin:
+NACA 2412 is turned 0.09° nose-down (camber at mid-chord 0.0187 instead of 0.0195) and 4412 0.18°.
+A polar of such a Design therefore reads about 0.01 (2412) to 0.02 (4412) lower in Cl than XFOIL or
+NACA data at the same nominal angle (NACA 2412, Re 10⁶, 0°: 0.2239 from the Design vs 0.2329 from the
+coordinates). The polar solver keeps the frame it is given (<code>prepare_coords</code> keeps a Design's chord
+line so polar and CFD angles agree), so the fix belongs in the geometry module.</p>
+<figure class="doc-fig n2"><div class="panels"><a class="panel" href="img/airfoil_0012.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_0012-lift-light.png" width="360" height="390" alt="NACA 0012 lift coefficient against angle of attack: Aerolume at Re 6 and 3 million, tripped, with Ladson&#x27;s and Gregory and O&#x27;Reilly&#x27;s measurements." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_0012-lift-dark.png" width="360" height="390" alt="NACA 0012 lift coefficient against angle of attack: Aerolume at Re 6 and 3 million, tripped, with Ladson&#x27;s and Gregory and O&#x27;Reilly&#x27;s measurements." loading="lazy"></a><a class="panel" href="img/airfoil_0012.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_0012-polar-light.png" width="360" height="390" alt="NACA 0012 drag polar at Re 6 million: Aerolume tripped and free-transition curves with Ladson&#x27;s tripped data and Abbott and von Doenhoff&#x27;s smooth-model data." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_0012-polar-dark.png" width="360" height="390" alt="NACA 0012 drag polar at Re 6 million: Aerolume tripped and free-transition curves with Ladson&#x27;s tripped data and Abbott and von Doenhoff&#x27;s smooth-model data." loading="lazy"></a></div><figcaption>NACA 0012 lift and drag. <a href="img/airfoil_0012.png">Full-resolution figure</a> (PNG, as in the repository).</figcaption></figure>
+<h2 id="naca-0012-re-6106-tripped-ladson-nasa-tm-4074">NACA 0012, Re 6×10⁶, tripped — Ladson (NASA TM-4074)<a class="anchor" href="#naca-0012-re-6106-tripped-ladson-nasa-tm-4074" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">α [deg]</th><th class="r" scope="col">cl exp</th><th class="r" scope="col">cl calc</th><th class="r" scope="col">Δcl</th><th class="r" scope="col">cd exp</th><th class="r" scope="col">cd calc</th><th class="r" scope="col">Δcd</th></tr></thead>
+<tbody>
+<tr><td class="r">−4.04</td><td class="r">−0.4417</td><td class="r">−0.4590</td><td class="r">−0.017</td><td class="r">0.00871</td><td class="r">0.00820</td><td class="r">−6 %</td></tr>
+<tr><td class="r">−2.14</td><td class="r">−0.2385</td><td class="r">−0.2434</td><td class="r">−0.005</td><td class="r">0.00800</td><td class="r">0.00796</td><td class="r">−0 %</td></tr>
+<tr><td class="r">−0.05</td><td class="r">−0.0126</td><td class="r">−0.0057</td><td class="r">+0.007</td><td class="r">0.00809</td><td class="r">0.00787</td><td class="r">−3 %</td></tr>
+<tr><td class="r">2.05</td><td class="r">0.2125</td><td class="r">0.2332</td><td class="r">+0.021</td><td class="r">0.00816</td><td class="r">0.00796</td><td class="r">−2 %</td></tr>
+<tr><td class="r">4.04</td><td class="r">0.4316</td><td class="r">0.4590</td><td class="r">+0.027</td><td class="r">0.00823</td><td class="r">0.00820</td><td class="r">−0 %</td></tr>
+<tr><td class="r">6.09</td><td class="r">0.6546</td><td class="r">0.6895</td><td class="r">+0.035</td><td class="r">0.00885</td><td class="r">0.00876</td><td class="r">−1 %</td></tr>
+<tr><td class="r">8.30</td><td class="r">0.8873</td><td class="r">0.9316</td><td class="r">+0.044</td><td class="r">0.01050</td><td class="r">0.01004</td><td class="r">−4 %</td></tr>
+<tr><td class="r">10.12</td><td class="r">1.0707</td><td class="r">1.1259</td><td class="r">+0.055</td><td class="r">0.01201</td><td class="r">0.01147</td><td class="r">−4 %</td></tr>
+<tr><td class="r">12.12</td><td class="r">1.2605</td><td class="r">1.3305</td><td class="r">+0.070</td><td class="r">0.01332</td><td class="r">0.01356</td><td class="r">+2 %</td></tr>
+<tr><td class="r">14.22</td><td class="r">1.4365</td><td class="r">1.5228</td><td class="r">+0.086</td><td class="r">0.01625</td><td class="r">0.01665</td><td class="r">+2 %</td></tr>
+<tr><td class="r">16.30</td><td class="r">1.5739</td><td class="r">1.6571</td><td class="r">+0.083</td><td class="r">0.02218</td><td class="r">0.02131</td><td class="r">−4 %</td></tr>
+<tr><td class="r">17.13</td><td class="r">1.6116</td><td class="r">1.6905</td><td class="r">+0.079</td><td class="r">0.02560</td><td class="r">0.02445</td><td class="r">−4 %</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Drag: within 6 % at every pre-stall angle</strong> (−4° to 17°).</li>
+<li><strong>Lift: within 0.05 up to 8°</strong>, but the computed lift slope is high: 0.113/deg against
+Ladson's 0.108/deg over −4…8°, so the difference grows to +0.08 at 14–17°. Separating the
+effects with extra runs at 0/4/8°: the Mach 0.15 correction accounts for +1.5 % (0.1107/deg at
+M = 0), and at Re 3×10⁶, M = 0 the slope is 0.1097/deg against ~0.107/deg in Gregory &amp;
+O'Reilly's data. The method's linear-range lift slope is therefore <strong>2–4 % above both
+experiments</strong> (a slight lift over-prediction is commonly reported for XFOIL-type methods; the
+tunnel data also carry wall-correction uncertainty).</li>
+<li><strong>Stall: not captured.</strong> Ladson's section stalls abruptly between 17.1° and 18.0°
+(cl 1.61 → 1.00); the computed cl keeps rising to 1.71 at 18°.</li>
+</ul>
+<h2 id="naca-0012-re-3106-tripped-gregory-oreilly-rm-3726">NACA 0012, Re 3×10⁶, tripped — Gregory &amp; O'Reilly (R&amp;M 3726)<a class="anchor" href="#naca-0012-re-3106-tripped-gregory-oreilly-rm-3726" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">α [deg]</th><th class="r" scope="col">cl exp</th><th class="r" scope="col">cl calc</th><th class="r" scope="col">Δcl</th></tr></thead>
+<tbody>
+<tr><td class="r">1.97</td><td class="r">0.231</td><td class="r">0.219</td><td class="r">−0.012</td></tr>
+<tr><td class="r">5.94</td><td class="r">0.658</td><td class="r">0.658</td><td class="r">+0.000</td></tr>
+<tr><td class="r">9.04</td><td class="r">0.985</td><td class="r">0.986</td><td class="r">+0.001</td></tr>
+<tr><td class="r">12.13</td><td class="r">1.293</td><td class="r">1.289</td><td class="r">−0.004</td></tr>
+<tr><td class="r">14.13</td><td class="r">1.447</td><td class="r">1.457</td><td class="r">+0.010</td></tr>
+<tr><td class="r">16.10</td><td class="r">1.561</td><td class="r">1.573</td><td class="r">+0.012</td></tr>
+</tbody>
+</table></div>
+<p>Computed cl,max 1.608 at 18° (end of the sweep) versus ~1.56 at 16.1° before the measured stall.
+The good point-wise agreement at 6–16° partly reflects an offset in the digitised data (cl = 0.026
+at α = 0.09°): the slope difference noted above is still there.</p>
+<h2 id="naca-0012-re-6106-free-transition-abbott-von-doenhoff-smooth-model">NACA 0012, Re 6×10⁶, free transition — Abbott &amp; von Doenhoff (smooth model)<a class="anchor" href="#naca-0012-re-6106-free-transition-abbott-von-doenhoff-smooth-model" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">α [deg]</th><th class="r" scope="col">cl exp</th><th class="r" scope="col">cl calc</th><th class="r" scope="col">Δcl</th></tr></thead>
+<tbody>
+<tr><td class="r">1.97</td><td class="r">0.216</td><td class="r">0.213</td><td class="r">−0.003</td></tr>
+<tr><td class="r">4.88</td><td class="r">0.552</td><td class="r">0.526</td><td class="r">−0.026</td></tr>
+<tr><td class="r">7.96</td><td class="r">0.871</td><td class="r">0.856</td><td class="r">−0.015</td></tr>
+<tr><td class="r">10.19</td><td class="r">1.121</td><td class="r">1.121</td><td class="r">−0.000</td></tr>
+<tr><td class="r">13.11</td><td class="r">1.363</td><td class="r">1.411</td><td class="r">+0.048</td></tr>
+<tr><td class="r">16.38</td><td class="r">1.596</td><td class="r">1.658</td><td class="r">+0.062</td></tr>
+</tbody>
+</table></div>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">cl</th><th class="r" scope="col">cd exp</th><th class="r" scope="col">cd calc</th><th class="r" scope="col">Δcd</th></tr></thead>
+<tbody>
+<tr><td class="r">0.021</td><td class="r">0.00593</td><td class="r">0.00503</td><td class="r">−15 %</td></tr>
+<tr><td class="r">0.263</td><td class="r">0.00601</td><td class="r">0.00535</td><td class="r">−11 %</td></tr>
+<tr><td class="r">0.462</td><td class="r">0.00660</td><td class="r">0.00594</td><td class="r">−10 %</td></tr>
+<tr><td class="r">0.662</td><td class="r">0.00779</td><td class="r">0.00672</td><td class="r">−14 %</td></tr>
+<tr><td class="r">0.878</td><td class="r">0.00916</td><td class="r">0.00794</td><td class="r">−13 %</td></tr>
+<tr><td class="r">1.079</td><td class="r">0.01130</td><td class="r">0.00943</td><td class="r">−17 %</td></tr>
+<tr><td class="r">1.261</td><td class="r">0.01335</td><td class="r">0.01104</td><td class="r">−17 %</td></tr>
+</tbody>
+</table></div>
+<p>With free transition the drag is <strong>under-predicted by 10–17 %</strong>. The shape of the drag polar is
+right, the level is low: Ncrit = 9 lets the boundary layer stay laminar longer than it did on the
+NACA model in the low-turbulence tunnel (Ncrit is a property of the tunnel, not of the airfoil; a
+lower Ncrit moves the curve towards the data), and the digitised book values carry their own
+uncertainty. The tripped polar (previous figure, right) brackets the data from the other side —
+the practical advice in <a href="theory-airfoil.html">Airfoil analysis</a> (run free <em>and</em> tripped) is based on this.</p>
+<h2 id="naca-2412-and-4412-re-6106-free-transition-abbott-von-doenhoff">NACA 2412 and 4412, Re 6×10⁶, free transition — Abbott &amp; von Doenhoff<a class="anchor" href="#naca-2412-and-4412-re-6106-free-transition-abbott-von-doenhoff" aria-label="Link to this section">#</a></h2>
+<figure class="doc-fig n3"><div class="panels"><a class="panel" href="img/airfoil_cambered.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_cambered-lift-light.png" width="360" height="390" alt="Lift of NACA 2412 and 4412 against angle of attack, with the zero-lift angles, lift at zero angle and maximum lift read from Abbott and von Doenhoff." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_cambered-lift-dark.png" width="360" height="390" alt="Lift of NACA 2412 and 4412 against angle of attack, with the zero-lift angles, lift at zero angle and maximum lift read from Abbott and von Doenhoff." loading="lazy"></a><a class="panel" href="img/airfoil_cambered.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_cambered-polar-light.png" width="360" height="330" alt="Predicted drag polars of NACA 2412 and 4412 at Re 6 million." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_cambered-polar-dark.png" width="360" height="330" alt="Predicted drag polars of NACA 2412 and 4412 at Re 6 million." loading="lazy"></a><a class="panel" href="img/airfoil_cambered.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_cambered-moment-light.png" width="360" height="350" alt="Quarter-chord pitching moment of NACA 2412 and 4412 against angle of attack, with the book values as dotted lines." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_cambered-moment-dark.png" width="360" height="350" alt="Quarter-chord pitching moment of NACA 2412 and 4412 against angle of attack, with the book values as dotted lines." loading="lazy"></a></div><figcaption>NACA 2412 and 4412. <a href="img/airfoil_cambered.png">Full-resolution figure</a> (PNG, as in the repository).</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Section</th><th scope="col">Quantity</th><th class="r" scope="col">A&amp;vD (plot reading)</th><th class="r" scope="col">Aerolume</th></tr></thead>
+<tbody>
+<tr><td>2412</td><td>zero-lift angle</td><td class="r">−2.0°</td><td class="r">−2.24°</td></tr>
+<tr><td>2412</td><td>cl at 0°</td><td class="r">0.25</td><td class="r">0.241</td></tr>
+<tr><td>2412</td><td>lift slope (−2…6°)</td><td class="r">~0.105 /deg</td><td class="r">0.1073 /deg</td></tr>
+<tr><td>2412</td><td>cl,max (α)</td><td class="r">~1.7</td><td class="r">1.843 (20°, no stall within the sweep)</td></tr>
+<tr><td>2412</td><td>cm,c/4 (0–4°)</td><td class="r">−0.05</td><td class="r">−0.049</td></tr>
+<tr><td>2412</td><td>cd at cl 0.4 / 0.8</td><td class="r">—</td><td class="r">0.00511 / 0.00653</td></tr>
+<tr><td>4412</td><td>zero-lift angle</td><td class="r">−4.0°</td><td class="r">−4.39°</td></tr>
+<tr><td>4412</td><td>cl at 0°</td><td class="r">~0.40</td><td class="r">0.477</td></tr>
+<tr><td>4412</td><td>lift slope (−2…6°)</td><td class="r">~0.105 /deg</td><td class="r">0.1084 /deg</td></tr>
+<tr><td>4412</td><td>cl,max (α)</td><td class="r">~1.65</td><td class="r">1.906 (19°)</td></tr>
+<tr><td>4412</td><td>cm,c/4 (0–4°)</td><td class="r">−0.10</td><td class="r">−0.100</td></tr>
+<tr><td>4412</td><td>cd at cl 0.4 / 0.8</td><td class="r">—</td><td class="r">0.00550 / 0.00531</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li>Zero-lift angle, lift slope and <strong>pitching moment agree</strong> (cm within 0.001 of the readings).</li>
+<li><strong>NACA 4412 lift is high by ~0.07</strong> (cl at 0°: 0.477 vs ~0.40; zero-lift angle 0.4° more
+negative). This is panel-converged (0.476 / 0.477 / 0.478 at 159 / 199 / 299 panels), so it is
+the model's behaviour rather than a discretisation error; together with the 2–4 % slope excess
+seen on the 0012 it suggests the viscous decambering at the trailing edge is under-predicted,
+more so on the more cambered section (not investigated further). It <strong>exceeds the 0.05 target</strong>
+and is listed as a known deviation; the test pins it at &lt; 0.09.</li>
+<li><strong>cl,max is over-predicted</strong> by ~0.15 (2412) and ~0.25 (4412) and stall comes several degrees late
+— the expected weakness of XFOIL-class methods near stall (<a href="theory-airfoil.html#5-validity-limits-read-before-trusting-a-number">Airfoil analysis, §5</a>).</li>
+<li>Drag for the cambered sections was not compared: no authoritative tabulated values were
+available to transcribe. The computed values (0.0051–0.0065 in the drag bucket) are of the
+expected magnitude for smooth 12 %-thick sections at this Reynolds number, and the 0012 results
+above indicate the likely error (−10…−17 % free, ±6 % tripped).</li>
+<li>The kinks in cl and cm near 4–7° are where the lower-surface transition point runs off the trailing
+edge (edge of the drag bucket); XFOIL predicts the same (see the XFOIL cross-check above).</li>
+</ul>
+<h2 id="surface-distributions">Surface distributions<a class="anchor" href="#surface-distributions" aria-label="Link to this section">#</a></h2>
+<figure class="doc-fig n2"><div class="panels"><a class="panel" href="img/airfoil_cp_2412.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_cp_2412-cp-light.png" width="360" height="350" alt="Pressure coefficient along NACA 2412 at 4 degrees and Re 1 million: viscous solution against the inviscid panel solution." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_cp_2412-cp-dark.png" width="360" height="350" alt="Pressure coefficient along NACA 2412 at 4 degrees and Re 1 million: viscous solution against the inviscid panel solution." loading="lazy"></a><a class="panel" href="img/airfoil_cp_2412.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_cp_2412-cf-light.png" width="360" height="350" alt="Skin friction on the upper and lower surface of the same case, with the transition points dotted." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_cp_2412-cf-dark.png" width="360" height="350" alt="Skin friction on the upper and lower surface of the same case, with the transition points dotted." loading="lazy"></a></div><figcaption>Cp and Cf, NACA 2412. <a href="img/airfoil_cp_2412.png">Full-resolution figure</a> (PNG, as in the repository).</figcaption></figure>
+<p>NACA 2412 at 4°, Re 10⁶: the boundary layer reduces the suction and the trailing-edge loading
+relative to the inviscid panel solution; the laminar separation bubble ahead of upper-surface
+transition (x/c ≈ 0.38) shows as the plateau in Cp and the near-zero Cf just upstream of the jump.</p>
+<h2 id="performance">Performance<a class="anchor" href="#performance" aria-label="Link to this section">#</a></h2>
+<p>Reference case: NACA 2412, Re 10⁶, 19 angles (−4° to 14°, 1° steps), 199 panels, single
+process, <code>OPENBLAS_NUM_THREADS=2</code>, on the development machine (another heavy process was running):
+<strong>14.2 s, 19/19 converged</strong> (12.5 s in an earlier run) (target: ~15 s). The validation polars above took 14–20 s for 19–24
+angles at Re 3–6×10⁶ and 43–53 s for the 27-angle cambered sweeps, which include the deep
+post-maximum angles where Newton needs many more iterations.</p>
+<p>Single inviscid solutions take ~0.1–0.2 s (paneling plus one dense solve).</p>
+<h2 id="convergence-robustness">Convergence robustness<a class="anchor" href="#convergence-robustness" aria-label="Link to this section">#</a></h2>
+<p>All 117 wind-tunnel validation points and all 198 XFOIL cross-check points converged. During this work three upstream robustness problems were
+found and fixed (patches P11, P12 in the vendored mfoil and the line search / engineering-tolerance
+acceptance in <code>solver.py</code>, see <a href="theory-airfoil.html#4-sweeps-convergence-and-robustness">Airfoil analysis, §4</a>): before them, the same sweeps lost
+3–4 points per polar at Re 6–9×10⁶ (e.g. NACA 2412 at 0°, 6°, 8°, 10°). A few free-transition
+points are accepted at "engineering tolerance" (Newton residual cycling at ~10⁻² while Cl and Cd
+vary by less than 0.002 and 1 %); the polar result lists them in its notes.</p>
+<h2 id="summary-against-the-quality-bar">Summary against the quality bar<a class="anchor" href="#summary-against-the-quality-bar" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Check</th><th scope="col">Target</th><th scope="col">Result</th></tr></thead>
+<tbody>
+<tr><td>Cl, NACA 0012, 0–8°, vs Ladson / Gregory / A&amp;vD</td><td>within 0.05</td><td>max 0.044 / 0.012 / 0.026 ✔</td></tr>
+<tr><td>Cd, NACA 0012 tripped, attached (−4…10°) vs Ladson</td><td>within 15–20 %</td><td>max 6 % ✔</td></tr>
+<tr><td>Cd, NACA 0012 free transition vs A&amp;vD (cl ≤ 0.9)</td><td>within 20 %</td><td>max 15 % (low) ✔</td></tr>
+<tr><td>NACA 2412 zero-lift angle / cl(0) / cm</td><td>—</td><td>−2.24° / 0.241 / −0.049 vs −2.0° / 0.25 / −0.05 ✔</td></tr>
+<tr><td>NACA 4412 zero-lift angle / cl(0) / cm</td><td>—</td><td>−4.39° / 0.477 / −0.100 vs −4.0° / ~0.40 / −0.10 — <strong>cl high by 0.077</strong> ✘</td></tr>
+<tr><td>cl,max region</td><td>—</td><td>over-predicted by 0.1 (0012) to 0.25 (4412); stall late ✘ (documented limit)</td></tr>
+<tr><td>19-point polar, NACA 2412, Re 10⁶</td><td>&lt; ~15 s</td><td>14.2 s ✔</td></tr>
+<tr><td>Cl / Cm / Cd vs XFOIL 6.99, identical geometry, 6 polars</td><td>—</td><td>max 0.012 / 0.0026 / 2.4 %, kink reproduced ✔</td></tr>
+</tbody>
+</table></div>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="validation.html"><span>Previous</span><b>Validation report</b></a><a class="next" href="validation-wing.html"><span>Next</span><b>Finite-wing validation</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#reference-data">Reference data</a></li><li class="l2"><a href="#cross-check-against-xfoil-699">Cross-check against XFOIL 6.99</a></li><li class="l2"><a href="#naca-0012-re-6106-tripped-ladson-nasa-tm-4074">NACA 0012, Re 6×10⁶, tripped — Ladson (NASA TM-4074)</a></li><li class="l2"><a href="#naca-0012-re-3106-tripped-gregory-oreilly-rm-3726">NACA 0012, Re 3×10⁶, tripped — Gregory &amp; O'Reilly (R&amp;M 3726)</a></li><li class="l2"><a href="#naca-0012-re-6106-free-transition-abbott-von-doenhoff-smooth-model">NACA 0012, Re 6×10⁶, free transition — Abbott &amp; von Doenhoff (smooth model)</a></li><li class="l2"><a href="#naca-2412-and-4412-re-6106-free-transition-abbott-von-doenhoff">NACA 2412 and 4412, Re 6×10⁶, free transition — Abbott &amp; von Doenhoff</a></li><li class="l2"><a href="#surface-distributions">Surface distributions</a></li><li class="l2"><a href="#performance">Performance</a></li><li class="l2"><a href="#convergence-robustness">Convergence robustness</a></li><li class="l2"><a href="#summary-against-the-quality-bar">Summary against the quality bar</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

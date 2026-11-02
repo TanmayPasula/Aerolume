@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Overview</title>
+<meta name="description" content="What Aerolume is, how to install it and how to run a first analysis.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Overview">
+<meta property="og:description" content="What Aerolume is, how to install it and how to run a first analysis.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html" aria-current="page">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html" aria-current="page">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#download-and-install">Download and install</a></li><li class="l2"><a href="#what-it-does">What it does</a></li><li class="l2"><a href="#quick-start">Quick start</a></li><li class="l2"><a href="#validation">Validation</a></li><li class="l2"><a href="#limits">Limits</a></li><li class="l2"><a href="#documentation">Documentation</a></li><li class="l2"><a href="#licence-and-credits">Licence and credits</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="aerolume">Aerolume</h1>
+<p>Aerolume is an open-source desktop studio for aerodynamics and heat transfer, in 2D and 3D.
+It runs incompressible Navier–Stokes solvers written in PyTorch on an NVIDIA GPU or on the
+CPU, an XFOIL-class airfoil solver and finite-wing analyses, and wraps them in one guided
+workflow: <strong>Geometry → Setup → Simulate → Results → Compare → Report</strong>. Smoke emitters, heated
+bodies, heaters, fans, jets and closed rooms can be placed into any simulation; obstacles can
+be drawn into a running flow; every run carries its solver diagnostics. It is built for
+independent student researchers, and anyone else who needs numbers they can defend: every
+solver is checked against published benchmarks, and every result comes with its error bars
+and its limits stated next to it.</p>
+<figure><img src="img/ui_results3d.png" alt="Aerolume showing the 3D smoke and mean-flow streamlines around a car on a moving road, from a Draft run on the GPU" width="1600" height="1000" loading="lazy"><figcaption>Aerolume showing the 3D smoke and mean-flow streamlines around a car on a moving road, from a Draft run on the GPU</figcaption></figure>
+<p>Licence: Apache-2.0. Version 0.1.0, the first public release (1 November 2026); see
+CHANGELOG.md. Developed and tested on Windows 11 with an
+NVIDIA GPU; every feature also runs on the CPU. Linux and macOS have not been tested yet.</p>
+<h2 id="download-and-install">Download and install<a class="anchor" href="#download-and-install" aria-label="Link to this section">#</a></h2>
+<p><strong>Windows installer.</strong> <code>Aerolume-0.1.0-cuda-setup.exe</code> installs the program for the current
+user (no administrator rights): Python, PyTorch with the CUDA libraries, VTK, Qt, the
+documentation and the validation scripts are inside, so nothing else is needed but an NVIDIA
+driver for GPU runs (without one everything runs on the CPU). It adds a Start-menu entry, opens
+<code>.aerolume</code> projects by double-click and uninstalls from Windows Settings. The installer is
+not code-signed yet, so SmartScreen asks once. There is no public download page yet: the
+installer is built from this repository with one command (Inno Setup 6 and PyInstaller
+needed), and attached to the project's releases once the repository is published.</p>
+<pre><code class="language-bash">python packaging/build.py --variant cuda     # portable folder + headless smoke test + installer
+python packaging/build.py --status           # does the existing build match the sources?</code></pre>
+<p><strong>macOS.</strong> No <code>.app</code> has been built or tested yet: PyInstaller cannot cross-build and the
+release is made on Windows. The same spec makes <code>dist/Aerolume.app</code> (a <code>BUNDLE</code> target with an
+<code>aerolume.icns</code> icon generated from the app's SVG) when <code>pyinstaller packaging/aerolume.spec</code>
+runs on a Mac; see <a href="install.html#building-the-macos-app">Building the macOS app</a>.</p>
+<p><strong>From source</strong> (Python 3.11 or newer; keep the virtual environment outside cloud-synced
+folders, the CUDA build of PyTorch is several GB):</p>
+<pre><code class="language-bash">git clone &lt;repository URL&gt; aerolume
+cd aerolume
+python -m venv .venv
+.venv\Scripts\activate                       # Linux/macOS: source .venv/bin/activate
+pip install torch --index-url https://download.pytorch.org/whl/cu130   # or .../whl/cpu
+pip install -e ".[dev,ai]"
+aerolume-cli doctor                          # versions, devices and a one-second solver check
+aerolume                                     # the desktop application</code></pre>
+<p><a href="install.html">Installing Aerolume</a> covers both ways, the portable folder, the self-test
+(<code>Aerolume.exe --selftest</code>) and troubleshooting.</p>
+<h2 id="what-it-does">What it does<a class="anchor" href="#what-it-does" aria-label="Link to this section">#</a></h2>
+<p><strong>Navier–Stokes in 2D and 3D.</strong> Incompressible flow on uniform staggered grids, the same code
+on GPU or CPU: third-order upwind advection, SSP-RK3 time stepping, an exact FFT/DCT pressure
+projection, LES closures (Smagorinsky, WALE, Vreman), CUDA graphs. Bodies are immersed by
+volume penalisation, so any outline or surface mesh runs without meshing: airfoils,
+multi-element wings, 2D vehicle profiles and 3D cars on a moving road with rolling wheels,
+STL / OBJ / PLY meshes, bluff bodies. A symmetric 3D body is solved on a half domain. On the
+development GPU (RTX 4060 Ti) the 2D solver runs 493 steps per second on 1024 × 512 cells and
+the 3D solver 54.7 steps per second on 4.2 million cells.</p>
+<p><strong>Heat, smoke, fans and rooms.</strong> Any simulation can hold placed physics, in 2D and 3D alike:</p>
+<ul>
+<li>smoke emitters (points, rakes, lines, rectangles, discs, planes; up to four colours; pulsed
+for timelines) and GPU tracer particles;</li>
+<li>heat transfer with Boussinesq buoyancy: bodies held at a temperature, releasing a heat flux
+or adiabatic, domain walls likewise, volumetric heaters; the result gives the temperature
+field and every body's heat rate and Nusselt number with a standard error;</li>
+<li>fans as actuator discs set by thrust, pressure jump or a target speed the solver regulates,
+with a report of delivered thrust, volume flow and ideal power;</li>
+<li>jets and vents, hot or cold, carrying smoke;</li>
+<li>closed boxes instead of a wind tunnel: rooms, electronics enclosures, cavities.</li>
+</ul>
+<p>The planner chooses the temperature and speed scales, states Ra, Gr, Pr, Ri and Pe with the
+rule behind each, and warns about what the grid or the model cannot carry.</p>
+<figure><img src="img/ui_heat.png" alt="The Heat transfer tab of a heated cylinder at Re 40, 10 K above the stream (Draft run): the time-averaged temperature field, the mean Nusselt number and heat rate with their standard errors (drawn in the warning colour because the averaging window holds few independent batches), the cylinder&#x27;s own Nu and heat rate, and the heat balance, whose residual is 0.003 % of the heat through the domain. The comparison with the Lange et al. correlation is on the Summary tab" width="1600" height="1000" loading="lazy"><figcaption>The Heat transfer tab of a heated cylinder at Re 40, 10 K above the stream (Draft run): the time-averaged temperature field, the mean Nusselt number and heat rate with their standard errors (drawn in the warning colour because the averaging window holds few independent batches), the cylinder's own Nu and heat rate, and the heat balance, whose residual is 0.003 % of the heat through the domain. The comparison with the Lange et al. correlation is on the Summary tab</figcaption></figure>
+<p><strong>Explore: drawing into a running flow.</strong> Explore mode runs the flow continuously while you
+change the angle, the speed or the Reynolds number, draw and erase obstacles with a brush or a
+polygon, and drag emitters, fans, heaters and jets to new places. The Diagnostics panel shows
+what decides whether a run can be trusted: the divergence after the projection, the change of
+each field per step, the CFL number and time step, the pressure-solve residual and the
+throughput, exportable as CSV. A solver trace captures one time step stage by stage
+(tentative velocity, its divergence, the pressure correction, the corrected field). Production
+runs record the same diagnostics and can use a PID-controlled time step.</p>
+<figure><img src="img/ui_explore.png" alt="Explore mode in a room with a fan, a heater, a supply jet and a vent: a wall drawn into the running flow, smoke in two colours, and the Diagnostics panel" width="1600" height="1000" loading="lazy"><figcaption>Explore mode in a room with a fan, a heater, a supply jet and a vent: a wall drawn into the running flow, smoke in two colours, and the Diagnostics panel</figcaption></figure>
+<p><strong>Airfoil polars and finite wings.</strong> A panel method coupled to an integral boundary layer with
+e^N transition (vendored mfoil by K. Fidkowski, with robustness patches) gives polars at flight
+Reynolds numbers in seconds; it agrees with XFOIL 6.99 to 0.012 in c<sub>l</sub> on identical
+coordinates. Finite wings run a vortex lattice or a nonlinear lifting line on the section
+polars: lift, induced and profile drag, span loading and the stall-onset estimate.</p>
+<p><strong>Runs that know when they are done.</strong> The runner finds the end of the start-up transient from
+the data, stops once the mean coefficients (or the Nusselt number) are known to the quality
+preset's tolerance, and reports a run that misses it as <em>not converged</em> with the uncertainty it
+did reach. Grid studies give a Roache grid-convergence index. Results export to CSV, NPZ and
+VTK (ParaView); reports to PDF and HTML with the methodology and the validity of every number.</p>
+<p><strong>Scripting, the Assistant and MCP.</strong> <code>import aerolume as al</code> is the same API the program uses:
+build designs, run and sweep simulations, plot and export. The in-app Script console runs it
+against the open project. The experiment Assistant plans, runs and analyses experiments from a
+goal in plain words, with Claude (an API key) or a local model through Ollama; every suggested
+change is a card that changes nothing until you apply it, and nothing leaves the computer
+without your consent. <code>aerolume-mcp</code> exposes the API to Claude Desktop or Claude Code over the
+Model Context Protocol, so their model plans and Aerolume runs the physics on your computer, with
+no API key in Aerolume (<a href="mcp.html">MCP server</a>):</p>
+<pre><code class="language-bash">claude mcp add aerolume -- aerolume-mcp --project "Wing study.aerolume"</code></pre>
+<p><strong>Accounts, optional.</strong> The program works fully offline with no account. Connecting a Supabase
+project of your own adds sign-in, cloud copies of projects with conflict detection, and
+expiring read-only share links; the database migrations with row-level security ship in
+<code>supabase/</code>. Nothing is configured or sent by default.</p>
+<h2 id="quick-start">Quick start<a class="anchor" href="#quick-start" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Start Aerolume and pick a study on the Start page: an airfoil, a 2D vehicle, a 3D body from
+a mesh, a wing, a heated room (3D) or an electronics enclosure (2D). Or <strong>File ▸ Open
+example</strong>: seven bundled projects with finished results, among them a 3D car with smoke, a
+heated cylinder, the heated-cavity benchmark and a room with a fan and a heater.</li>
+<li><strong>Geometry</strong>: import or edit the shape. <strong>Setup</strong>: speed, angle, quality and the placed
+physics; the Estimate table shows the grid, the Reynolds numbers and the run time.</li>
+<li><strong>Run</strong> (F5) or <strong>Explore</strong>. Then <strong>Results</strong>, <strong>Compare</strong> and <strong>Report</strong>.</li>
+</ol>
+<p>The <a href="user-guide.html">user guide</a> walks through every page. From the command line:</p>
+<pre><code class="language-bash">aerolume-cli polar --naca 2412 --re 1e6 --alpha -4:14:1 --csv polar.csv
+aerolume-cli quick --template sedan --speed 30 --quality draft --save MyCar
+aerolume-cli quick3d --stl car.stl --speed 30 --quality draft
+aerolume-cli cavity --ra 1e5                  # natural convection against de Vahl Davis
+aerolume-cli wing --naca 2412 --span 2 --chord 0.3 --taper 0.6
+aerolume-cli script study.py --project "Wing study.aerolume"
+aerolume-cli validate</code></pre>
+<p>From Python:</p>
+<pre><code class="language-python">import aerolume as al
+
+p = al.new_project("Study")
+r = p.run_cfd(p.add_naca("2412"), speed=30, alpha=4)
+print(r.cd, r.cl, r.converged)
+case = al.cavity_case(ra=1e5)                 # a referenced natural-convection case
+print(case.check(p.run_case(case)))           # measured Nu, the reference, the difference</code></pre>
+<h2 id="validation">Validation<a class="anchor" href="#validation" aria-label="Link to this section">#</a></h2>
+<p>Every number below was measured on the development machine (RTX 4060 Ti, float32 unless
+stated) by the scripts in <code>validation/</code>; <code>python validation/run_all.py --all</code> reruns every case
+against its cited reference and tolerance band. The full report with figures and the list of
+what is <em>not</em> validated is <a href="validation.html">Validation report</a>. In the run of 1 November 2026
+(25 cases, 30 minutes on the development GPU with no other compute job running), 126 of
+128 checks passed; the two that fail are listed
+there as failing: the square cylinder's drag at 32 cells per side (+5.9 % against a ± 5 % band;
+it passes at 48) and the momentum-flux drift of a plane jet in a closed box (6.2 % against 5 %).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th scope="col">quantity</th><th scope="col">reference</th><th scope="col">Aerolume</th></tr></thead>
+<tbody>
+<tr><td>Discrete Poisson solve (float64)</td><td>relative residual</td><td>round-off</td><td>4.1 × 10⁻¹⁴</td></tr>
+<tr><td>Taylor–Green vortex, 2D and 3D</td><td>observed order</td><td>2</td><td>2.00 / 1.97–2.00</td></tr>
+<tr><td>Cylinder, Re 100, 32 cells/D</td><td>C<sub>d</sub> / C<sub>l</sub>′ / St</td><td>1.33–1.38 / 0.32–0.34 / 0.164–0.167</td><td>1.412 / 0.350 / 0.170</td></tr>
+<tr><td>Schäfer–Turek 2D-2, Re 100, 80 cells/D</td><td>St / C<sub>l,max</sub> / C<sub>d,max</sub></td><td>0.295–0.305 / 0.99–1.01 / 3.22–3.24</td><td>0.301 / 1.004 / 3.256</td></tr>
+<tr><td>Sphere, Re 100, 24 cells/D</td><td>C<sub>d</sub> / wake L/D</td><td>1.05–1.15 / 0.80–0.95</td><td>1.148 / 0.894</td></tr>
+<tr><td>Square cavity, natural convection, Ra 10³–10⁶</td><td>hot-wall mean Nu</td><td>1.117, 2.238, 4.509, 8.817 (de Vahl Davis)</td><td>1.1184, 2.2507, 4.5314, 8.8405</td></tr>
+<tr><td>Cubic cavity, Ra 10⁴, 48³</td><td>hot-wall mean Nu</td><td>2.054–2.100 (Tric et al., Fusegi et al.)</td><td>2.066</td></tr>
+<tr><td>Rayleigh–Bénard onset</td><td>critical Ra</td><td>1707.76 (Chandrasekhar)</td><td>1701 (−0.4 %)</td></tr>
+<tr><td>Heated cylinder, Re 40, 32 cells/D</td><td>mean Nu</td><td>3.200–3.255</td><td>3.336 (+2.5 %, 5 % blockage)</td></tr>
+<tr><td>Heated sphere in a closed box, Ra 10⁴, 27 cells/D</td><td>mean Nu</td><td>6.545 (Churchill correlation)</td><td>6.385 (−2.4 %)</td></tr>
+<tr><td>Actuator disc, C<sub>T</sub> 0.5, 2.2 % blockage</td><td>disc velocity</td><td>confined momentum theory</td><td>−0.34 %</td></tr>
+<tr><td>NACA 0012, Re 6 × 10⁶, tripped, α 4° (Ladson)</td><td>c<sub>l</sub> / c<sub>d</sub></td><td>0.432 / 0.00823</td><td>0.459 / 0.00820</td></tr>
+<tr><td>Swept wing, Weber &amp; Brebner 45°</td><td>lift</td><td>wind tunnel</td><td>−3.2 to +3.9 %</td></tr>
+</tbody>
+</table></div>
+<p>The cylinder and sphere drag sit a few per cent above the unconfined references because of
+the domain's blockage, and converge with the grid; the heated cylinder's Nusselt number is about
+2 % above the published values even on a converged grid (about the spread between those values).
+In the Schäfer–Turek channel, where the references were computed in the same confined geometry,
+every quantity is inside its benchmark band or within 0.5 % of it.</p>
+<h2 id="limits">Limits<a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>High Reynolds numbers.</strong> Above about 10⁴ the boundary layers are not resolved; there is no
+wall model and no transition model in the Navier–Stokes solvers. Absolute vehicle drag is not
+validated (a wall-unresolved Ahmed-type body reads about 2.2× its wind-tunnel drag): compare
+designs run the same way, do not quote a car's C<sub>d</sub>. Airfoils at flight Reynolds
+numbers belong to the polar solver, wings to the finite-wing analysis.</li>
+<li><strong>2D vehicles</strong> are infinitely wide side profiles.</li>
+<li><strong>Uniform grids.</strong> No local refinement; the planner trades domain size, blockage and
+resolution and states the trade. The immersed wall is about one cell thick, so sharp edges
+converge slowly.</li>
+<li><strong>Heat transfer</strong> is Boussinesq (small temperature differences) with constant properties; no
+radiation, no conduction inside solids, no turbulence model for convection. Validated for
+laminar natural and forced convection at Pr 0.71.</li>
+<li><strong>Fans</strong> are actuator discs (no blades); <strong>smoke</strong> is passive visualisation.</li>
+<li>Incompressible only. Not in this release: a Lattice-Boltzmann solver and neural-operator
+surrogates.</li>
+</ul>
+<p><strong>Planned for 0.2.</strong> The first three limits are the next version's work: local grid refinement
+with a sharper immersed wall, a wall model with a transition model (so absolute drag at high
+Reynolds numbers can be validated), and finite-width 2D vehicles (a side profile run as a 3D
+body of a chosen width). A design with prototype measurements exists; none of it is in 0.1.0,
+and the limits above describe this release as it is.</p>
+<h2 id="documentation">Documentation<a class="anchor" href="#documentation" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><a href="user-guide.html">User guide</a>, <a href="simulation-guide.html">Running simulations</a>,
+<a href="install.html">Installing Aerolume</a></li>
+<li><a href="scripting.html">Scripting API</a>, <a href="assistant.html">the Assistant</a>,
+<a href="mcp.html">MCP server</a>, <a href="accounts.html">Accounts</a></li>
+<li>Theory: <a href="methods.html">methods overview</a>, <a href="theory-ns2d.html">2D Navier–Stokes</a>,
+<a href="theory-ns3d.html">3D Navier–Stokes</a>, <a href="theory-airfoil.html">airfoil analysis</a>,
+<a href="theory-wing.html">finite wings</a>, <a href="theory-sensitivity.html">sensitivity maps</a></li>
+<li>Validation: <a href="validation.html">report</a>, <a href="validation-airfoil.html">airfoil polars</a>,
+<a href="validation-wing.html">finite wings</a>, how to run it</li>
+<li>DESIGN.md (module contracts), <a href="contributing.html">Contributing</a>,
+<a href="design-guidelines.html">design guidelines</a>, CHANGELOG.md,
+CITATION.cff</li>
+</ul>
+<h2 id="licence-and-credits">Licence and credits<a class="anchor" href="#licence-and-credits" aria-label="Link to this section">#</a></h2>
+<p>Aerolume is licensed under the Apache License 2.0 (<a href="../LICENSE.txt">LICENSE</a>).</p>
+<ul>
+<li><strong>mfoil</strong> by Krzysztof J. Fidkowski (University of Michigan), MIT licence, vendored with
+local patches listed in the file header.</li>
+<li><strong>Atkinson Hyperlegible Next and Mono</strong> (Braille Institute), SIL Open Font License 1.1.</li>
+<li>Built on PyTorch, NumPy, SciPy, PySide6 (Qt for Python, LGPL), VTK, pyqtgraph, Matplotlib,
+ezdxf, Pillow and contourpy; optional: the Anthropic SDK and Ollama for the Assistant.</li>
+</ul>
+<p><a href="third-party-notices.html">Third-party notices</a> lists them with their licences. Reference
+data: Ladson (NASA TM-4074), Abbott &amp; von Doenhoff, Schäfer &amp; Turek (1996), de Vahl Davis
+(1983), Tric et al. (2000), Clift, Grace &amp; Weber (1978), Garrett &amp; Cummins (2007), Bickley
+(1937), Schlichting (1933) and the literature cited in the theory documents.</p>
+<nav class="pager" aria-label="Previous and next page"><a class="next" href="install.html"><span>Next</span><b>Installing Aerolume</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#download-and-install">Download and install</a></li><li class="l2"><a href="#what-it-does">What it does</a></li><li class="l2"><a href="#quick-start">Quick start</a></li><li class="l2"><a href="#validation">Validation</a></li><li class="l2"><a href="#limits">Limits</a></li><li class="l2"><a href="#documentation">Documentation</a></li><li class="l2"><a href="#licence-and-credits">Licence and credits</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

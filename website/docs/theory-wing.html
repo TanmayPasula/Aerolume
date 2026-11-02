@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Finite wings</title>
+<meta name="description" content="Vortex lattice and nonlinear lifting line on the section polars.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Finite wings">
+<meta property="og:description" content="Vortex lattice and nonlinear lifting line on the section polars.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html" aria-current="page">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html" aria-current="page">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-geometry">1. Geometry</a></li><li class="l2"><a href="#2-frames-references-and-signs">2. Frames, references and signs</a></li><li class="l2"><a href="#3-vortex-lattice-method">3. Vortex-lattice method</a></li><li class="l2"><a href="#4-nonlinear-lifting-line-phillips-snyder-2000">4. Nonlinear lifting line (Phillips &amp; Snyder 2000)</a></li><li class="l2"><a href="#5-viscous-strip-coupling">5. Viscous strip coupling</a></li><li class="l2"><a href="#6-assumptions-and-validity-limits">6. Assumptions and validity limits</a></li><li class="l2"><a href="#7-cost">7. Cost</a></li><li class="l2"><a href="#8-api">8. API</a></li><li class="l2"><a href="#references">References</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Theory</p>
+<h1 id="finite-wing-analysis-theory-and-validity">Finite-wing analysis: theory and validity</h1>
+<p>Aerolume's <strong>Wing</strong> analysis predicts the lift, drag, pitching moment, lateral loads and span
+loading of a wing from its planform and the 2D polars of its airfoils, in the spirit of XFLR5:
+seconds per polar instead of the minutes-to-hours of 3D CFD. Two methods are available:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col"></th><th scope="col">Vortex lattice (VLM, default)</th><th scope="col">Nonlinear lifting line (LLT)</th></tr></thead>
+<tbody>
+<tr><td>Model</td><td>ring vortices on the cambered mean surface</td><td>horseshoes on the quarter-chord line</td></tr>
+<tr><td>Planforms</td><td>any: low AR, sweep, dihedral, kinks, sideslip</td><td>straight or mildly swept (≤ ~20°), AR ≳ 4</td></tr>
+<tr><td>Lift</td><td>linear (potential flow), no stall</td><td>nonlinear: section lift curves from the viscous polars up to cl_max</td></tr>
+<tr><td>Drag</td><td>Trefftz-plane induced + strip profile drag</td><td>Trefftz-plane induced + strip profile drag</td></tr>
+<tr><td>Use for</td><td>design-point loads, any shape, moments</td><td>lift curve towards stall, stall onset</td></tr>
+</tbody>
+</table></div>
+<p>Validation against theory, lifting-surface results and wind-tunnel data is in
+<a href="validation-wing.html">Finite-wing validation</a>. Code: <code>src/<wbr>aerolume/<wbr>solvers/<wbr>wing/</code>
+(<code>geometry.py</code>, <code>vortex.py</code>, <code>vlm.py</code>, <code>llt.py</code>, <code>polars.py</code>, <code>solver.py</code>).</p>
+<h2 id="1-geometry">1. Geometry<a class="anchor" href="#1-geometry" aria-label="Link to this section">#</a></h2>
+<p>A wing is a <code>WingSpec</code>: a list of <code>WingSection</code> stations (root first) joined by straight lines.
+Leading edge <span class="math">(<i>x</i><sub>le</sub>, <i>y</i>, <i>z</i><sub>le</sub>)</span>, chord and twist vary <strong>linearly in y</strong> between two stations, so
+the leading and trailing edges are straight and the planform is exactly what the user typed.
+<code>symmetric=True</code> mirrors the stations about y = 0 (the sections describe the right half,
+y ≥ 0, DESIGN.md 7.2); a first station at y &gt; 0 leaves a gap at the centre (two separate lifting
+surfaces).</p>
+<ul>
+<li><strong>Twist</strong> rotates a section nose-up about the spanwise axis through its leading edge.
+<strong>Dihedral</strong> is the slope of <span class="math"><i>z</i><sub>le</sub></span> in y; camber offsets are applied along the local surface
+normal (tilted by the dihedral), so a dihedral wing's sections stay perpendicular to its surface.</li>
+<li><strong>Airfoils</strong> are NACA 4/5-digit codes (generated) or <code>design:&lt;id&gt;</code> (a 2D airfoil design of the
+project, resolved by the caller). Only the <strong>mean line</strong> enters the vortex methods (thin-wing
+theory). It is taken as the average of the upper and lower surfaces at equal x/c in the
+<em>chord-line frame of the polar solver</em> (<code>prepare_coords</code>), so camber, section incidence and polar
+angles share one reference line. Between two stations with different airfoils the mean line and,
+in viscous runs, the section polars are blended linearly with the span position.</li>
+<li><strong>Spanwise panels</strong> (<code>n_span</code> per half, <code>spacing</code> "cosine" or "uniform"): the distribution is
+defined over the whole half span and split at every section station, so kinks fall on panel
+edges and each segment gets panels in proportion to its share (at least one). "cosine" clusters
+panels at the tip only (<span class="math"><i>y</i> = (<i>b</i>/2) sin θ</span>, which makes the full wing the classical full-cosine
+distribution <span class="math"><i>y</i> = (<i>b</i>/2) cos θ</span>) or, when the root is a free edge too, at both ends.</li>
+<li><strong>Control points</strong> sit at the midpoint of the <em>mapped coordinate θ</em>, not of y (Multhopp's
+"semicircle" rule). Lift falls like √(distance) at a tip; collocating at the θ-midpoint makes
+the discrete solution of an elliptic wing exactly elliptic (e = 0.997–0.999 with any panel count,
+against e = 1.025 at 24 panels per half and first-order convergence with y-midpoints).</li>
+<li><strong>Chordwise panels</strong> (<code>n_chord</code>) are uniform, with the vortex at 1/4 and the control point at
+3/4 of each panel (exact 2D lift and moment for flat and parabolic mean lines). The control-point
+normal uses the <em>local</em> mean-line slope at the 3/4 point. The panel's corner points would give
+the secant slope, which is the slope at the panel <em>midpoint</em>: an O(Δx) error that put NACA 2412's
+zero-lift angle at −1.87° instead of −2.12° with 8 chordwise panels (now −2.117°).</li>
+</ul>
+<p>Planform metrics (<code>planform_metrics(wing)</code>) are exact for the piecewise-linear planform:
+<code>area</code> is the planform area projected on the x–y plane, <code>span</code> the tip-to-tip distance in y,
+<code>aspect_ratio = span²/area</code>, <span class="math">mac = ∫<i>c</i>² dy / ∫<i>c</i> dy</span> with its leading-edge x and spanwise station,
+<code>taper</code>, the root-to-tip quarter-chord <code>sweep_c4_deg</code> and <code>mean_chord = area/span</code>.</p>
+<h2 id="2-frames-references-and-signs">2. Frames, references and signs<a class="anchor" href="#2-frames-references-and-signs" aria-label="Link to this section">#</a></h2>
+<p>The wing is solved in its own frame (x aft, y spanwise, z up). Following DESIGN.md 7.2, the angle
+of attack α rotates the wing about +y through the moment reference by +α (nose up) and the
+sideslip β (FlowConditions' <code>yaw_deg</code> convention) rotates it about +z by −β first. Equivalently the
+free stream seen by the wing is</p>
+<pre><code>v̂∞ = (cos α cos β, cos α sin β, sin α)</code></pre>
+<p>(<code>freestream_direction</code>); positive β gives the flow a +y component, so the −y half is windward.
+Forces and moments are rotated back to <strong>wind axes</strong>: CD along the free stream, CY along +y, CL
+along +z; C_roll, Cm and Cn are moments about +x, +y and +z through <code>moment_ref</code> (right-hand rule;
+Cm &gt; 0 is nose up). Coefficients use <code>q·ref_area</code>; Cm also <code>ref_chord</code>, C_roll and Cn
+<code>ref_span</code>. Defaults: planform area, MAC and span, and the moment reference at the quarter chord of
+the MAC (x = x_le,MAC + MAC/4, y = z = 0). A wing analysed from a project uses the design's
+<code>ref_area</code>, <code>length_ref</code>, <code>span_ref</code> and <code>moment_ref3</code>.</p>
+<p>Strip outputs (<code>WingPoint</code> arrays, both halves, ordered in +y): <code>cl_local = 2Γ/(V∞ c)</code> (the
+section lift coefficient based on the free stream; for the lattice Γ is the strip's total bound
+circulation), <span class="math"><i>c</i><sub>cl</sub> = <i>c</i>·cl/<i>c</i>̄</span> with c̄ = area/span (its span average equals CL), <code>alpha_i</code> the
+induced angle [deg] and <code>cd_local</code> the strip profile drag.</p>
+<h2 id="3-vortex-lattice-method">3. Vortex-lattice method<a class="anchor" href="#3-vortex-lattice-method" aria-label="Link to this section">#</a></h2>
+<p>Each panel of the mean surface carries a vortex ring: its leading segment on the panel's
+quarter-chord line, its trailing segment on the next panel's quarter-chord line (a quarter panel
+behind the trailing edge for the last row) (Katz &amp; Plotkin 2001, §12.3). The last row's side
+segments continue as <strong>semi-infinite trailing legs along the free stream</strong> (rebuilt at every α and
+β, so the wake leaves the trailing edge with the flow); their strength is the trailing-edge ring's,
+which is the Kutta condition. Shared segments are evaluated once with their net circulation.</p>
+<p>The Biot–Savart kernels (<code>vortex.py</code>) are the singularity-free forms used by AVL and Katz &amp;
+Plotkin: a finite segment a→b induces <span class="math">(<i>r</i>₁×<i>r</i>₂)(|<i>r</i>₁|+|<i>r</i>₂|)/(4π|<i>r</i>₁||<i>r</i>₂|(|<i>r</i>₁||<i>r</i>₂|+<i>r</i>₁·<i>r</i>₂))</span> and a
+semi-infinite one <span class="math">(<i>d</i>×<i>r</i>₁)/(4π|<i>r</i>₁|(|<i>r</i>₁|−<i>d</i>·<i>r</i>₁))</span>; points closer than 10⁻⁶ of the segment length to
+its line (its own midpoint included) get zero. Flow tangency at every control point gives a dense
+linear system <span class="math"><i>A</i> Γ = −<i>V</i>∞·<i>n</i></span>; the bound-vortex part of <code>A</code> is built once per wing, only the wake legs
+change with the flow direction. 8 × 48 panels solve in ~25 ms per angle on this machine.</p>
+<p><strong>Forces.</strong> Kutta–Joukowski <span class="math"><i>F</i> = ρ Γ (<i>V</i> × dl)</span> on every bound segment (spanwise and chordwise),
+with V the free stream plus the velocity induced by the whole system at the segment midpoint
+("near field"): lift, side force and all moments come from these. <strong>Induced drag</strong> comes from the
+<strong>Trefftz plane</strong>: the trailing legs, projected on the plane normal to the free stream, are 2D point
+vortices; <span class="math"><i>D</i><sub><i>i</i></sub> = −(ρ/2) Σ Γ<sub><i>s</i></sub> (<i>v</i>·<i>n</i>)<sub><i>s</i></sub> Δ<i>s</i><sub><i>s</i></sub></span> over the trace segments, with the normal-wash evaluated
+at the same semicircle fractions as the lattice. The near-field drag of a lattice needs the
+leading-edge suction a lattice cannot resolve and converges poorly; the far-field value is accurate
+on coarse lattices (an elliptic wing gives e = 0.997–0.999). The strip induced angle is half the
+Trefftz-plane downwash angle (the lifting-line relation).</p>
+<p><strong>Compressibility (Prandtl–Glauert / Göthert).</strong> Influence coefficients are evaluated on the
+geometry stretched by 1/β in x (β = √(1−M²)), velocities are mapped back as (u/β, v, w), and the
+tangency condition uses the physical normals. Γ, hence the Kutta–Joukowski lift and the Trefftz
+drag, carry over unchanged (tested: CL(M) equals CL/β of the incompressible wing stretched by 1/β).
+Valid for subcritical flow; above M 0.6 the result carries a warning, M ≥ 0.9 is refused.</p>
+<h2 id="4-nonlinear-lifting-line-phillips-snyder-2000">4. Nonlinear lifting line (Phillips &amp; Snyder 2000)<a class="anchor" href="#4-nonlinear-lifting-line-phillips-snyder-2000" aria-label="Link to this section">#</a></h2>
+<p>Horseshoe vortices with bound segments on the quarter-chord line between the spanwise nodes and
+trailing legs along the free stream. At each control point the 3D vortex lifting law is equated to
+the section lift:</p>
+<pre><code>R_i = 2 |V_i × dl_i| Γ_i − |V_i|² cl_i(α_i) dA_i = 0
+V_i = v̂∞ + Σ_j v_ij Γ_j,    α_i = atan2(V_i·u_n, V_i·u_a)</code></pre>
+<p>with <span class="math">dA<sub><i>i</i></sub></span> the strip area and <span class="math"><i>u</i><sub><i>a</i></sub></span>, <span class="math"><i>u</i><sub><i>n</i></sub></span> the section's chordwise and normal directions (twist
+and dihedral included). The full local velocity is kept, so sweep, dihedral and sideslip enter
+directly, and <span class="math">cl<sub><i>i</i></sub>(α)</span> may be nonlinear. Newton's method with the analytic Jacobian and a
+backtracking line search solves the system from the linearised (Prandtl) solution or from the
+neighbouring angle's solution (sweeps run outward from 0°); a damped fixed-point iteration is the
+fallback. A point that does not converge is marked <code>converged=False</code>.</p>
+<p>Section lift curves: inviscid runs use thin-airfoil theory <span class="math">cl = 2π(α − α<sub>L0</sub>)/β</span> with α_L0 and
+cm_c/4 integrated exactly from the piecewise-linear mean line; viscous runs use the section polars
+(§5) through a monotone cubic (Fritsch–Carlson) on the <em>attached branch</em>, from the angle of cl_min
+to the angle of cl_max. <strong>Beyond the branch the lift is clipped</strong> (held at cl_max with zero slope)
+and the result carries a warning: an integral boundary-layer polar does not predict post-stall
+lift, so those points are not a stall prediction. Moments add the section cm (c/4) to the moment of
+the vortex forces. Compressibility enters through the section lift curves only.</p>
+<h2 id="5-viscous-strip-coupling">5. Viscous strip coupling<a class="anchor" href="#5-viscous-strip-coupling" aria-label="Link to this section">#</a></h2>
+<p><code>SectionPolars</code> caches 2D viscous polars (<code>solvers.airfoil.polar</code>, the XFOIL-class solver with
+its <code>ncrit</code>, <code>mach</code> and trip settings) per <strong>(airfoil, Reynolds number)</strong> and serves interpolated
+<code>PolarTable</code>s:</p>
+<ul>
+<li><strong>Reynolds number</strong> per strip <span class="math">ρ <i>V</i>∞ <i>c</i> / μ</span> with the strip's mean chord. Polars are computed at
+"nodes": the strips' extreme Reynolds numbers and enough geometric steps between them that two
+nodes are at most a factor 2 apart; existing nodes are reused whenever they already bracket a
+strip that closely, so re-analysing a wing (another method, other angles) costs nothing. Strips
+below 30 % of the largest strip Re (tips) use the polar at that floor (a note says so).</li>
+<li><strong>Interpolation</strong>: linear in α between the computed angles (a 1° grid aligned to multiples of
+the step, so nodes extend cleanly), linear in log Re between bracketing nodes for cl and cm and
+linear in log Re of log cd for the drag (exact for a power law cd ∝ Re⁻ⁿ).</li>
+<li><strong>Range</strong>: before any polar runs, an inviscid pass over all requested angles estimates every
+strip's section angle (thin-airfoil inversion of its lift) and the polars are computed only over
+that range plus margins (2° below; 2° + 15 % of the angle from zero lift above). When a strip
+later needs more lift than a polar's computed range reaches while that polar is still rising
+("range" rather than "stall" limited), the polar is extended by 3° steps (up to 25°), seeded
+from its converged edge so the sweep starts from a known boundary-layer state.</li>
+<li><strong>Stall detection</strong>: a table's cl_max is a real stall when the lift falls by more than 0.02
+after it or the solver failed above it.</li>
+<li><strong>Persistence</strong>: <code>state()</code> returns the computed points as JSON-safe data and <code>load_state()</code> merges
+them back (refused when Ncrit, Mach, trips, panels or the angle step differ). Airfoils are keyed
+by name, so a caller that persists the cache must drop it when a <code>design:&lt;id&gt;</code> outline changes.</li>
+</ul>
+<p><strong>Lattice:</strong> the strip lift <code>cl_local</code> is inviscid; its profile drag is the section polar's at the
+angle where the polar gives that lift (the inverse of the attached-branch cl(α); XFLR5 does the
+same). Strips asked for more than the section cl_max take the drag at cl_max and the result
+warns that the lattice's linear lift is optimistic there. <strong>Lifting line:</strong> profile drag and cm at
+each strip's solved effective angle. In both, the profile-drag force <code>q cd A</code> acts along the free
+stream at the strip's quarter-chord point (so it contributes to Cm and Cn), and
+<span class="math">CDv = Σ cd<sub><i>j</i></sub> <i>A</i><sub><i>j</i></sub> / <i>S</i><sub>ref</sub></span>, <code>CD = CDi + CDv</code>.</p>
+<p><strong>Stall onset (critical section).</strong> In viscous runs, the margin of the most loaded strip (lattice:
+cl_local − cl_max of its section; lifting line: α_eff − α(cl_max)) is followed up the sweep; where
+it crosses zero, α and CL are interpolated and reported as <code>WingResult.stall_alpha</code> / <code>stall_cl</code>
+(NaN when the sweep does not reach it, and for inviscid runs), in the notes ("Stall onset … CL ≈
+…") and in <code>details["stall"]</code>. This is the classical critical-section estimate of CL_max; on a washed-out
+wing the stall spreads gradually and the measured CL_max is usually 0–0.1 higher (validation).</p>
+<p><strong>Tips.</strong> Strips within 5 % of the semispan from a tip are left out of the stall-onset estimate and
+of the clipping warnings (their loads still count; a note lists angles where only they exceeded
+cl_max). Strip theory fails where the tip vortex forms, and a rounded tip modelled by sections whose
+chord falls to zero is the extreme case for a lifting line: the strong trailing leg just inboard of
+the last, tiny strips puts them in upwash, and their local cl reaches 1.2 where the inboard wing
+carries 0.45 (NACA TN 1270 planform, α = 6°; the lattice, which resolves the chord, gives 0.39).
+Without the exclusion those strips would "stall" first at every angle.</p>
+<p><strong>Span efficiency and Oswald factor (<code>analysis.wing_metrics</code>).</strong> Two different numbers, both
+reported. The <em>span efficiency</em> e = CL² / (π AR CDi) is per point, from the Trefftz-plane induced
+drag only (≈ 0.99 for an untwisted taper-0.6 wing). The <em>Oswald factor</em> is the aircraft-design
+one: fit CD = CD0 + b·CL + k·CL² and take e = 1 / (π AR k), so it also contains the growth of
+profile drag with lift and is lower (0.7–0.85 for most wings). It depends on the CL range fitted,
+so the fit is restricted to the linear, attached polar: from the CL of minimum drag up to 0.8 ×
+CL_max (the critical-section <code>stall_cl</code> when known), never at or past <code>stall_alpha</code>, where the
+lattice keeps strips at cl_max while their lift keeps rising. The range is reported with the
+figure (<code>oswald_cl_lo</code> / <code>oswald_cl_hi</code>), and with fewer than 4 points or R² &lt; 0.98 the factor is
+not reported at all. Fitted over a whole −4° to 14° sweep the tapered wing of section 7 gave
+0.54, which reads as a very poor wing; over CL 0.10–0.92 it is 0.76. For an inviscid run the fit
+sees induced drag only and returns the span efficiency (rectangular AR 8: 0.968 vs 0.968).</p>
+<h2 id="6-assumptions-and-validity-limits">6. Assumptions and validity limits<a class="anchor" href="#6-assumptions-and-validity-limits" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Thin wing, potential flow.</strong> Thickness affects the solution only through the section polars
+(lifting line) — the lattice's lift is that of the mean surface. No fuselage, nacelles, gaps,
+flaps or control-surface deflections; wing–body interference is not modelled.</li>
+<li><strong>Attached flow.</strong> No stall prediction beyond what the section polars contain: the lattice is
+linear; the lifting line clips each section at its cl_max (warned) and reports the
+critical-section stall onset. Use CFD for post-stall behaviour.</li>
+<li><strong>Strip theory for viscous effects.</strong> Each strip behaves like a 2D section in the free stream
+direction: no spanwise boundary-layer flow (relevant on swept wings), no tip-vortex suction on
+the outer few percent of the span, no influence of the wake on transition. Section data are as
+good as the 2D solver (<a href="validation-airfoil.html">Airfoil validation</a>): cd within ~6–15 % of wind-tunnel data,
+cl_max late and high.</li>
+<li><strong>Flat, prescribed wake.</strong> The wake follows the free stream from the trailing edge; no roll-up,
+no ground effect.</li>
+<li><strong>Lifting line</strong>: no chordwise loading — over-predicts the lift slope of low-aspect-ratio wings
+(3–12 % for elliptic wings of AR 12–4, against the lattice) and is unreliable beyond ~20° of
+sweep (warnings below AR 4 or above 20°).</li>
+<li><strong>Compressibility</strong>: Prandtl–Glauert, subcritical only (M &lt; 0.6 trusted).</li>
+<li><strong>Reynolds number</strong>: the section solver's limits apply (indicative below Re ≈ 5×10⁴; the tip
+floor above keeps very small tip chords from requesting such polars).</li>
+</ul>
+<h2 id="7-cost">7. Cost<a class="anchor" href="#7-cost" aria-label="Link to this section">#</a></h2>
+<p>On the development machine (single process, <code>OPENBLAS_NUM_THREADS=2</code>): the inviscid lattice
+(8 × 48 panels) takes ~25 ms per angle and the lifting line ~1 ms per angle. A viscous polar is
+dominated by the 2D section polars (≈0.5 s per section angle at Re 2–4×10⁵, more near stall):
+a 17-point polar of a two-section wing needs ~40 section points, ~20–25 s cold and &lt; 1 s once
+cached (<a href="validation-wing.html">Finite-wing validation</a>, Performance). Section points near and beyond stall cost several times
+more (Newton retries), so sweeps far past cl_max are slow: the 19-angle (−4° to 14°) polar of a
+tapered NACA 2412 wing (AR 8.3, strip Re 3.1–5.1×10⁵) computed 52 section points in 26–44 s cold,
+depending on the load on the machine. <strong>A cold viscous wing polar takes under a minute, not
+seconds</strong>; what makes later runs fast is the cache:</p>
+<ul>
+<li><strong>Reynolds buckets.</strong> Section polars are computed at Reynolds-number nodes on a fixed
+logarithmic grid (48 per decade, 4.9 % apart; every Re is within 2.4 % of a node, inside the
+5 % at which a strip uses one node alone). New nodes extend the existing ones greedily, so a
+study that changes the speed adds only the nodes its new strip Reynolds numbers need: the
+wing above at 30 m/s after 25 m/s took 9.5 s (22 new points), where the first placement
+(nodes at both ends of every uncovered range) added two nodes and took 36 s, longer than the
+cold run.</li>
+<li><strong>Kept between sessions.</strong> <code>simulation.wing</code> writes each cache to the user's configuration
+folder (<code>cache/section_polars</code>, a few KB) after a run that computed points and reads it back
+the first time a later session needs it, so a script, the CLI or the assistant (each a new
+process) re-running a wing analysed before takes ~0.4 s instead of repeating the cold cost.
+The file key holds the solver settings, Ncrit, Mach, a version and the airfoil fingerprint
+(project airfoils by a hash of their coordinates); <code>AEROLUME_<wbr>NO_<wbr>POLAR_<wbr>CACHE=1</code> turns it off and
+<code>clear_polar_cache()</code> deletes it.</li>
+<li><strong>Estimates from the cache.</strong> <code>section_<wbr>points_<wbr>needed(...)</code> plans the first pass of a sweep
+without computing anything and asks the cache what is missing;
+<code>simulation.wing.estimate_wing_seconds(design, sim)</code> turns that into a wall time
+(0.6 s per point, ×1.2 for the polars a sweep extends towards cl_max). Measured on the wing
+above: cold 34 s estimated / 44 s run, another speed 17 s / 9.5 s, cached 0.9 s / 0.4 s.</li>
+</ul>
+<h2 id="8-api">8. API<a class="anchor" href="#8-api" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">from aerolume.solvers.wing import analyze_wing, wing_polar, SectionPolars, planform_metrics
+
+sp = SectionPolars(ncrit=9, mach=0.0, coords_provider=lookup)   # one cache per flow condition
+res = wing_polar(wing, alphas, speed=20.0, fluid=Fluid(), method="vlm", viscous=True,
+                 beta_deg=0.0, moment_ref=None, polar_provider=sp, progress=cb, cancel=event,
+                 details=extra)                                  # -&gt; WingResult
+pt = analyze_wing(wing, alpha_deg=4.0, speed=20.0, polar_provider=sp)   # -&gt; WingPoint</code></pre>
+<p><code>progress(fraction, message)</code> is reported during the section-polar warm-up (90 % of a cold
+viscous run) and per angle; <code>cancel</code> returns the points finished so far with a warning; a point
+that cannot be computed is <code>converged=False</code> with NaN coefficients. Bad inputs (fewer than two
+sections, non-increasing y, unknown airfoil, Mach ≥ 0.9, |α| ≥ 45°) raise <code>ValueError</code> before any
+work. <code>details</code> (optional dict) receives <code>stall</code>, <code>strip_y</code>, <code>strip_re</code>, <code>polar_nodes</code> and
+<code>reference</code>.</p>
+<h2 id="references">References<a class="anchor" href="#references" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>W. F. Phillips, D. O. Snyder, "Modern adaptation of Prandtl's classic lifting-line theory",
+<em>Journal of Aircraft</em> 37(4), 662–670, 2000.</li>
+<li>J. Katz, A. Plotkin, <em>Low-Speed Aerodynamics</em>, 2nd ed., Cambridge University Press, 2001
+(ch. 10, 12).</li>
+<li>M. Drela, H. Youngren, <em>AVL</em> documentation (vortex kernels, Trefftz-plane drag), MIT.</li>
+<li>H. Multhopp, "Methods for calculating the lift distribution of wings (subsonic lifting-surface
+theory)", ARC R&amp;M 2884, 1950 (semicircle collocation; circular-wing benchmark).</li>
+<li>J. C. Sivells, R. H. Neely, "Method for calculating wing characteristics by lifting-line theory
+using nonlinear section lift data", NACA TN 1269, 1947 (critical-section stall estimate).</li>
+<li>A. Deperrois, <em>XFLR5 v6 Guidelines</em>, 2013 (strip coupling of VLM and section polars).</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-airfoil.html"><span>Previous</span><b>Airfoil analysis</b></a><a class="next" href="theory-sensitivity.html"><span>Next</span><b>Sensitivity maps</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-geometry">1. Geometry</a></li><li class="l2"><a href="#2-frames-references-and-signs">2. Frames, references and signs</a></li><li class="l2"><a href="#3-vortex-lattice-method">3. Vortex-lattice method</a></li><li class="l2"><a href="#4-nonlinear-lifting-line-phillips-snyder-2000">4. Nonlinear lifting line (Phillips &amp; Snyder 2000)</a></li><li class="l2"><a href="#5-viscous-strip-coupling">5. Viscous strip coupling</a></li><li class="l2"><a href="#6-assumptions-and-validity-limits">6. Assumptions and validity limits</a></li><li class="l2"><a href="#7-cost">7. Cost</a></li><li class="l2"><a href="#8-api">8. API</a></li><li class="l2"><a href="#references">References</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+ "name": "CFD 3D · 30 m/s · α 0°",
+ "design_id": "6057639fcc0c",
+ "analysis": "cfd",
+ "conditions": {
+  "fluid": {
+   "name": "Air, ISA sea level",
+   "density": 1.225000018124288,
+   "viscosity": 1.7892976260350732e-05
+  },
+  "speed": 30.0,
+  "alpha_deg": 0.0,
+  "yaw_deg": 0.0
+ },
+ "ground": {
+  "enabled": true,
+  "moving": true,
+  "rotate_wheels": true
+ },
+ "cfd": {
+  "quality": "draft",
+  "cells_per_ref": null,
+  "domain_upstream": null,
+  "domain_downstream": null,
+  "domain_height": null,
+  "duration": null,
+  "average_from": null,
+  "turbulence": "auto",
+  "reynolds_mode": "real",
+  "reynolds_cap": null,
+  "precision": "auto",
+  "device": "auto",
+  "compute_sensitivity": false,
+  "sensitivity_objective": "cd",
+  "symmetry": "auto",
+  "domain_width": null
+ },
+ "airfoil": {
+  "alpha_start": -4.0,
+  "alpha_end": 14.0,
+  "alpha_step": 1.0,
+  "ncrit": 9.0,
+  "xtr_upper": 1.0,
+  "xtr_lower": 1.0,
+  "mach": 0.0,
+  "panels": 199
+ },
+ "id": "f8d01bba7397",
+ "status": "done",
+ "created": "2026-10-11T21:33:31",
+ "finished": "2026-10-11T21:34:47",
+ "notes": "",
+ "error": null,
+ "wing": {
+  "alpha_start": -4.0,
+  "alpha_end": 12.0,
+  "alpha_step": 1.0,
+  "method": "vlm",
+  "viscous": true,
+  "ncrit": 9.0,
+  "mach": 0.0
+ }
+}

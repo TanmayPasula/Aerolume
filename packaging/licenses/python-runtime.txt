@@ -1,0 +1,31 @@
+Python {python_version} (CPython) and the libraries it contains
+=========================================================
+
+Aerolume runs on the CPython {python_version} interpreter and standard library from python.org.
+These are python311.dll, python3.dll, base_library.zip and the .pyd extension modules and DLLs
+beside them in _internal. Their licences are in this folder, copied from the Python
+installation the build was made from:
+
+  LICENSE.txt    The licence file of that installation. It contains the PSF License
+                 Agreement and the history of Python's licences. It also contains the
+                 "Additional Conditions for this Windows binary build" (Microsoft
+                 Distributable Code) and the licences of bzip2 (in _bz2.pyd), libffi
+                 (libffi-8.dll), OpenSSL (the Apache License 2.0 text that follows the
+                 libffi licence) and Tcl/Tk.
+  license.html   The "History and License" page of the same installation's documentation.
+                 Its section "Licenses and Acknowledgements for Incorporated Software"
+                 names each component: OpenSSL (libssl-3.dll, libcrypto-3.dll), expat
+                 (pyexpat.pyd), libffi, zlib, libmpdec (_decimal.pyd) and smaller pieces of
+                 code in the standard library. Open it in a web browser.
+
+SQLite (sqlite3.dll, version {sqlite_version}) is in the public domain. So is XZ Utils' liblzma,
+which is compiled into _lzma.pyd.
+
+The Microsoft Visual C++ and Universal C runtime files in _internal (vcruntime140*.dll,
+msvcp140*.dll, ucrtbase.dll, api-ms-win-*.dll) are Microsoft redistributable files, shipped
+the way Python and PyInstaller ship them. Microsoft's terms for its Distributable Code apply.
+LICENSE.txt summarises them under "Additional Conditions for this Windows binary build".
+
+zlibwapi.dll in _internal/torch/lib is zlib by Jean-loup Gailly and Mark Adler, as the file
+records; it comes with PyTorch. zlib is under the zlib licence, whose terms license.html
+reproduces in its section "zlib".

@@ -1,0 +1,51 @@
+{
+ "name": "Tapered wing",
+ "kind": "wing",
+ "length_ref": 0.3111111111111111,
+ "force_ref": 0.3111111111111111,
+ "moment_ref": [
+  0.0,
+  0.0
+ ],
+ "id": "485fa5563c6c",
+ "source": {
+  "type": "wing",
+  "template": "tapered"
+ },
+ "created": "2026-10-11T21:38:34",
+ "notes": "",
+ "dimension": 3,
+ "meshes": [],
+ "wing": {
+  "sections": [
+   {
+    "y": 0.0,
+    "chord": 0.4,
+    "x_le": 0.0,
+    "z_le": 0.0,
+    "twist_deg": 0.0,
+    "airfoil": "2412"
+   },
+   {
+    "y": 1.5,
+    "chord": 0.2,
+    "x_le": 0.05,
+    "z_le": 0.07861166892456181,
+    "twist_deg": -2.0,
+    "airfoil": "2412"
+   }
+  ],
+  "symmetric": true,
+  "n_chord": 8,
+  "n_span": 24,
+  "spacing": "cosine"
+ },
+ "ref_area": 0.9000000000000001,
+ "span_ref": 3.0,
+ "moment_ref3": [
+  0.1,
+  0.0,
+  0.034938519522027464
+ ],
+ "symmetric": true
+}

@@ -1,0 +1,134 @@
+cff-version: 1.2.0
+message: >-
+  If you use Aerolume in research, please cite the software as below and
+  name the version you used. The methods and their references are in
+  docs/methods.md; the validation evidence is in docs/validation.md. Every
+  result Aerolume saves records its own provenance (version, settings hash,
+  device, precision), which a paper's methods section can quote.
+type: software
+title: "Aerolume: an open-source aerodynamics studio with GPU Navier-Stokes solvers, airfoil polars and finite-wing analysis"
+abstract: >-
+  Aerolume is a desktop studio and Python library for 2D and 3D
+  aerodynamics. It solves the incompressible Navier-Stokes equations on
+  uniform staggered grids in PyTorch (GPU or CPU) with immersed bodies by
+  Brinkman penalisation, an exact pressure projection and SSP-RK3 time
+  stepping, plus a Boussinesq energy equation, actuator-disc fans, jets
+  and smoke emitters. It computes viscous airfoil polars with an
+  XFOIL-class integral boundary-layer method and finite wings with a
+  vortex lattice and a nonlinear lifting line. Time averages carry
+  batch-means standard errors and grid studies a Roache grid-convergence
+  index. Every solver is validated against published benchmarks by one
+  script (validation/run_all.py).
+authors:
+  - name: "Aerolume contributors"
+version: "0.1.0"
+date-released: "2026-11-01"
+license: Apache-2.0
+keywords:
+  - computational fluid dynamics
+  - aerodynamics
+  - Navier-Stokes
+  - immersed boundary method
+  - natural convection
+  - actuator disc
+  - airfoil polar
+  - vortex lattice method
+  - grid convergence index
+  - PyTorch
+references:
+  - type: article
+    title: "Procedure for estimation and reporting of uncertainty due to discretization in CFD applications"
+    authors:
+      - family-names: Celik
+        given-names: Ishmail B.
+      - family-names: Ghia
+        given-names: Urmila
+      - family-names: Roache
+        given-names: Patrick J.
+      - family-names: Freitas
+        given-names: Christopher J.
+      - family-names: Coleman
+        given-names: Hugh
+      - family-names: Raad
+        given-names: Peter E.
+    journal: "Journal of Fluids Engineering"
+    volume: 130
+    issue: 7
+    start: "078001"
+    year: 2008
+    doi: "10.1115/1.2960953"
+  - type: article
+    title: "Natural convection of air in a square cavity: a bench mark numerical solution"
+    authors:
+      - family-names: "de Vahl Davis"
+        given-names: G.
+    journal: "International Journal for Numerical Methods in Fluids"
+    volume: 3
+    issue: 3
+    start: 249
+    end: 264
+    year: 1983
+    doi: "10.1002/fld.1650030305"
+  - type: article
+    title: "A penalization method to take into account obstacles in incompressible viscous flows"
+    authors:
+      - family-names: Angot
+        given-names: Philippe
+      - family-names: Bruneau
+        given-names: Charles-Henri
+      - family-names: Fabrie
+        given-names: Pierre
+    journal: "Numerische Mathematik"
+    volume: 81
+    issue: 4
+    start: 497
+    end: 520
+    year: 1999
+    doi: "10.1007/s002110050401"
+  - type: article
+    title: "Efficient implementation of essentially non-oscillatory shock-capturing schemes"
+    authors:
+      - family-names: Shu
+        given-names: Chi-Wang
+      - family-names: Osher
+        given-names: Stanley
+    journal: "Journal of Computational Physics"
+    volume: 77
+    issue: 2
+    start: 439
+    end: 471
+    year: 1988
+    doi: "10.1016/0021-9991(88)90177-5"
+  - type: article
+    title: "XFOIL: an analysis and design system for low Reynolds number airfoils"
+    authors:
+      - family-names: Drela
+        given-names: Mark
+    collection-title: "Low Reynolds Number Aerodynamics, Lecture Notes in Engineering 54"
+    publisher:
+      name: Springer
+    start: 1
+    end: 12
+    year: 1989
+    doi: "10.1007/978-3-642-84010-4_1"
+  - type: software
+    title: "mfoil"
+    authors:
+      - family-names: Fidkowski
+        given-names: Krzysztof J.
+    license: MIT
+    notes: "Vendored and patched in src/aerolume/solvers/airfoil (see THIRD_PARTY_NOTICES.md)."
+  - type: article
+    title: "Modern adaptation of Prandtl's classic lifting-line theory"
+    authors:
+      - family-names: Phillips
+        given-names: W. F.
+      - family-names: Snyder
+        given-names: D. O.
+    journal: "Journal of Aircraft"
+    volume: 37
+    issue: 4
+    start: 662
+    end: 670
+    year: 2000
+    doi: "10.2514/2.2649"

@@ -1,0 +1,238 @@
+{
+ "title": "Run-time planner measurements, 31 October 2026",
+ "about": "Evidence for the run-time estimates described in docs/user_guide_simulation.md (planning a run: closed boxes calibrated per case signature, the 2D GPU throughput table) and for the reference throughput table _REF_RATES in src/aerolume/simulation/plan.py. The constants ROOM_FACTOR, FAN_ROOM_FACTOR and ENCLOSURE_FACTOR in tests/test_simulation_round34.py and ENCLOSURE_MEASURED_S in tests/test_simulation_peak_speed.py are taken from this record. Timings depend on the machine and on what else uses its GPU; on another machine the planner corrects its estimates from that machine's own runs.",
+ "date": "2026-10-31",
+ "code": "Aerolume development build of 31 October 2026 (before the 0.1.0 release)",
+ "machine": {
+  "gpu": "NVIDIA GeForce RTX 4060 Ti (8 GB)",
+  "cpu": "Intel Core i7-13700F",
+  "os": "Windows 11",
+  "python": "3.11.9",
+  "torch": "2.14.1+cu130"
+ },
+ "gpu_throughput_table": {
+  "procedure": "FlowSolver.advance on the cylinder benchmark (one circle of diameter 1 sampled at 512 points, domain 24 diameters long starting 6 upstream, float32, CUDA graphs) for each grid size and scheme: 40 warm-up steps, then the best of two timed batches of 400 steps (150 above one million cells) between torch.cuda.synchronize() calls. 'previous_table_steps_per_s' is the planner's table before this session, measured while other work shared the GPU. The GPU was otherwise idle for this measurement. The measured column became _REF_RATES[('gpu', scheme)] in plan.py.",
+  "turbulence": {
+   "upwind3": "none (Re 200)",
+   "les": "WALE (Re 1e5), upwind3 advection",
+   "central": "none (Re 200), central advection"
+  },
+  "rows": [
+   {
+    "scheme": "upwind3",
+    "cells": 32768,
+    "measured_steps_per_s": 1704,
+    "previous_table_steps_per_s": 1236,
+    "ratio": 1.38
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 73728,
+    "measured_steps_per_s": 1459,
+    "previous_table_steps_per_s": 1051,
+    "ratio": 1.39
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 131072,
+    "measured_steps_per_s": 1226,
+    "previous_table_steps_per_s": 862,
+    "ratio": 1.42
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 294912,
+    "measured_steps_per_s": 767,
+    "previous_table_steps_per_s": 513,
+    "ratio": 1.5
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 524288,
+    "measured_steps_per_s": 492,
+    "previous_table_steps_per_s": 347,
+    "ratio": 1.42
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 819200,
+    "measured_steps_per_s": 297,
+    "previous_table_steps_per_s": 195,
+    "ratio": 1.52
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 1179648,
+    "measured_steps_per_s": 185,
+    "previous_table_steps_per_s": 117,
+    "ratio": 1.58
+   },
+   {
+    "scheme": "upwind3",
+    "cells": 2097152,
+    "measured_steps_per_s": 75,
+    "previous_table_steps_per_s": 47,
+    "ratio": 1.59
+   },
+   {
+    "scheme": "les",
+    "cells": 32768,
+    "measured_steps_per_s": 1150,
+    "previous_table_steps_per_s": 843,
+    "ratio": 1.36
+   },
+   {
+    "scheme": "les",
+    "cells": 73728,
+    "measured_steps_per_s": 977,
+    "previous_table_steps_per_s": 701,
+    "ratio": 1.39
+   },
+   {
+    "scheme": "les",
+    "cells": 131072,
+    "measured_steps_per_s": 801,
+    "previous_table_steps_per_s": 569,
+    "ratio": 1.41
+   },
+   {
+    "scheme": "les",
+    "cells": 294912,
+    "measured_steps_per_s": 495,
+    "previous_table_steps_per_s": 335,
+    "ratio": 1.48
+   },
+   {
+    "scheme": "les",
+    "cells": 524288,
+    "measured_steps_per_s": 316,
+    "previous_table_steps_per_s": 222,
+    "ratio": 1.42
+   },
+   {
+    "scheme": "les",
+    "cells": 819200,
+    "measured_steps_per_s": 200,
+    "previous_table_steps_per_s": 131,
+    "ratio": 1.52
+   },
+   {
+    "scheme": "les",
+    "cells": 1179648,
+    "measured_steps_per_s": 115,
+    "previous_table_steps_per_s": 73,
+    "ratio": 1.58
+   },
+   {
+    "scheme": "les",
+    "cells": 2097152,
+    "measured_steps_per_s": 43,
+    "previous_table_steps_per_s": 28,
+    "ratio": 1.55
+   },
+   {
+    "scheme": "central",
+    "cells": 32768,
+    "measured_steps_per_s": 2008,
+    "previous_table_steps_per_s": 1461,
+    "ratio": 1.37
+   },
+   {
+    "scheme": "central",
+    "cells": 73728,
+    "measured_steps_per_s": 1731,
+    "previous_table_steps_per_s": 1249,
+    "ratio": 1.39
+   },
+   {
+    "scheme": "central",
+    "cells": 131072,
+    "measured_steps_per_s": 1488,
+    "previous_table_steps_per_s": 1055,
+    "ratio": 1.41
+   },
+   {
+    "scheme": "central",
+    "cells": 294912,
+    "measured_steps_per_s": 975,
+    "previous_table_steps_per_s": 663,
+    "ratio": 1.47
+   },
+   {
+    "scheme": "central",
+    "cells": 524288,
+    "measured_steps_per_s": 623,
+    "previous_table_steps_per_s": 417,
+    "ratio": 1.49
+   },
+   {
+    "scheme": "central",
+    "cells": 819200,
+    "measured_steps_per_s": 382,
+    "previous_table_steps_per_s": 251,
+    "ratio": 1.52
+   },
+   {
+    "scheme": "central",
+    "cells": 1179648,
+    "measured_steps_per_s": 235,
+    "previous_table_steps_per_s": 149,
+    "ratio": 1.58
+   },
+   {
+    "scheme": "central",
+    "cells": 2097152,
+    "measured_steps_per_s": 102,
+    "previous_table_steps_per_s": 66,
+    "ratio": 1.54
+   }
+  ]
+ },
+ "closed_box_speed_factors": {
+  "procedure": "Each Draft case was planned (plan_simulation) and run headless (run_cfd) on the GPU with the planner's 1.5x update clamp disabled, so the speed factor recorded under the case's calibration key is the run's own measurement. The speed factor is the run's mean CFL speed (max|u| + max|v|) divided by the case's reference speed, its fastest source (the peak speed), which sets the time step the planner expects (plan.py). Wall times include solver start-up. The GPU's state is given per case as the session recorded it.",
+  "cases": [
+   {
+    "case": "Room with fan, 300 W/m heater, supply jet and vent (Draft 2D, 4 m x 3 m)",
+    "calibration_key": "closed-fan+jet+heat@64",
+    "turbulence": "les-wale",
+    "speed_factor": 3.872,
+    "wall_s": 62.0,
+    "gpu": "not recorded"
+   },
+   {
+    "case": "Plain fan room (fan_room_case, thrust 1 N/m, Draft 2D)",
+    "calibration_key": "closed-fan@64",
+    "turbulence": "les-wale",
+    "speed_factor": 5.086,
+    "wall_s": 51.2,
+    "gpu": "not recorded"
+   },
+   {
+    "case": "Electronics enclosure template (Draft 2D)",
+    "calibration_key": "closed-fan+jet+heat+body@128",
+    "turbulence": "laminar",
+    "speed_factor": 2.679,
+    "wall_s": 151.9,
+    "gpu": "otherwise idle"
+   }
+  ]
+ },
+ "enclosure_headless_wall_s": {
+  "procedure": "The Electronics enclosure template at Draft quality, planned and run headless twice (once in each of the two sequences above), the GPU otherwise idle.",
+  "planned_s_after_the_two_rooms_had_run": 122.3,
+  "runs_s": [
+   153.1,
+   151.9
+  ]
+ },
+ "room_estimate_sequence": {
+  "procedure": "The room with fan, heater, supply jet and vent was planned before any run, run, and planned again after its own run, after a plain fan room had run and after the enclosure had run, all in one session (the planner's normal 1.5x clamp in force). It shows that runs of other rooms barely move this room's estimate: the speed factor is calibrated per case signature, only the measured GPU throughput is shared.",
+  "planned_before_any_run_s": 140.3,
+  "run_wall_s": 67.2,
+  "planned_after_its_own_run_s": 58.9,
+  "plain_fan_room_run_wall_s": 51.3,
+  "planned_after_the_plain_fan_room_s": 64.9,
+  "planned_after_the_enclosure_s": 65.4,
+  "gpu": "shared with other jobs"
+ }
+}

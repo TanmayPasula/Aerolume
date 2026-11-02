@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Experiment assistant</title>
+<meta name="description" content="Planning, running and analysing experiments with Claude or a local model, and its rules.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Experiment assistant">
+<meta property="og:description" content="Planning, running and analysing experiments with Claude or a local model, and its rules.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html" aria-current="page">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html" aria-current="page">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#setting-up">Setting up</a></li><li class="l3"><a href="#claude">Claude</a></li><li class="l3"><a href="#local-model-ollama">Local model (Ollama)</a></li><li class="l2"><a href="#using-the-panel">Using the panel</a></li><li class="l3"><a href="#before-anything-is-sent">Before anything is sent</a></li><li class="l3"><a href="#suggestions">Suggestions</a></li><li class="l3"><a href="#approvals">Approvals</a></li><li class="l3"><a href="#what-it-can-do-its-tools">What it can do (its tools)</a></li><li class="l2"><a href="#how-it-stays-honest">How it stays honest</a></li><li class="l2"><a href="#experiment-logs">Experiment logs</a></li><li class="l2"><a href="#scripts-and-the-command-line">Scripts and the command line</a></li><li class="l2"><a href="#privacy-and-safety">Privacy and safety</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l2"><a href="#for-developers">For developers</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="experiment-assistant">Experiment assistant</h1>
+<p>The <strong>Assistant</strong> panel plans, runs and analyses aerodynamic experiments from a goal written in
+plain language:</p>
+<ul>
+<li>"Find the angle of attack with the best L/D of NACA 2412 at 20 m/s using the polar analysis."</li>
+<li>"Compare the drag of the 2D Ahmed body at slant angles of 20°, 25° and 30° at 40 m/s (draft quality)."</li>
+<li>"How does the aspect ratio (6, 8, 10) of a 1.2 m² rectangular wing change its induced drag at 25 m/s?"</li>
+<li>"Estimate the cost of a yaw sweep of the selected 3D design before running anything."</li>
+<li>"Run the heated cavity at Ra 10⁴ and tell me how close its Nusselt number is to the benchmark."</li>
+</ul>
+<p>It works only through the same tools as the rest of Aerolume - the scripting API
+(<a href="scripting.html">Scripting API</a>), which drives the polar, wing and CFD solvers - so every design it
+creates and every run it starts is an ordinary design and simulation of your project: they appear
+in the Project tree, run in the same queue as runs you start by hand, open on the Results page and
+go into reports. Each experiment is logged in the project (see <a href="#experiment-logs">Experiment logs</a>).</p>
+<p>Two kinds of model can drive it:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col"></th><th scope="col">Claude (Anthropic API)</th><th scope="col">Local model (Ollama)</th></tr></thead>
+<tbody>
+<tr><td>Runs</td><td>on Anthropic's servers</td><td>on this computer (GPU or CPU)</td></tr>
+<tr><td>Needs</td><td><code>pip install aerolume[ai]</code>, an API key or an <code>ant auth login</code> profile</td><td><a href="https://ollama.com">Ollama</a> and a model with tool calling, e.g. <code>qwen3:8b</code></td></tr>
+<tr><td>Data</td><td>goals, design and simulation names, tool results go to Anthropic</td><td>nothing leaves the computer</td></tr>
+<tr><td>Planning</td><td>multi-step studies, sweeps, comparisons, caveats</td><td>direct questions (one polar, one wing, one CFD run)</td></tr>
+<tr><td>Cost</td><td>per token (prompt caching keeps repeated context cheap)</td><td>free; about 6 GB of GPU memory while it answers</td></tr>
+</tbody>
+</table></div>
+<p>With the provider set to <strong>Automatic</strong> (the default) Aerolume uses Claude when credentials are
+available and the local model otherwise. A third way needs no model in Aerolume at all: Claude
+Desktop or Claude Code drive the same tools through the <code>aerolume-mcp</code> server
+(<a href="mcp.html">MCP server</a>).</p>
+<h2 id="setting-up">Setting up<a class="anchor" href="#setting-up" aria-label="Link to this section">#</a></h2>
+<h3 id="claude">Claude<a class="anchor" href="#claude" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Install the optional dependency: <code>pip install aerolume[ai]</code> (the official <code>anthropic</code> SDK).</li>
+<li>Give it credentials, in order of preference:
+<ul>
+<li>the <code>ANTHROPIC_API_KEY</code> environment variable, or an <code>ant auth login</code> profile (the SDK's own
+credential chain; Aerolume stores nothing), or</li>
+<li><strong>Edit ▸ Preferences ▸ Assistant ▸ API key</strong>. The key is saved only in your user configuration
+folder (<code>%APPDATA%\Aerolume\assistant_<wbr>key</code> on Windows, <code>~/.config/<wbr>aerolume/<wbr>assistant_<wbr>key</code>
+elsewhere, or under <code>AEROLUME_CONFIG_DIR</code>), in a file of its own with owner-only permissions
+on Linux and macOS. It is never written into a project, an experiment log or the settings
+file, never logged, and the dialog only ever shows it masked (<code>sk-ant-…a1b2</code>). <strong>Remove saved
+key</strong> deletes it.</li>
+</ul></li>
+<li>Pick the model in the same tab. The default is <code>claude-opus-5-5</code> at effort <code>high</code>; lower effort
+answers faster and costs less, higher effort plans more thoroughly.</li>
+</ol>
+<p>Requests use adaptive thinking (the panel shows the model's reasoning summary under
+<strong>Reasoning</strong>), streaming, and Anthropic's server-side fallback: if a safety classifier declines a
+request, the API re-runs it on the recommended fallback model and the panel says so. A request that
+is declined all the same ends with a plain message, and nothing it asked for is run.</p>
+<h3 id="local-model-ollama">Local model (Ollama)<a class="anchor" href="#local-model-ollama" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Install Ollama from <a href="https://ollama.com">ollama.com</a> and start it.</li>
+<li>Pull a model that supports tool calling: <code>ollama pull qwen3:8b</code> (5.2 GB on disk; 7.8 GB in
+memory with the 16,384-token context Aerolume uses, 6.3 GB of it on an 8 GB GPU).</li>
+<li><strong>Preferences ▸ Assistant</strong>: choose <em>Local model (Ollama)</em>. The tab lists the installed models
+that can call tools (code-completion models without tool calling are left out); the address is
+<code>http://localhost:11434</code> unless Ollama runs elsewhere.</li>
+</ol>
+<p>Options:</p>
+<ul>
+<li><strong>Reasoning</strong> lets a reasoning model (qwen3) think before each answer: better plans, several
+times slower. Off by default.</li>
+<li><strong>Context</strong> is the model's context window, 16,384 tokens by default. An experiment with one run
+filled 8,192 (7,309 tokens after the plan, the tool schemas, the project overview, the run and two
+corrections), after which Ollama drops the oldest messages -- the plan and results the answer is
+checked against. 16,384 puts qwen3:8b at 7.8 GB, 80 % of it on an 8 GB GPU; generation is slower
+once the window fills (measured 14.7 tokens/s after a 12k-token prompt, against 42.7 after a 4k
+one at 8,192, RTX 4060 Ti). 8,192 keeps the model entirely on the GPU if you prefer speed. A
+settings file saved before this default with the old 8,192 is moved to 16,384 once; a value you
+choose afterwards stays. The panel warns once per experiment when the window is nearly full.</li>
+</ul>
+<p>A model loaded by Ollama keeps its GPU memory for some minutes. Before the assistant starts a GPU
+CFD run it asks Ollama to unload the model so the solver gets the memory; the next answer reloads
+it in a few seconds.</p>
+<h2 id="using-the-panel">Using the panel<a class="anchor" href="#using-the-panel" aria-label="Link to this section">#</a></h2>
+<p>Open it with the <strong>Assistant</strong> button in the toolbar, <strong>View ▸ Assistant panel</strong> (Alt+3) or
+<strong>Tools ▸ Experiment assistant</strong> (Ctrl+Shift+A). A project must be open: experiments are recorded
+in it.</p>
+<ul>
+<li>Type the goal and press <strong>Run</strong> (Ctrl+Enter). The design and simulation selected in the window
+are passed along, so "this airfoil" and "the selected design" mean what is on screen.</li>
+<li>The transcript shows your goal, the assistant's text, and one row per tool call with its status
+(running with progress, done, failed, declined, stopped) and a one-line summary. The arrow on a
+row shows its exact input and outcome. The plan appears under the <em>Record plan</em> row; figures
+appear inline and open full size on a click.</li>
+<li>Runs started by the assistant show in the Project tree and the status bar like any other; the
+Simulate page shows them live.</li>
+<li><strong>Stop</strong> ends the request at once: the model's answer, the running simulation (it keeps its
+partial result, marked stopped) and any pending approval.</li>
+<li>A follow-up ("and at 30 m/s?") continues the same experiment and log. <strong>New experiment</strong> starts a
+new conversation and a new log.</li>
+<li><strong>Open log</strong> at the end of a request shows the experiment log.</li>
+<li>Under the answer, <strong>Checked statements</strong> lists every sentence with a number or a claimed action
+and what the claims check found (see <a href="#how-it-stays-honest">How it stays honest</a>). It is folded
+when everything was verified and open when something was not.</li>
+</ul>
+<h3 id="before-anything-is-sent">Before anything is sent<a class="anchor" href="#before-anything-is-sent" aria-label="Link to this section">#</a></h3>
+<p>With Claude, or an Ollama server on another computer, the first request of an experiment shows a
+card first: <em>Send this experiment to Anthropic (Claude API)?</em>, listing what is sent (the goal, the
+design and simulation names, the tools' results) and what is not (meshes, flow fields, figures,
+project files). Nothing leaves the computer until you press <strong>Send</strong>; <strong>Do not ask again for this
+destination</strong> remembers the answer in Preferences. A local Ollama on this computer never asks,
+because nothing leaves it.</p>
+<h3 id="suggestions">Suggestions<a class="anchor" href="#suggestions" aria-label="Link to this section">#</a></h3>
+<p>When a run should be set up differently (a finer grid, a longer duration after a run that did not
+converge) the assistant proposes it with <code>suggest_settings</code> instead of changing anything. The
+panel shows a card listing every change, old value → new value. Nothing changes until you click
+<strong>Apply</strong>:</p>
+<ul>
+<li>each value was checked by the tool against the setting's range, and is checked again by the
+scripting API when you apply it (an unknown setting or an out-of-range value is shown struck out
+with the reason and is never applied);</li>
+<li>a simulation that already has a result is copied, so the result never sits under settings it
+was not computed with;</li>
+<li><strong>Undo</strong> takes the whole suggestion back in one step (the copy is removed, or the settings are
+restored); <strong>Dismiss</strong> leaves everything as it is.</li>
+</ul>
+<p>The model is told that a suggestion is not a change, and an answer that says it "changed" or "set"
+a setting is sent back (see <em>Claims must match what was done</em>).</p>
+<h3 id="approvals">Approvals<a class="anchor" href="#approvals" aria-label="Link to this section">#</a></h3>
+<p>Some actions wait for your answer in a framed card with <strong>Run</strong> / <strong>Delete</strong> and <strong>Decline</strong>:</p>
+<ul>
+<li>runs whose <strong>estimated</strong> time is above the threshold in Preferences (default 120 s; 0 asks for
+every run) - the card shows the estimate and what will run, for example "15 m/s · α −4° to 14°,
+step 1° (19 angles) · VLM, viscous strips" for a wing, or the quality, cells, Reynolds numbers
+and device for CFD;</li>
+<li>runs whose cost <strong>cannot be estimated</strong> ("cost unknown"): an estimate that fails never lets a run
+start unasked. A call whose own set-up is wrong is not put to you at all: the planner's reason
+(for example "has heated bodies, but heat transfer is off") goes back to the model, which fixes
+its call, and nothing is run or recorded;</li>
+<li><strong>all Python code</strong> (<code>run_python</code>): the card shows the exact script, wrapped so no line runs past
+its edge; a run of spaces inside a line is shown as «160 spaces» and an invisible character (a
+bidirectional override, a zero-width mark) as «U+202E», with a warning above the script. An
+approved script runs with your rights, so read it to the end. If it changes the approval rules
+themselves, they are put back at once and the call is reported as an error;</li>
+<li><strong>every deletion</strong> of a design or simulation.</li>
+</ul>
+<p>A declined action is reported to the model as declined; it is told not to ask again and to propose
+a cheaper alternative or stop. Reading the project, creating designs (always as new designs: a
+design you made is never modified in place), estimating costs, figures and logs never ask.</p>
+<h3 id="what-it-can-do-its-tools">What it can do (its tools)<a class="anchor" href="#what-it-can-do-its-tools" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Tool</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><td><code>project_overview</code>, <code>describe_design</code></td><td>read the project: designs, simulations, references, wing planform, template parameters</td></tr>
+<tr><td><code>create_naca_airfoil</code>, <code>create_template</code>, <code>create_wing</code>, <code>derive_design</code></td><td>add designs, or a variant of one (template parameters such as the Ahmed slant angle; wing span, taper, sweep, twist; scale or rotation of a 3D mesh)</td></tr>
+<tr><td><code>describe_simulation</code></td><td>one simulation's settings, its placed physics (heat transfer, walls, fans, jets, heaters, emitters, domain), status and whether it has a result</td></tr>
+<tr><td><code>estimate_cost</code></td><td>the planner's estimate (time, grid, simulated and real Reynolds number) without running</td></tr>
+<tr><td><code>run_polar</code>, <code>run_wing</code>, <code>run_cfd</code>, <code>run_sweep</code></td><td>the airfoil polar, the finite-wing analysis, one CFD run, or one analysis repeated over α, speed or yaw; <code>run_cfd</code> takes a <code>physics</code> object (heat transfer and walls, heaters, fans, jets and vents, smoke emitters, a closed domain)</td></tr>
+<tr><td><code>create_case</code>, <code>run_simulation</code></td><td>a published reference case ready to run (the de Vahl Davis heated cavity, the Lange et al. heated cylinder, a fan in a room) with its reference value; run a simulation that is already set up (by you on the Setup page, or by <code>create_case</code>). The fan room is a consistency check only: thrust mode imposes the thrust, and momentum theory does not apply in a closed room</td></tr>
+<tr><td><code>compare_reference</code></td><td>each simulation against the published reference its set-up reproduces: measured value with its standard error, the reference, the difference in % and the source; a run whose settings left the published conditions (buoyancy on for the forced-convection cylinder) says why instead. Every CFD result read with <code>get_results</code> carries the same comparison (<code>reference_check</code>) and the models it ran with (<code>physics_models</code>: heat transfer, buoyancy, turbulence, domain)</td></tr>
+<tr><td><code>run_grid_study</code></td><td>re-run a CFD simulation on three refined grids: observed order, Richardson-extrapolated value and the GCI band (Celik et al. 2008), with the averaging noise taken into account; asks first like any long run, the card listing the three grids</td></tr>
+<tr><td><code>suggest_settings</code></td><td>propose setting changes as a card you apply or dismiss (it changes nothing itself)</td></tr>
+<tr><td><code>get_results</code>, <code>compare_results</code></td><td>stored results with their statistics; comparison against a baseline with significance</td></tr>
+<tr><td><code>make_plot</code></td><td>a PNG figure (polar, convergence history, Cp, 2D field, 3D surface / streamlines / smoke / vortices / slice, span loading, sweep, comparison) saved with the experiment and shown in the panel</td></tr>
+<tr><td><code>write_report</code></td><td>the project's PDF or HTML report of chosen simulations</td></tr>
+<tr><td><code>run_python</code></td><td>a short script against the scripting API (always asks first)</td></tr>
+<tr><td><code>delete_item</code></td><td>delete a design or simulation (always asks first)</td></tr>
+<tr><td><code>record_plan</code>, <code>record_conclusion</code></td><td>write the plan and the findings into the experiment log; the plan's expected time is the planner's estimate of the runs the experiment set up (<code>estimate_cost</code>, <code>create_case</code>), never the model's guess (a live plan said "5 min 00 s" for an 11 s run), and with no estimate yet the plan shows none</td></tr>
+</tbody>
+</table></div>
+<p>Local models get a focused subset (no report, Python, deletion, grid-study or template-gallery
+tools, and <code>run_cfd</code> without its large physics object): an 8-billion-parameter model chooses
+better among fewer tools, and its context must also hold the results. <code>create_case</code> (with a
+five-field schema) and <code>compare_reference</code> are in the subset: without <code>create_case</code>, qwen3:8b
+answered that "the tools cannot run a simulation for a differentially heated square cavity",
+which was true of its tool list while its prompt told it to use <code>create_case</code>.</p>
+<p>A run that asks for physics this build's solver does not implement is refused before anything is
+recorded, naming what is missing, rather than run without it (see <code>al.supported_physics</code> in
+<a href="scripting.html">Scripting API</a>).</p>
+<h2 id="how-it-stays-honest">How it stays honest<a class="anchor" href="#how-it-stays-honest" aria-label="Link to this section">#</a></h2>
+<p>The assistant is instructed to work like a careful experimenter: state the objective, variables,
+controls and expected cost before running; prefer the cheapest analysis that answers the question
+(a polar answers an airfoil question in seconds at the real Reynolds number; CFD takes minutes);
+and report results with their uncertainty and limits. Aerolume enforces what it can rather than
+trusting the instructions:</p>
+<ul>
+<li><strong>Every final answer is checked, statement by statement</strong> (<code>aerolume.ai.claims</code>). The answer is
+cut into sentences, list items and table rows; each one with a number or a claimed action gets a
+verdict: <strong>Verified</strong> (the action matches a successful tool call of that kind, on the design it
+names; each number matches a tool result, a tool input or your goal at the precision it is
+written with, and, when the sentence names a run by its speed or design, a value of <em>that</em> run),
+<strong>Derived</strong> (not in any result, but a difference, a change in % or a ratio of two result values:
+the formula is shown), <strong>Not supported</strong> (matches nothing the experiment produced) or
+<strong>Contradicted</strong> (an action no tool call performed, or a number that belongs to another run, with
+the value it should have been). Unsupported and contradicted statements are sent back to the
+model once, listed with those values; what remains afterwards is shown flagged, and the
+experiment ends <strong>not verified</strong> (warning glyph) instead of "Done". The panel's <em>Checked
+statements</em> and the log's <em>Verification</em> table list every verdict with its evidence. The checker
+came from two live failures of qwen3:8b: "The simulation … has been deleted" with no tool call at
+all, and "the stored 25 m/s polar's best L/D of 26.47" when that run's value was 29.52 (26.47 was
+the other run's, so a plain "does this number appear somewhere" check passed it).
+Live runs with qwen3:8b found more, and each is now checked: a number is matched at the
+precision it is written with (not within 0.5 %, which let chance values pass); "best L/D of
+26.47" is a claim even without bold markers; a sentence about a run the experiment never made
+("the 25 m/s run reached 31.2") is not supported; "L/D is validated within 2-2.5 %" is
+contradicted when the result lists L/D under <code>not_validated</code>; a number the model wrote into its
+own plan counts only in a sentence about the plan; and an uncertainty ("± 1.5 %") must come from
+a result (a standard error, a GCI, half the angle step), never from arithmetic on two results
+and never from another number with the same digits (a live "1.18% ± 0.05%" had matched a run's
+speed of 0.05 m/s; it is now unsupported). A number written right next to a speed belongs to the
+run at that speed even when the sentence names two runs: "the best L/D rises from 29.52 at
+15 m/s to 26.47 at 25 m/s" (the two values swapped) is contradicted, with both correct values,
+while a range ("between 15 and 25 m/s it rises from 26.47 to 29.52") ties no number to either end.</li>
+<li><strong>Numbers come from tool results.</strong> Every result carries its statistics: CFD means with their
+standard error (and a flag when that error is only a rough estimate), convergence, the simulated
+and the real Reynolds number, the solver's warnings, and validity sentences from the validation
+record - for example, an airfoil simulated in 2D CFD at a capped Reynolds number describes
+low-Re flow; absolute 3D vehicle drag is not validated; Cl,max is only a lower bound when lift was
+still rising. Polars and wing analyses are deterministic and have no statistical error bar; their
+resolution is the angle step.</li>
+<li><strong>Confidence facts are data, not prose.</strong> A polar or wing result also carries
+<code>optimum_resolution_deg</code> (half the angle step: a best-L/D angle from a 1° sweep is known to
+±0.5°), <code>validated_quantities</code> and <code>not_validated</code>. For a wing, the lift slope, span efficiency
+and induced drag are validated; profile drag, and with it CD, L/D and CL,max, comes from 2D
+section polars and is not. A small model does not derive this from the validity prose: asked how
+confident a best-L/D answer was, qwen3:8b called the result "validated within a few percent"
+until the result said what the validation covers. A wing result whose strips went beyond their
+section cl_max carries those angles too.</li>
+<li><strong>"How confident is it?" gets an uncertainty figure.</strong> When the goal asks how far to trust the
+answer and the answer gives no ±, standard error or angle resolution, the model is asked once to
+add it.</li>
+<li><strong>A standard error is not the accuracy.</strong> CFD values reach the model rounded to their standard
+error by the Results tables' rule (the Particle Data Group's: an error whose three leading
+digits are 100-354 keeps two significant figures, 355-949 one, 950-999 rounds up to two;
+the value goes to the same decimal place), so the model is sent Cd 0.514 ± 0.005, not
+0.51377 ± 0.004553, and Nu 3.3408 ± 0.0010, not 3.34079 ± 0.00095, with
+<code>stderr_meaning</code>: the averaging uncertainty of that run only, modelling error not included. An
+answer that says "confident within ±" a standard error about a quantity the result marks not
+validated is sent back once.</li>
+<li><strong>A steady value has no ±.</strong> When a standard error is below 10⁻⁵ of its value (a settled run:
+a converged cavity's Nu had 4.4 × 10⁻¹⁶, float round-off), the model gets the value to four
+significant figures with <code>steady: true</code> and no error, the run card reads "Nu 2.251 (steady)" as
+the Results page does, and the result says that the value's error is the discretisation error,
+which <code>run_grid_study</code> (the GCI) gives. An answer that writes a ± for a steady quantity, or a
+± of zero, is contradicted by the claims check and sent back; "steady" together with the grid
+study counts as the answer's uncertainty statement. (Live qwen3:8b had answered "2.25 ± 0.00
+(4.4e-16)".)</li>
+<li><strong>The answer's ± is rounded the same way.</strong> Whatever the model writes, every "value ± error"
+in the answer is quoted by that rule as it streams and in the log (<code>plaintext.round_pm</code>):
+"3.3407 ± 0.00095" becomes "3.3407 ± 0.0010", the figure the Results table beside it shows. An
+error is only ever shortened, never padded ("3.34 ± 0.01" stays), and numbers in scientific
+notation are left as written.</li>
+<li><strong>"Validated" needs a reference check inside its band.</strong> A statement that calls a result
+validated or verified passes the claims check only when the experiment compared it with a
+published reference (<code>compare_reference</code>, or the <code>reference_check</code> every CFD result carries),
+the check is a validation and not a consistency check, and the difference lies inside the
+tolerance band <a href="validation.html">Validation report</a> checks that reference with: ± 2 % for the de Vahl Davis
+cavity at Ra 10³ and 10⁴ (± 3 % at 10⁵, ± 5 % at 10⁶), ± 3 % for the cubic cavity at Ra 10⁴,
+± 4 % for the heated cylinder at Re 20-40 (where it was checked). Without a reference check the statement is <strong>not supported</strong>;
+outside the band, or with only the fan room's imposed thrust to compare, it is
+<strong>contradicted</strong>; either way it goes back to the model once. A quantity the result lists under
+<code>validated_quantities</code> from the documented validation (a polar's cl, a wing's lift slope) and a
+to-do ("must be verified by a grid study") are not such claims. A heading in the form the tools'
+own confidence note uses ("Validated: cl, cd, cm"; "Not validated: Cl_max") is judged on the list
+after its colon, so "Validated: Cl_max" is contradicted. (Live qwen3:8b had written "The
+result is validated against the reference setup" and the check had reported every statement
+verified, because it looked only at numbers and actions.)</li>
+<li><strong>A validated set-up says so, with its deviation.</strong> A run that reproduces a validated reference
+set-up (the de Vahl Davis cavity, the Lange et al. heated cylinder, under the published
+conditions) lists its Nusselt number in <code>validated_quantities</code> with this run's measured
+difference and band ("this run 2.2509 against 2.238, +0.57 % ...; inside its ± 2 % band"), not
+under <code>not_validated</code>; the heat rate
+stays not validated, since no benchmark checks it directly. An answer that calls such a
+quantity "not validated" is contradicted. A run whose settings left the benchmark (another
+wall temperature, buoyancy switched on for the cylinder) keeps Nu under <code>not_validated</code>.</li>
+<li><strong>Claims must match what was done.</strong> An answer that says something was deleted, run or created
+("The simulation ... has been deleted from the project") when no tool call did that is sent back
+once. A local model cannot delete at all (it is told to point you to Project tree &gt; Delete). If
+the corrected answer repeats the claim, the panel replaces it with a warning, folds the original
+away under <em>Withheld answer</em>, and the experiment ends <strong>unverified</strong> (warning glyph, in the panel
+and the Project tree) instead of "Done". The prompt rule and this check are independent: with the
+rule taken out of the local prompt, qwen3:8b again answered "… has been deleted from the project
+overview" (measured live, 28.5 s); the check sent it back and the corrected answer said it cannot
+delete. <code>record_conclusion</code> applies the same check to the conclusion it records: a summary or
+limitation that claims a deletion, run or creation no tool call performed is refused, so the
+log's <em>Conclusions</em> can never state it either (another live run tried to record "The simulation …
+has been deleted and is no longer available", then replied empty, and once asked to answer wrote
+"… has been deleted and cannot be accessed"; that claim was sent back too). The check reads the
+ways chat answers state an action, not only "I deleted": a line that starts with the verb
+("Deleted “Polar · Re 3.0×10⁵” as requested.", "✅ Ran a polar at Re 10⁶"), "I went ahead and
+removed it", a headline ("Simulation “…” deleted.") and "the speed has been changed to 30 m/s".
+A clause that describes a configuration ("drag falls when the spoiler is removed"), a rule
+("results are deleted when their design is deleted") or an idiom ("ran out of context") is not
+an action.</li>
+<li><strong>An empty reply is not an answer.</strong> A model that ends with no text and no tool call is asked
+once to answer; a second empty reply ends the request <strong>failed</strong> with a plain message, never
+"Done" with nothing to read.</li>
+<li><strong>"Cannot" is checked against the tools.</strong> When an answer says the task cannot be done and the
+goal's keywords route to a reference case (<code>aerolume.ai.router</code>: cavity, Rayleigh or natural
+convection to the de Vahl Davis cavity; a heated cylinder with Nusselt or Lange to the forced-
+convection cylinder; a fan to the fan room), and the model never tried that route, it is sent
+back once with the concrete calls, the parameters read from the goal ("call create_case with
+case="cavity", rayleigh=100000, then run_simulation ..., then compare_reference"). A refusal
+after the route was tried and failed (a build whose solver lacks heat transfer) stands. Found
+live: qwen3:8b refused a new cavity at Ra 10⁵ after 7.5 s, and the refusal ended "Done".</li>
+<li><strong>A comparison the goal asks for is in the answer.</strong> When the goal names a reference (Lange,
+de Vahl Davis, Tric, momentum theory, "the published value", a benchmark or a correlation) and
+the answer quotes neither the reference value nor the difference in %, the loop calls
+<code>compare_reference</code> itself on the experiment's runs (a row in the panel, an action in the log)
+and sends the numbers back once; when no run has a reference, it sends the router's calls
+instead. An answer that still leaves the comparison out ends <strong>not verified</strong>, with a
+<em>Completeness check</em> in the log. Found live: asked for the cylinder's Nusselt number against the
+Lange correlation, qwen3:8b answered "Nu 3.3402 ± 0.001" (Lange 3.28, +1.8 %), and every number
+in it traced, so the claims check passed it.</li>
+<li><strong>Statements about the physical models must match the settings.</strong> A statement that names
+buoyancy (Boussinesq, natural or free convection) or a turbulence model (LES, Smagorinsky,
+subgrid) is compared with the models the runs it is about used: naming a model that was off in
+all of them, or calling a model off that all of them used, is <strong>contradicted</strong>. Hypothetical
+clauses ("buoyancy would raise Nu") are not claims. Found live: the Lange answer above cited
+"the assumptions made in the Boussinesq energy equation" for a run with buoyancy off; the
+thermal validity sentence it copied named the Boussinesq model for every thermal run, and now
+says "buoyancy off (forced convection)" when it was.</li>
+<li><strong>The goal is covered.</strong> When the goal names a design together with a speed, angle or Reynolds
+number ("Tapered wing ... between 15 and 25 m/s") and no run or read of the experiment matches
+one of them, the model is asked once to run it ("call run_wing on Tapered wing at 15 m/s").</li>
+<li><strong>Each number belongs to its run.</strong> <code>record_conclusion</code> checks every finding against the
+simulation it cites and refuses a value that is not that run's, listing the run's actual values
+("ld_max 29.52 at α 3°"); it also refuses a ± on a polar or wing value (they have no error bar;
+±0.5° is the angle resolution of an optimum angle) and a degree uncertainty on a quantity that is
+not an angle. The final answer is checked the same way clause by clause: a number given for the
+25 m/s run that is the 15 m/s run's figure is sent back once and recorded as an <em>Attribution
+check</em> in the log.</li>
+<li><strong>Plans say what is varied.</strong> A plan whose controls ("held fixed") include a quantity it varies,
+or the speed when the goal compares speeds, is refused; a plan without variables lists its
+<em>Settings</em>.</li>
+<li><strong>Stored results are reused, and said to be.</strong> A polar or wing run whose angle range (at the same
+or a finer step, same speed and settings) is already stored is answered from the stored
+simulation; nothing runs and nothing waits for approval. A sweep that differs only in its range is
+named after it ("Wing polar · 25 m/s · α −5…15°") so the Project tree tells the two apart. A
+reused result's card ends "(stored result reused)", the model is told to say so, and when its
+answer does not, a line under it does ("Not run again: … is the stored result of an identical
+run computed earlier"). A goal that asks for a <strong>new</strong> run ("Run a new draft simulation of …",
+"re-run", "run it again") runs each simulation again once instead of reusing it; the approval
+card then shows the real cost.</li>
+<li><strong>Run cards lead with what was measured.</strong> A CFD card shows Nu, the heat rate and fan thrust first,
+then Cd and Cl when the run has forces: a heated cavity reads "Nu 4.562 ± 1.9e-05, Q 0.114 W/m",
+not "Cd n/a, Cl n/a".</li>
+<li><strong>Plain text, no LaTeX.</strong> Models write numbers as LaTeX out of habit ("\(1 \times 10^5\)", "\(4.56
+\pm 0.01\)", "\(1.18\%\)"). The prompts ask for plain text, and whatever LaTeX math still arrives is
+turned into Unicode as it streams -- "1 × 10⁵", "4.56 ± 0.01", "1.18%" -- so the transcript, the
+log and the claims check read the same text (<code>aerolume.ai.plaintext</code>). Prose with currency signs
+("$5 and $10") is left alone.</li>
+<li><strong>Examples follow the project.</strong> Every example goal on an empty transcript is drawn from the
+open project: its physics first -- the cavity's Nusselt number against de Vahl Davis, a heated
+body's Nu and heat rate, a fan's delivered thrust, the grid error of Nu -- then questions about
+its designs (an airfoil's best L/D and stall angle, a wing's induced drag, a 3D body's drag and
+how far to trust it). A slot the project has nothing for stays empty; the generic aerodynamic
+examples appear only in a project without designs. (An enclosure with heaters and fans had been
+offered NACA 4412, Ahmed bodies and a wing.)</li>
+<li><strong>Summaries keep their numbers.</strong> A shortened line -- the plan card's "Plan recorded: ...", a
+log title -- is cut between words after its maths became text, and a number right after the cut
+is kept with its label ("... at Ra 1e4…", not "... at Ra , about 28 s").</li>
+<li><strong>Local models are held to the method.</strong> With a local model the loop reads the project itself
+and hands the overview over with the goal (Ollama has no forced tool call, and qwen3:8b skipped
+the overview and recomputed a polar the project already had); the first run waits until the
+model has recorded its plan; and an answer after results without a recorded conclusion is sent
+back once to record it. When the model then repeats its answer word for word, the panel shows it
+once. A local model's context is kept for the work: stored results come back compact
+(metrics and confidence facts, validity as short codes; the per-angle table only on request), and
+a read that repeats an earlier one exactly is answered with a pointer to the earlier result.
+Metric names say what they are: <code>span_<wbr>efficiency_<wbr>at_<wbr>best_<wbr>LD</code> and <code>oswald_e_parabolic_fit</code>
+(qwen3:8b called the first "the Oswald factor").</li>
+<li><strong>Number check.</strong> The log remembers every number that appeared in a tool result, a tool input or
+your goal, with where it came from (the claims check shows that origin as its evidence). The
+claims check also accepts a number from the solvers' validity record in the system prompt, but
+only in a sentence about what a solver is validated for ("validated against NACA 0012/2412/4412
+data"), never as a result. Numbers in the conclusions that match none of the remembered numbers
+(at the precision they are written
+with) are listed under <em>Number check</em> in the log and in the panel. A derived figure (a percentage
+the model computed) shows up there too, which is the point: you can see which numbers came
+straight from a solver.</li>
+<li><strong>A model that answers with numbers without running anything</strong> is reminded once that numbers must
+come from tool results.</li>
+<li><strong>A mistyped id is refused, with the closest ids named</strong> ("Did you mean the id 485fa5563c6c
+(“Tapered wing”)?"): qwen3:8b dropped one digit of a 12-digit design id in three of four live
+runs. The id is suggested, never used.</li>
+<li><strong>Every tool input is validated</strong> against the tool's schema before anything runs (Claude streams
+tool input as it is generated, and a local model has no schema enforcement at all); an invalid
+call goes back to the model as an error it can correct. Lossless slips of small models (<code>"20"</code>
+for 20, one value where a list is expected, <code>null</code> for a parameter left out) are repaired,
+nothing else.</li>
+<li>Differences between CFD runs are called significant only when <code>compare_results</code> says so.</li>
+</ul>
+<h2 id="experiment-logs">Experiment logs<a class="anchor" href="#experiment-logs" aria-label="Link to this section">#</a></h2>
+<p>Every experiment is a folder in the project:</p>
+<pre><code>&lt;project&gt;/experiments/20261011-150821-find-the-angle-of-attack-with-the-best-l/
+    experiment.md      the log as a readable note
+    experiment.json    the same, machine-readable
+    plots/01-polar.png figures the assistant made</code></pre>
+<p>The log holds the goal, the model, the plan (objective, method, variables, controls, quality,
+expected runs and time, validity limits), every action with its outcome and duration, the key
+results (quantity, value, unit, uncertainty, source simulation), the conclusions and findings, the
+number check (with the design, attribution and action checks), the <em>Verification</em> table of the
+claims check and the conversation. The status is Done, Not verified (the claims check or the action
+check left a statement unsupported), Stopped or Failed. Values are written to 4 significant figures and every table cell
+holds something (an em dash when empty), so the columns line up in any Markdown viewer. Deterministic
+results say what limits them in the <em>Uncertainty</em> column: "±0.5° (half the α step)" for an optimum
+angle, "lower bound: still rising at the last α; strips beyond section cl_max at 13–15°" for a
+CL,max that did not peak, "profile drag not validated" for a wing's drag figures. Both files are rewritten after every step, so a log is complete
+up to the moment a request was stopped. The Project tree lists experiments under <strong>Experiments</strong>
+(double-click to open; <em>Delete log…</em> removes the folder, not the simulations). The token usage of
+each experiment is in <code>experiment.json</code>.</p>
+<h2 id="scripts-and-the-command-line">Scripts and the command line<a class="anchor" href="#scripts-and-the-command-line" aria-label="Link to this section">#</a></h2>
+<p>The assistant and scripts are two front ends of one API. When a study is easier to express as code,
+use the <strong>Script</strong> panel (Alt+4, <a href="scripting.html">Scripting API</a>); the assistant itself can propose a
+script through <code>run_python</code>, shown to you before it runs.</p>
+<p>Experiments also run headless, with the same log:</p>
+<pre><code>python -m aerolume.ai --project "Study.aerolume" "find the angle of attack with the best L/D of NACA 2412 at 20 m/s using the polar analysis"
+python -m aerolume.ai --project P --provider ollama --model qwen3:8b --approve runs "..."</code></pre>
+<p><code>--approve ask</code> (default) asks in the terminal, <code>runs</code> approves long runs (code and deletions still
+ask), <code>none</code> declines everything that would ask; without a terminal anything that needs approval is
+declined unless <code>--approve</code> allows it. From Python:</p>
+<pre><code class="language-python">import aerolume as al
+from aerolume.ai import run_experiment
+
+out = run_experiment(al.open_project("Study.aerolume"), "compare the drag of ...")
+print(out.status, out.path)</code></pre>
+<h2 id="privacy-and-safety">Privacy and safety<a class="anchor" href="#privacy-and-safety" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Consent first:</strong> nothing is sent to a model off this computer until you agree on the card
+described in <a href="#before-anything-is-sent">Before anything is sent</a>.</li>
+<li><strong>Claude:</strong> your goals, the names, ids and notes of the designs and simulations the tools read,
+and the tools' results (numbers, warnings) are sent to Anthropic to produce the answers. Geometry
+files, meshes and result fields are not uploaded; figures are saved locally and only their file
+name is reported to the model.</li>
+<li><strong>Local model:</strong> nothing leaves the computer; Aerolume talks only to the Ollama address you set.</li>
+<li>The tools read and write only inside the open project (figures and logs under <code>experiments/</code>,
+reports in the project's reports folder) and never use the network; the only network traffic is
+the conversation with the model provider.</li>
+<li>Text that comes back from tools - design names, notes, file contents, results - is passed to the
+model as data, and its instructions say that nothing in it is an instruction; if such text asks
+for something, the model is told to point it out to you instead.</li>
+<li>Code runs only after you approve the exact script, with the same Stop as the Script panel.</li>
+<li>Settings change only when you click <strong>Apply</strong> on a suggestion card, and <strong>Undo</strong> reverts it.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Message</th><th scope="col">What to do</th></tr></thead>
+<tbody>
+<tr><td>No Claude credentials</td><td>set <code>ANTHROPIC_API_KEY</code>, run <code>ant auth login</code>, or enter a key in Preferences ▸ Assistant</td></tr>
+<tr><td>Claude needs the optional anthropic package</td><td><code>pip install aerolume[ai]</code></td></tr>
+<tr><td>Claude rejected the credentials (401)</td><td>the key is wrong or revoked; replace it in Preferences</td></tr>
+<tr><td>Claude's rate limit was reached (429) / Claude is overloaded (529)</td><td>wait the time shown and run again</td></tr>
+<tr><td>Ollama is not running at …</td><td>start Ollama, or check the address in Preferences</td></tr>
+<tr><td>Model … is not installed</td><td><code>ollama pull &lt;model&gt;</code>, or pick an installed model in Preferences</td></tr>
+<tr><td>The local model's context is nearly full</td><td>start a new experiment, or raise the context in Preferences</td></tr>
+<tr><td>Ollama could not run … cudaMalloc failed: out of memory</td><td>another program (often a CFD run) holds the GPU; wait for it to finish</td></tr>
+<tr><td>Ollama could not run … std::bad_alloc</td><td>the computer is short of memory (check the commit charge in Task Manager); close programs and run again</td></tr>
+<tr><td>Stopped after N tool rounds</td><td>the request needed more steps than the limit in Preferences; ask a narrower question or raise the limit</td></tr>
+</tbody>
+</table></div>
+<p>On Windows, <code>localhost</code> is tried over IPv6 first; Ollama listens on IPv4, so Aerolume talks to
+<code>127.0.0.1</code> when Ollama answers there (each request otherwise waited about 2 s for the IPv6 attempt
+to fail).</p>
+<p>A local model answers slowly when the GPU or the computer's memory is busy: while a CFD run, a game
+or another program holds GPU memory, Ollama runs part of the model on the CPU. With the GPU fully
+busy and about 2.3 GB of its memory taken by other runs, qwen3:8b (6.2 GB with the 8,192-token
+context it then used) stalled while loading until Ollama gave up after 5 minutes, and once loaded took more than
+the assistant's 300 s to read a 4,500-token prompt (measured 2026-10-18); keeping 16-24 of its 37
+layers on the GPU loaded it in 14-22 s and the speed-comparison experiment then took 159-268 s.
+Wait for the other GPU work to finish, or use Claude. Measured on an RTX
+4060 Ti (8 GB) with <code>qwen3:8b</code>: one model turn with the experiment prompt and tools (about 3,600
+prompt tokens) takes 7.5 s; the NACA 2412 best-L/D experiment above took 56 s end to end (three
+tool calls, the polar itself 32 s), and 7 min 38 s while other GPU jobs ran at the same time.</p>
+<h2 id="for-developers">For developers<a class="anchor" href="#for-developers" aria-label="Link to this section">#</a></h2>
+<p><code>src/aerolume/ai/</code> has no Qt: <code>config</code> (preferences, the key), <code>providers</code> (Claude through the
+<code>anthropic</code> SDK, Ollama through <code>urllib</code>), <code>tools</code> (the JSON-schema tools over <code>aerolume.api</code>),
+<code>schema</code> (input validation), <code>agent</code> (the loop: model turn, validated tool calls with approvals,
+all results of a turn back together), <code>experiment</code> (logs and the number check), <code>prompts</code>,
+<code>workspace</code> (the API project plus the window's hooks), <code>claims</code> (the claims checker), <code>router</code>
+(goal keywords to the reference-case calls, and the comparison and "cannot" checks) and <code>cli</code>.
+<code>aerolume.mcp_server</code> serves the same tools over MCP (<a href="mcp.html">MCP server</a>). The panel is
+<code>src/<wbr>aerolume/<wbr>app/<wbr>widgets/<wbr>assistant_<wbr>panel.py</code>; in the window, project edits go through
+<code>aerolume.app.scripting.AppHost</code> and runs through the JobManager.</p>
+<p>A new tool is a <code>Tool(name, description, schema, handler, kind)</code> in <code>tools.TOOLS</code>: the description
+says when to call it, the schema must pass <code>schema.check_schema</code> (every object
+<code>additionalProperties: false</code>, no numeric limits - the handler checks ranges and says why), and
+<code>kind</code> decides the approval rule. Tests: <code>tests/test_ai_*.py</code>; <code>pytest -m slow tests/test_ai_live.py</code>
+runs a real experiment with a local model.</p>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="scripting.html"><span>Previous</span><b>Scripting API</b></a><a class="next" href="mcp.html"><span>Next</span><b>MCP server</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#setting-up">Setting up</a></li><li class="l3"><a href="#claude">Claude</a></li><li class="l3"><a href="#local-model-ollama">Local model (Ollama)</a></li><li class="l2"><a href="#using-the-panel">Using the panel</a></li><li class="l3"><a href="#before-anything-is-sent">Before anything is sent</a></li><li class="l3"><a href="#suggestions">Suggestions</a></li><li class="l3"><a href="#approvals">Approvals</a></li><li class="l3"><a href="#what-it-can-do-its-tools">What it can do (its tools)</a></li><li class="l2"><a href="#how-it-stays-honest">How it stays honest</a></li><li class="l2"><a href="#experiment-logs">Experiment logs</a></li><li class="l2"><a href="#scripts-and-the-command-line">Scripts and the command line</a></li><li class="l2"><a href="#privacy-and-safety">Privacy and safety</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l2"><a href="#for-developers">For developers</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

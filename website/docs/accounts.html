@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Accounts (optional)</title>
+<meta name="description" content="Connecting a Supabase project of your own: sign-in, cloud projects and share links.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Accounts (optional)">
+<meta property="og:description" content="Connecting a Supabase project of your own: sign-in, cloud projects and share links.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html" aria-current="page">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html" aria-current="page">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#the-honest-constraints-up-front">The honest constraints, up front</a></li><li class="l2"><a href="#what-leaves-your-computer">What leaves your computer</a></li><li class="l2"><a href="#connect-a-project">Connect a project</a></li><li class="l2"><a href="#signing-in">Signing in</a></li><li class="l2"><a href="#cloud-projects">Cloud projects</a></li><li class="l3"><a href="#upload-size">Upload size</a></li><li class="l2"><a href="#share-links">Share links</a></li><li class="l2"><a href="#security-notes">Security notes</a></li><li class="l2"><a href="#try-it-without-a-cloud-project">Try it without a cloud project</a></li><li class="l2"><a href="#from-scripts">From scripts</a></li><li class="l2"><a href="#files">Files</a></li><li class="l2"><a href="#when-something-goes-wrong">When something goes wrong</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="accounts-optional">Accounts (optional)</h1>
+<p>Aerolume needs no account. Projects, simulations, results and reports live in
+folders on your computer, and every feature works offline. An account adds three
+things on top:</p>
+<ul>
+<li><strong>Cloud projects</strong>: a copy of a project folder in the cloud, so you can pick
+it up on another computer, with a clear status when the copies differ.</li>
+<li><strong>Share links</strong>: a read-only, expiring link to a result's report.</li>
+<li><strong>A profile</strong>: display name, affiliation, picture and default units/theme.</li>
+</ul>
+<h2 id="the-honest-constraints-up-front">The honest constraints, up front<a class="anchor" href="#the-honest-constraints-up-front" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>There is no Aerolume server.</strong> Accounts run on a <a href="https://supabase.com">Supabase</a>
+project that <em>you</em> create and own (free tier is enough to start).
+<code>supabase/README.md</code> walks through it. Until one is connected, the Account
+button says "Not connected" and nothing is ever sent anywhere.</li>
+<li><strong>Email links finish sign-in only on the computer running Aerolume</strong>, while the
+app is waiting (the link redirects to <code>http://127.0.0.1:&lt;port&gt;/callback/&lt;one-time nonce&gt;</code>). On a
+phone or another computer, type the 6-digit code from the same email instead;
+the project's email templates must include that code (see <code>supabase/README.md</code>).</li>
+<li><strong>Supabase's built-in email service is for testing</strong>: a few emails per hour,
+and on new projects only to members of your Supabase organisation. Real use
+needs custom SMTP.</li>
+<li><strong>Upload size</strong>: the free plan accepts <em>files</em> up to 50 MB, and a normal
+project with a few 3D results packs to more than that (one 3D run takes about
+15 MB). Aerolume therefore uploads a larger project in parts of up to 45 MB and
+joins them again on download, so the 50 MB limit never blocks a project. What
+does bound a project is the plan's total storage (1 GB on the free plan when
+this was written; an upload briefly holds the old and the new version) and
+<code>max_project_mb</code> below. See <em>Upload size</em> under Cloud projects.</li>
+<li><strong>Share links show what Supabase serves.</strong> Whether a browser renders the
+report HTML or shows its source depends on the content type Supabase uses for
+HTML on your project's domain. The share dialog includes the PDF version of
+the report when one exists, which always opens.</li>
+</ul>
+<h2 id="what-leaves-your-computer">What leaves your computer<a class="anchor" href="#what-leaves-your-computer" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">When</th><th scope="col">What is sent to your Supabase project</th></tr></thead>
+<tbody>
+<tr><td>Not connected, or signed out</td><td>Nothing (except <strong>Test connection</strong>, which reads public settings)</td></tr>
+<tr><td>Signing in</td><td>Your email and password, or the code from an email, or a browser sign-in via GitHub / Google</td></tr>
+<tr><td>Signed in</td><td>Your profile, when you edit it</td></tr>
+<tr><td>You press <strong>Upload</strong></td><td>That project folder, zipped (the Cloud projects window shows its size first)</td></tr>
+<tr><td>You create a share link</td><td>The report files you chose</td></tr>
+</tbody>
+</table></div>
+<p>Never sent: projects you did not upload, the Assistant's API key, your
+preferences file, logs.</p>
+<h2 id="connect-a-project">Connect a project<a class="anchor" href="#connect-a-project" aria-label="Link to this section">#</a></h2>
+<p><strong>Account menu &gt; Account settings</strong> (the Account button at the right end of the menu bar):
+paste the <em>Project URL</em> and the <em>anon</em> (or <em>publishable</em>) key from the Supabase
+dashboard (<strong>Project Settings &gt; API</strong>), then <strong>Test connection</strong>. The test checks
+that the project answers, that it accepts the key, that the migrations are
+applied, and which browser sign-ins are enabled.</p>
+<p>Rules the app enforces:</p>
+<ul>
+<li>The URL must be <code>https://</code>. Plain <code>http://</code> is accepted only for a server on
+this computer (<code>127.0.0.1</code>, <code>localhost</code>), such as the local Supabase stack or
+the mock below, because sign-in tokens travel with every request.</li>
+<li>Never paste the <code>service_role</code> / secret key: it bypasses every access rule.
+The anon key is designed to be public; access rules on the server, not the
+key, protect your data.</li>
+</ul>
+<p>Alternatively set both environment variables (they take precedence, and
+Account settings then shows the fields read-only):</p>
+<pre><code>AEROLUME_SUPABASE_URL=https://&lt;project-ref&gt;.supabase.co
+AEROLUME_SUPABASE_ANON_KEY=&lt;anon or publishable key&gt;</code></pre>
+<p>Optional settings in <code>account.json</code> (in the config folder below):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>max_upload_mb</code></td><td>50</td><td>The bucket's per-file limit. Parts are 90 % of it (45 MB); set it to the bucket's <code>file_size_limit</code> if you change that</td></tr>
+<tr><td><code>max_project_mb</code></td><td>1024</td><td>Largest project archive the app uploads (the free plan's total storage; raise it on a paid plan)</td></tr>
+<tr><td><code>redirect_ports</code></td><td><code>[47821, 47822, 47823, 47824]</code></td><td>Loopback ports for browser sign-in; must match the project's redirect URLs</td></tr>
+</tbody>
+</table></div>
+<h2 id="signing-in">Signing in<a class="anchor" href="#signing-in" aria-label="Link to this section">#</a></h2>
+<p>Open the Account button at the right end of the menu bar (<strong>Ctrl+Shift+U</strong>).
+It shows a person icon while no project is connected, <strong>Sign in</strong> when one is,
+and your picture (or initials) with your display name once you are signed in.
+The menu and the sign-in window name the server: <em>Supabase project</em> <code>&lt;ref&gt;</code>
+for a hosted project, or <em>Server: 127.0.0.1 (local test server)</em> for the local
+stack or the mock below.</p>
+<ul>
+<li><strong>Email and password.</strong> <em>Create account</em> sends a confirmation email (unless
+the project turns confirmations off). Passwords need at least 8 characters.</li>
+<li><strong>Email me a sign-in link</strong> signs in without a password: open the link on this
+computer, or type the code.</li>
+<li><strong>Forgot password?</strong> sends a reset email; after the link or code, Aerolume asks
+for the new password.</li>
+<li><strong>Continue with GitHub / Google</strong> opens your web browser (only for providers
+the project enabled). Aerolume uses PKCE and a one-time listener on
+<code>127.0.0.1</code>; your provider password never passes through Aerolume.</li>
+</ul>
+<p>A session lasts until you sign out; the short-lived access token is renewed in
+the background. <strong>Profile &gt; Sign out of all devices</strong> ends every session.</p>
+<h2 id="cloud-projects">Cloud projects<a class="anchor" href="#cloud-projects" aria-label="Link to this section">#</a></h2>
+<p><strong>Account menu &gt; Cloud projects</strong> lists every project in your cloud and every
+local folder linked to one:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Status</th><th scope="col">Meaning</th><th scope="col">What to do</th></tr></thead>
+<tbody>
+<tr><td>Up to date</td><td>Both copies have the same content</td><td>Nothing</td></tr>
+<tr><td>Local changes</td><td>This folder changed since the last upload</td><td><strong>Upload</strong></td></tr>
+<tr><td>Newer in cloud</td><td>Another computer uploaded; this folder is unchanged</td><td><strong>Update local folder</strong></td></tr>
+<tr><td>Conflict</td><td>Both changed since they were last synced</td><td>Choose: replace the cloud copy with yours, or download the cloud version into a new folder</td></tr>
+<tr><td>Cloud only</td><td>Not on this computer</td><td><strong>Download</strong></td></tr>
+<tr><td>Not uploaded</td><td>Local only</td><td><strong>Upload</strong></td></tr>
+<tr><td>Deleted from cloud</td><td>The linked cloud copy was deleted</td><td><strong>Upload</strong> to create it again</td></tr>
+</tbody>
+</table></div>
+<p>How it decides, and why it is safe:</p>
+<ul>
+<li><strong>Content, not clocks.</strong> Each folder has a content hash: SHA-256 over every
+file's path and bytes (ignoring OS litter such as <code>Thumbs.db</code>, crash
+leftovers, and the save timestamp in <code>project.json</code>). The same content gives
+the same hash on every computer.</li>
+<li><strong>Three-way comparison.</strong> Aerolume remembers the hash each folder had at its
+last upload or download and compares it with the folder now and the cloud now.</li>
+<li><strong>Nothing is overwritten silently.</strong> An upload replaces the cloud copy only if
+the cloud copy is still the version this folder last saw; if another computer
+uploaded in between, you get the Conflict choice instead. Updating a local
+folder from the cloud keeps the old folder as <code>&lt;name&gt; (local copy &lt;date&gt;)</code> when
+it had changes that were never uploaded.</li>
+<li><strong>You always work in the local folder.</strong> The cloud copy is a copy; opening a
+project never downloads anything by itself.</li>
+</ul>
+<p>Upload saves the open project first, so the cloud copy is what you see.</p>
+<h3 id="upload-size">Upload size<a class="anchor" href="#upload-size" aria-label="Link to this section">#</a></h3>
+<p>Select a row to see, under the list, what an upload would send <em>before</em> you
+press Upload: the packed size (exact: the archive is measured, not estimated,
+and can be well below the size on disk because exported VTK files compress),
+how many parts it goes up in, and the largest runs and folders, largest first.
+For example, a project with ten Draft runs and one smoke export:</p>
+<pre><code>Uploading sends 103.7 MB in 3 parts of up to 45.0 MB (10 runs; 116.6 MB on disk).
+Largest: Exported files 39.0 MB · Car smoke (3D run) 15.6 MB · Heated box (3D run) 14.7 MB · ...</code></pre>
+<p>The status line counts the parts while they go up. Every part is uploaded
+before the cloud record changes, and the previous version is removed only after
+the record points at the new one, so an interrupted upload leaves the old cloud
+copy as it was (the parts already sent are removed again).</p>
+<p>A project over <code>max_project_mb</code> is refused before anything is sent, with the
+three largest items named. Exported files (<code>exports/</code>) are often the largest and
+can be written again from their results at any time.</p>
+<h2 id="share-links">Share links<a class="anchor" href="#share-links" aria-label="Link to this section">#</a></h2>
+<p><strong>Account menu &gt; Share result</strong> (with a project open) shares one of the
+project's reports (create an HTML report on the Report step first). Choose a
+title and an expiry (7 days to 1 year); <strong>Create link</strong> uploads the report (and
+its PDF, if present) and gives you the link.</p>
+<ul>
+<li>Anyone with the link can open the files until it expires; the link cannot be
+guessed and the share list cannot be browsed.</li>
+<li><strong>Revoke</strong> deletes the files from the cloud; the link stops working at once.</li>
+<li>Your earlier links are listed in the same dialog to copy again or revoke.</li>
+</ul>
+<h2 id="security-notes">Security notes<a class="anchor" href="#security-notes" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Tokens on disk</strong>: <code>account_session</code> in the config folder. On Windows it is
+encrypted with DPAPI for your Windows account (another user, or a copy of the
+file on another machine, cannot read it); elsewhere it is created readable
+only by you (mode 0600). It is bound to the project URL, so connecting a
+different project never reuses it.</li>
+<li><strong>Never logged</strong>: tokens, passwords, codes and the anon key do not appear in
+logs, error messages or <code>repr()</code> output (tested).</li>
+<li><strong>Server-side rules</strong> (<code>supabase/migrations</code>): every table has row-level
+security; you can only read and change your own rows and files; anonymous
+requests have no table access.</li>
+</ul>
+<h2 id="try-it-without-a-cloud-project">Try it without a cloud project<a class="anchor" href="#try-it-without-a-cloud-project" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-sh">python -m aerolume.accounts.mock --user ada@example.org:"a long password"</code></pre>
+<p>starts a local stand-in server, prints a URL and key to paste into Account
+settings, and prints every "email" (code and link) in its terminal. It keeps
+everything in memory and implements the same endpoints and access rules
+Aerolume uses; the test suite runs against it. It is not a real backend.</p>
+<h2 id="from-scripts">From scripts<a class="anchor" href="#from-scripts" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">from aerolume.accounts import get_service
+
+svc = get_service()                 # configured from Account settings / the environment
+if svc.configured and not svc.signed_in:
+    svc.sign_in("ada@example.org", "a long password")
+folder = r"C:\Users\ada\Documents\Aerolume\Wing study.aerolume"
+preview = svc.upload_preview(folder)        # local only: packed size, parts, largest runs
+print(preview.size_bytes, preview.parts, [g.label for g in preview.groups[:3]])
+status = svc.upload_project(folder, progress=print)   # "Uploading part 2 of 3 ..."
+print(status.label)                 # "Up to date"</code></pre>
+<p><code>svc.sync_overview()</code>, <code>svc.download_project(id, folder)</code>,
+<code>svc.create_share([report_html], title=..., expires_days=30)</code> and the rest are
+documented in <code>src/<wbr>aerolume/<wbr>accounts/<wbr>service.py</code>. Errors are
+<code>aerolume.accounts.AccountError</code> subclasses with a plain-language message and a
+<code>code</code>.</p>
+<h2 id="files">Files<a class="anchor" href="#files" aria-label="Link to this section">#</a></h2>
+<p>In the config folder (<code>%APPDATA%\Aerolume</code> on Windows, <code>~/.config/aerolume</code>
+elsewhere, or <code>AEROLUME_CONFIG_DIR</code>):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">File</th><th scope="col">Contents</th></tr></thead>
+<tbody>
+<tr><td><code>account.json</code></td><td>Project URL, anon key, optional settings</td></tr>
+<tr><td><code>account_session</code></td><td>The encrypted session (delete it to sign out locally)</td></tr>
+<tr><td><code>cloud_sync.json</code></td><td>Which local folder is linked to which cloud project, and the hash at the last sync</td></tr>
+</tbody>
+</table></div>
+<h2 id="when-something-goes-wrong">When something goes wrong<a class="anchor" href="#when-something-goes-wrong" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Message</th><th scope="col">Cause</th></tr></thead>
+<tbody>
+<tr><td>"Accounts are not set up"</td><td>No project connected (the default)</td></tr>
+<tr><td>"The project rejected the anon key"</td><td>Wrong or rotated key</td></tr>
+<tr><td>"...missing Aerolume's tables or functions"</td><td>Migrations not applied (<code>supabase db push</code>)</td></tr>
+<tr><td>"Cannot find &lt;host&gt;" / "did not answer in time"</td><td>Offline, or a mistyped URL</td></tr>
+<tr><td>"Confirm your email address first"</td><td>The sign-up link was not opened yet; use the code</td></tr>
+<tr><td>"Too many emails were sent"</td><td>Supabase's email rate limit; wait, or set up SMTP</td></tr>
+<tr><td>"No reply from the browser in time"</td><td>The browser sign-in was not finished within the wait; start again</td></tr>
+<tr><td>"...over this server's project limit"</td><td>The project is larger than <code>max_project_mb</code>; see <em>Upload size</em></td></tr>
+<tr><td>"The server refused a ... file"</td><td>The bucket's file limit is lower than <code>max_upload_mb</code>; set <code>max_upload_mb</code> to the bucket's limit</td></tr>
+<tr><td>"The server's database is older than this version"</td><td>Apply the newer files in <code>supabase/migrations</code> (<code>supabase db push</code>)</td></tr>
+</tbody>
+</table></div>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="mcp.html"><span>Previous</span><b>MCP server</b></a><a class="next" href="methods.html"><span>Next</span><b>Methods</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#the-honest-constraints-up-front">The honest constraints, up front</a></li><li class="l2"><a href="#what-leaves-your-computer">What leaves your computer</a></li><li class="l2"><a href="#connect-a-project">Connect a project</a></li><li class="l2"><a href="#signing-in">Signing in</a></li><li class="l2"><a href="#cloud-projects">Cloud projects</a></li><li class="l3"><a href="#upload-size">Upload size</a></li><li class="l2"><a href="#share-links">Share links</a></li><li class="l2"><a href="#security-notes">Security notes</a></li><li class="l2"><a href="#try-it-without-a-cloud-project">Try it without a cloud project</a></li><li class="l2"><a href="#from-scripts">From scripts</a></li><li class="l2"><a href="#files">Files</a></li><li class="l2"><a href="#when-something-goes-wrong">When something goes wrong</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Methods</title>
+<meta name="description" content="Every method in one place, with its references: the summary to cite.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Methods">
+<meta property="og:description" content="Every method in one place, with its references: the summary to cite.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html" aria-current="page">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html" aria-current="page">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-the-solvers-at-a-glance">1. The solvers at a glance</a></li><li class="l2"><a href="#2-navier-stokes-solvers">2. Navier–Stokes solvers</a></li><li class="l3"><a href="#21-equations">2.1 Equations</a></li><li class="l3"><a href="#22-grid-boundary-conditions-symmetry">2.2 Grid, boundary conditions, symmetry</a></li><li class="l3"><a href="#23-spatial-discretisation">2.3 Spatial discretisation</a></li><li class="l3"><a href="#24-pressure">2.4 Pressure</a></li><li class="l3"><a href="#25-time-integration">2.5 Time integration</a></li><li class="l3"><a href="#26-immersed-bodies">2.6 Immersed bodies</a></li><li class="l3"><a href="#27-subgrid-models-and-limits-of-the-flow-solvers">2.7 Subgrid models and limits of the flow solvers</a></li><li class="l3"><a href="#28-start-up-and-determinism">2.8 Start-up and determinism</a></li><li class="l2"><a href="#3-heat-transfer">3. Heat transfer</a></li><li class="l3"><a href="#31-energy-equation-and-buoyancy">3.1 Energy equation and buoyancy</a></li><li class="l3"><a href="#32-discretisation">3.2 Discretisation</a></li><li class="l3"><a href="#33-thermal-boundary-conditions">3.3 Thermal boundary conditions</a></li><li class="l3"><a href="#34-nusselt-number-and-heat-balance">3.4 Nusselt number and heat balance</a></li><li class="l2"><a href="#4-fans-jets-and-vents">4. Fans, jets and vents</a></li><li class="l2"><a href="#5-flow-visualisation-smoke-and-tracers">5. Flow visualisation: smoke and tracers</a></li><li class="l2"><a href="#6-airfoil-polars">6. Airfoil polars</a></li><li class="l2"><a href="#7-finite-wings">7. Finite wings</a></li><li class="l2"><a href="#8-statistics-of-time-averaged-outputs">8. Statistics of time-averaged outputs</a></li><li class="l2"><a href="#9-discretisation-uncertainty-grid-convergence-studies">9. Discretisation uncertainty: grid-convergence studies</a></li><li class="l2"><a href="#10-reproducibility-and-provenance">10. Reproducibility and provenance</a></li><li class="l2"><a href="#11-validation">11. Validation</a></li><li class="l2"><a href="#12-limitations">12. Limitations</a></li><li class="l2"><a href="#references">References</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Theory</p>
+<h1 id="methods">Methods</h1>
+<p>This is the methods section a paper that uses Aerolume can cite: what each solver solves,
+how it is discretised, how its outputs are averaged, how uncertain they are, and what it
+cannot do. It summarises the theory documents, which derive every choice and show the
+measurements behind it:
+<a href="theory-ns2d.html">2D Navier–Stokes</a>, <a href="theory-ns3d.html">3D Navier–Stokes</a>,
+<a href="theory-airfoil.html">airfoil polars</a>, <a href="theory-wing.html">finite wings</a> and
+<a href="theory-sensitivity.html">sensitivity maps</a>. The evidence that the numbers are right is in the
+<a href="validation.html">validation report</a>; its section 9 is regenerated by one command,
+<code>python validation/run_all.py --all --write-docs</code>. To cite the software itself, see
+<code>CITATION.cff</code> in the repository root.</p>
+<p>Every result Aerolume saves carries a provenance record (section 10), so a methods section
+can quote exactly what produced a number: the version, the solver settings and their hash,
+the device and the precision.</p>
+<h2 id="1-the-solvers-at-a-glance">1. The solvers at a glance<a class="anchor" href="#1-the-solvers-at-a-glance" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">solver</th><th scope="col">model</th><th scope="col">discretisation</th><th scope="col">validated against</th></tr></thead>
+<tbody>
+<tr><td><code>solvers.ns2d</code>, <code>solvers.ns3d</code></td><td>incompressible Navier–Stokes, optional energy equation with Boussinesq buoyancy, actuator-disc fans, jets and vents</td><td>uniform staggered (MAC) grid, finite differences, SSP-RK3, exact projection, immersed bodies by Brinkman penalisation</td><td>Taylor–Green (exact), cylinder and sphere benchmarks, de Vahl Davis cavity, cubic cavity, heated cylinder and sphere, Rayleigh–Bénard onset, actuator-disc momentum theory</td></tr>
+<tr><td><code>solvers.airfoil</code></td><td>2D viscous–inviscid interaction</td><td>linear-vorticity panels + two-equation integral boundary layer with eᴺ transition, solved simultaneously by Newton's method</td><td>Ladson's NACA 0012 data, XFOIL 6.99</td></tr>
+<tr><td><code>solvers.wing</code></td><td>finite wings</td><td>vortex lattice (Trefftz-plane drag) and nonlinear lifting line, with viscous strip coupling to the airfoil polars</td><td>lifting-line and lifting-surface theory, Weber &amp; Brebner and NACA wind-tunnel wings</td></tr>
+<tr><td><code>optimize</code> sensitivity maps</td><td>∂(time-averaged force)/∂(surface displacement)</td><td>reverse-mode differentiation through the Navier–Stokes solver</td><td>central finite differences of the same discrete objective</td></tr>
+</tbody>
+</table></div>
+<p>Everything is written in PyTorch (GPU or CPU, float32 or float64) except the airfoil and
+wing solvers, which are NumPy/SciPy on the CPU.</p>
+<h2 id="2-navier-stokes-solvers">2. Navier–Stokes solvers<a class="anchor" href="#2-navier-stokes-solvers" aria-label="Link to this section">#</a></h2>
+<h3 id="21-equations">2.1 Equations<a class="anchor" href="#21-equations" aria-label="Link to this section">#</a></h3>
+<p>Both solvers integrate, in non-dimensional form,</p>
+<div class="eq" role="math" aria-label="∂u/∂t + ∇·(u u) = −∇p + (1/Re) ∇²u + ∇·(2 ν_t S) − (χ/η)(u − u_s) + f ; ∇·u = 0"><table role="presentation"><tr><td class="l">∂<i>u</i>/∂<i>t</i> + ∇·(<i>u</i> <i>u</i>)</td><td class="rel">=</td><td class="r">−∇<i>p</i> + (1/Re) ∇²<i>u</i> + ∇·(2 ν<sub><i>t</i></sub> <i>S</i>) − (χ/η)(<i>u</i> − <i>u</i><sub><i>s</i></sub>) + <i>f</i></td></tr><tr><td class="l">∇·<i>u</i></td><td class="rel">=</td><td class="r">0</td></tr></table></div>
+<p>with lengths scaled by the reference length L (chord, diameter, vehicle length), velocities by
+the reference speed U, time by L/U and pressure by ρU², so Re = UL/ν. χ ∈ [0, 1] is the solid
+fraction of the immersed bodies, u_s their velocity (zero or a rigid rotation), η the
+penalisation permeability, ν_t an optional subgrid viscosity and S the strain-rate tensor.
+f collects the placed-physics forces: buoyancy (section 3) and fans and jets (section 4).
+The flow enters along +x; angle of attack and yaw rotate the geometry, so the x force is drag.
+Coefficients: C_d = F_x / (½ ρU² A_ref) with the reference area (2D: reference length per unit
+span); pitching moments are positive nose-up (<a href="theory-ns2d.html#1-equations-and-scaling">Navier–Stokes solver (2D), §1</a>, <a href="theory-ns3d.html#1-equations-frame-and-coefficients">Navier–Stokes solver (3D), §1</a>).</p>
+<h3 id="22-grid-boundary-conditions-symmetry">2.2 Grid, boundary conditions, symmetry<a class="anchor" href="#22-grid-boundary-conditions-symmetry" aria-label="Link to this section">#</a></h3>
+<p>A uniform staggered grid of cell size h (Harlow &amp; Welch 1965): velocity components on the faces
+normal to them, pressure and scalars at cell centres. The discrete divergence of the discrete
+gradient is then exactly the compact Laplacian, which makes the projection exact (2.4). Inlet:
+prescribed velocity (uniform, or a parabola for channel benchmarks). Outlet: convective
+condition with the outflow corrected to the inflow at every stage. Side walls: slip, no-slip
+or a moving road. A closed domain (<code>domain_mode = "closed"</code>) has walls on every side and no free
+stream. In 3D a symmetry plane (<code>bc_y = "symmetry_ymin"</code>) is a free-slip wall, which for
+incompressible flow is exactly a mirror plane; the solver reports full-body forces, and a
+half-domain run reproduces the full one (<a href="validation.html#8-three-dimensions">Validation report, §8</a>).</p>
+<h3 id="23-spatial-discretisation">2.3 Spatial discretisation<a class="anchor" href="#23-spatial-discretisation" aria-label="Link to this section">#</a></h3>
+<p>Advection is in conservative form ∇·(uu). Two schemes:</p>
+<ul>
+<li><code>central</code>, second order and kinetic-energy conserving on a discretely divergence-free
+velocity (Morinishi et al. 1998): no numerical dissipation, used for verification;</li>
+<li><code>upwind3</code> (default), the third-order upwind-biased reconstruction written as a
+fourth-order central flux plus a |V|-weighted fourth-difference dissipation, which stays
+stable at cell Reynolds numbers far above 2.</li>
+</ul>
+<p>Diffusion is the 5-point (2D) / 7-point (3D) Laplacian. The Taylor–Green vortex converges at
+order 1.97, 1.99, 2.00 with <code>central</code> in 2D and in each coordinate plane in 3D
+(<a href="validation.html#1-verification-exact-answers">Validation report, §1</a>, §8).</p>
+<h3 id="24-pressure">2.4 Pressure<a class="anchor" href="#24-pressure" aria-label="Link to this section">#</a></h3>
+<p>Every Runge–Kutta stage ends with a projection: solve L ψ = ∇_h·û, set u = û − ∇_h ψ. L is the
+compact Laplacian with Neumann (or periodic) conditions, whose eigenvectors are known, so the
+discrete Poisson problem is solved <em>directly</em> to round-off: in 2D with a packed DCT-II built on
+one real FFT per direction (Makhoul 1980), in 3D with orthonormal DCT-II / discrete Hartley
+matrices applied as matrix products, under IEEE float32 (TF32 is forced off; its 10-bit mantissa
+would leave a divergence of about 10⁻³). Measured residual 4.1 × 10⁻¹⁴ (2D) and 4.9 × 10⁻¹⁴ (3D)
+in float64; projected divergence max|∇·u| h/U of 1.8 × 10⁻⁷ (2D) and 4.0 × 10⁻⁷ (3D) in float32 on
+the GPU. The pressure written to the output is the step-averaged one, (⅙ψ₁ + ⅔ψ₂ + ψ₃)/Δt, which
+is the pressure of the discrete momentum balance (<a href="theory-ns2d.html#4-pressure-exact-projection-with-a-direct-dct-poisson-solver">Navier–Stokes solver (2D), §4</a>).</p>
+<h3 id="25-time-integration">2.5 Time integration<a class="anchor" href="#25-time-integration" aria-label="Link to this section">#</a></h3>
+<p>Three-stage strong-stability-preserving Runge–Kutta (Shu &amp; Osher 1988) with a projection after
+every stage, so every stage value is divergence-free. Δt = min(CFL h / Σ max|u_i|, C_v h²/(1/Re +
+max ν_t)) with CFL 0.5 and C_v = 0.25 (2D) or 1/6 (3D), computed on the device every step (no
+host synchronisation, which allows CUDA-graph capture). <code>adaptive_dt = "pid"</code> replaces the jump
+to that limit by a PID-controlled change of Δt (bounded per step) that keeps the CFL target
+smooth; the limit itself is never exceeded.</p>
+<h3 id="26-immersed-bodies">2.6 Immersed bodies<a class="anchor" href="#26-immersed-bodies" aria-label="Link to this section">#</a></h3>
+<p>Bodies are Brinkman-penalised (Angot, Bruneau &amp; Fabrie 1999). The solid fraction is a compact
+C¹ half-sine step of the signed distance to the polygon (2D) or triangle mesh (3D), one cell
+wide, evaluated directly at each face position. After each stage the penalisation is
+integrated implicitly, u ← (u + kχu_s)/(1 + kχ) with k = b_s Δt/η, which is unconditionally
+stable. The effective wall of a smoothed mask is not at d = 0; its offset was calibrated once
+on plane Poiseuille flow between penalised slabs (an exact reference), giving a permeability
+η = min(0.05 h/U, h²/(60 ν)) and an inward mask shift of 0.32 h that centres the remaining
+offset on the true surface (<a href="theory-ns2d.html#63-choosing-η-and-placing-the-effective-wall">Navier–Stokes solver (2D), §6.3</a>). The same calibration holds in 3D, where the
+sphere is its independent validation.</p>
+<p><strong>Forces</strong> are the momentum the penalisation removes, summed with the Runge–Kutta weights:
+F = −(h^d/Δt) Σ w_b (⅙Δ₁ + ⅔Δ₂ + Δ₃). For steady flows this is the discrete momentum balance
+of the whole domain; a control-volume balance agrees with it to 0.1 % (2D cylinder) and
+0.01–0.03 % (3D sphere), so it is the force of the discrete solution, not an estimate of it.
+Surface pressure and friction are extrapolated from two probes outside the diffuse layer.</p>
+<h3 id="27-subgrid-models-and-limits-of-the-flow-solvers">2.7 Subgrid models and limits of the flow solvers<a class="anchor" href="#27-subgrid-models-and-limits-of-the-flow-solvers" aria-label="Link to this section">#</a></h3>
+<p>Optional LES closures: Smagorinsky (Smagorinsky 1963; C_s = 0.17), WALE (Nicoud &amp; Ducros 1999;
+C_w = 0.5) and Vreman (2004; c = 0.07), with Δ = h and ν_t zero inside solids. There is <strong>no wall
+model and no transition model</strong>: above Re ≈ 10⁴ the immersed walls are under-resolved and forces
+are for comparing designs, not for quoting (<a href="validation.html#4-vehicles-and-high-reynolds-numbers">Validation report, §4</a>, §8). In 2D the subgrid model is a
+stabilising dissipation, not a turbulence model (2D turbulence has no vortex stretching).</p>
+<h3 id="28-start-up-and-determinism">2.8 Start-up and determinism<a class="anchor" href="#28-start-up-and-determinism" aria-label="Link to this section">#</a></h3>
+<p>Shedding is triggered by a fixed weak Lamb–Oseen vortex (peak 5 % of U) placed on the bodies at
+t = 0, not by random noise. The flow computation draws <strong>no random numbers</strong>, so the inputs
+determine every field, force and heat rate. The one random element is display-only: 3D tracer
+particles are released at uniformly random points of their emitter's footprint (section 5),
+which changes where the dots are drawn but nothing that is computed. Floating-point reductions
+on a GPU are not bitwise reproducible, and runs are not even guaranteed to repeat bitwise on one
+machine: two runs of the same 2D Draft airfoil simulation (NACA 0012, α 4°, 640 × 384 cells, the
+GPU shared with other work) gave C_d 0.096913 and 0.096940, a difference of 0.03 % or 0.03 of the
+standard error of 0.00092, and C_l 0.0453 and 0.0442 (0.33 standard errors). Time averages
+therefore differ within their statistical uncertainty (section 8), which is what the
+reproduction check allows for (section 10).</p>
+<h2 id="3-heat-transfer">3. Heat transfer<a class="anchor" href="#3-heat-transfer" aria-label="Link to this section">#</a></h2>
+<h3 id="31-energy-equation-and-buoyancy">3.1 Energy equation and buoyancy<a class="anchor" href="#31-energy-equation-and-buoyancy" aria-label="Link to this section">#</a></h3>
+<p>Temperature is carried as θ = (T − T_amb)/ΔT_ref and advanced inside the same SSP-RK3 stages as
+the momentum:</p>
+<div class="eq" role="math" aria-label="∂θ/∂t + ∇·(u θ) = ∇·((1/Pe + ν_t/Pr_t) ∇θ) + q ; f_buoyancy = Ri θ ĝ (ĝ = −y in 2D, −z in 3D)"><table role="presentation"><tr><td class="l">∂θ/∂<i>t</i> + ∇·(<i>u</i> θ)</td><td class="rel">=</td><td class="r">∇·((1/Pe + ν<sub><i>t</i></sub>/Pr<sub><i>t</i></sub>) ∇θ) + <i>q</i></td><td class="cond"></td></tr><tr><td class="l"><i>f</i><sub>buoyancy</sub></td><td class="rel">=</td><td class="r">Ri θ ĝ</td><td class="cond">(ĝ = −<i>y</i> in 2D, −<i>z</i> in 3D)</td></tr></table></div>
+<p>with Pe = Re Pr, a turbulent Prandtl number Pr_t = 0.85 when an LES model is on, the Richardson
+number Ri = gβΔT_ref L/U² and q the volumetric sources. This is the Boussinesq approximation:
+density changes only in the buoyancy term, valid for βΔT ≪ 1 (Gray &amp; Giorgini 1976 quantify the
+error for air and water). Buoyancy is switched off inside solids. Natural-convection cases are
+scaled with the free-fall velocity U = √(gβΔT L), so Re = √(Ra/Pr), Pe = √(Ra Pr) and Ri = 1
+(the validation cavities use this scaling).</p>
+<h3 id="32-discretisation">3.2 Discretisation<a class="anchor" href="#32-discretisation" aria-label="Link to this section">#</a></h3>
+<p>Advection of θ uses a MUSCL reconstruction limited by van Leer's harmonic slope (van Leer 1974)
+with the stage's discretely divergence-free face velocities. Each forward-Euler stage is total-
+variation diminishing at the solver's CFL 0.5, and SSP-RK3 is a convex combination of such
+stages, so θ gets no new extrema. Diffusion is in flux form with the wall conditions applied on
+the boundary faces themselves, so the heat rates the solver reports are the fluxes the scheme
+used: in a steady state the heat through one wall equals the heat through any section to
+round-off (measured: hot-wall and cold-wall Nusselt numbers of the cavities agree to 10⁻⁷,
+<a href="validation.html#9-automated-validation-run">Validation report, §9</a>).</p>
+<h3 id="33-thermal-boundary-conditions">3.3 Thermal boundary conditions<a class="anchor" href="#33-thermal-boundary-conditions" aria-label="Link to this section">#</a></h3>
+<ul>
+<li><strong>Bodies.</strong> "temperature": implicit penalisation of θ towards the body temperature with the
+momentum's mask, wall shift and stiffness rule, Pe in place of Re (η_T = min(0.05 h, h² Pe/60));
+the heat the penalisation adds is the body's heat-transfer rate, as its momentum impulse is
+its force. "heat_flux": the flux is released in a one-mask-width skin centred on the effective
+wall, normalised so the total is exactly flux × area. "adiabatic": conduction across the
+body is blocked.</li>
+<li><strong>Domain walls</strong> (<code>WallThermal</code>): temperature (Dirichlet over half a cell), heat flux, or
+adiabatic; the tunnel inlet carries the ambient temperature and the outlet has zero gradient.</li>
+<li><strong>Heat sources</strong>: a volumetric q over a smooth region, normalised so the released power is
+exactly the requested one on any grid.</li>
+</ul>
+<h3 id="34-nusselt-number-and-heat-balance">3.4 Nusselt number and heat balance<a class="anchor" href="#34-nusselt-number-and-heat-balance" aria-label="Link to this section">#</a></h3>
+<p>Nu = Q L / (k ΔT_ref A), with Q the heat rate from the bodies into the fluid, k the fluid's
+conductivity and A the heated area (perimeter per unit span in 2D); in solver units
+Nu = Pe Q / (Δθ A), Δθ the body's temperature difference to the ambient in units of ΔT_ref.
+A run's heat balance compares the heat added by bodies, walls, sources and jets
+with the heat carried out by the flow and stored in the domain; its residual is reported with
+every thermal result (Results page, report, CSV export), and when a solver does not report a
+term the residual says which term is missing rather than assuming it zero
+(<code>analysis.physics.heat_<wbr>balance</code>).</p>
+<h2 id="4-fans-jets-and-vents">4. Fans, jets and vents<a class="anchor" href="#4-fans-jets-and-vents" aria-label="Link to this section">#</a></h2>
+<p><strong>Fans</strong> are actuator discs (2D: strips): a uniform force density (ΔP/t) n̂ over a disc of
+thickness t (at least two cells), normalised separately on each face family so the total force is
+exactly T n̂ on any grid, with optional swirl. Mode "thrust" sets ΔP = T/A; mode "velocity"
+regulates T with a PI controller inside the step to reach a target disc-averaged axial
+velocity. The fan report gives the delivered thrust, the volume flow, the mean induced velocity
+and the ideal power T·u_disc. The reference for validation is actuator-disc momentum theory
+(Rankine 1865, Froude 1889): C_T = 4a(1 + a) for a disc that accelerates the flow, 4a(1 − a)
+for one that retards it, and, in a confined tunnel, the streamtube model of Garrett &amp; Cummins
+(2007) written with the signed pressure jump (<code>validation/run_all.py</code>, <code>confined_disc_theory</code>).</p>
+<p><strong>Jets and vents</strong> are mass sources and sinks: a jet adds the volume flow Q of its port with the
+momentum Q U_j n̂, its temperature and its smoke; a vent removes fluid carrying the local
+velocity, temperature and smoke. The projection solves L ψ = ∇_h·û − m, so the velocity field
+has exactly the prescribed sources, and a tunnel's outlet carries the inflow plus Σm. In 2D the
+port is a short body behind its open face whose velocity is also penalised towards the jet
+speed, ramping from zero at the closed back to U_j at the face (a nozzle); in 3D the source and
+its momentum act over the anti-aliased footprint alone. An incompressible fluid in a closed box
+cannot gain volume, so the jets and vents of a closed domain should balance; when they do not,
+the pressure solve removes the excess as a uniform sink over the domain (the compatibility
+condition of the all-Neumann problem), and the 3D solver adds a note saying so to its result.</p>
+<h2 id="5-flow-visualisation-smoke-and-tracers">5. Flow visualisation: smoke and tracers<a class="anchor" href="#5-flow-visualisation-smoke-and-tracers" aria-label="Link to this section">#</a></h2>
+<p>Smoke is up to four passive scalar channels (bounded MUSCL / van Leer advection, zero inside
+solids, concentrations below 10⁻⁶ set to zero to avoid subnormal floats), released inside each
+emitter's footprint at its rate, with pulses and start/stop times. Tracer particles are
+massless: advected with the midpoint rule (RK2) and bilinear/trilinear interpolation from the
+staggered faces (continuous release draws streaklines, pulsed release timelines), recycled
+from a fixed pool. In 2D they leave fixed nozzle positions; in 3D area emitters release them at
+uniformly random points of the footprint (an unseeded generator, so two runs place their dots
+differently). Neither smoke nor particles affect the flow. A smoke rake and a pulsed emitter
+across a symmetry plane give the same smoke, temperature and velocity fields in a half and a
+full domain to 4 × 10⁻¹⁵ in float64 (<a href="validation.html#9-automated-validation-run">Validation report, §9</a>).</p>
+<h2 id="6-airfoil-polars">6. Airfoil polars<a class="anchor" href="#6-airfoil-polars" aria-label="Link to this section">#</a></h2>
+<p>A linear-vorticity panel method with a Kutta condition for the outer flow and a two-equation
+integral boundary layer (momentum and kinetic-energy shape-parameter equations, Drela's laminar
+and turbulent closures) on both surfaces and the wake, with the eᴺ envelope method for transition
+and a lagged shear-stress equation in turbulent flow. All boundary-layer equations and the
+edge-velocity relation are solved simultaneously by Newton's method (Drela &amp; Giles 1987; Drela
+1989), as in XFOIL; the implementation builds on mfoil (Fidkowski 2022). Drag from the wake
+momentum thickness (Squire–Young), Kármán–Tsien correction for low Mach numbers. Limits:
+maximum lift is over-predicted by 0.1–0.25 and stall is late (<a href="validation.html#6-airfoil-polar-solver">Validation report, §6</a>).</p>
+<h2 id="7-finite-wings">7. Finite wings<a class="anchor" href="#7-finite-wings" aria-label="Link to this section">#</a></h2>
+<p>A vortex-lattice method with vortex rings on the mean surface, semi-infinite trailing legs along
+the free stream (rebuilt at every attitude) and induced drag from the Trefftz plane (Katz &amp;
+Plotkin 2001), with Prandtl–Glauert compressibility; and a nonlinear lifting line (Phillips &amp;
+Snyder 2000) solved by Newton's method. Viscous runs couple each spanwise strip to 2D polars of
+its section and Reynolds number; lift beyond a section's attached branch is clipped and flagged,
+not predicted (<a href="theory-wing.html">Finite wings</a>).</p>
+<h2 id="8-statistics-of-time-averaged-outputs">8. Statistics of time-averaged outputs<a class="anchor" href="#8-statistics-of-time-averaged-outputs" aria-label="Link to this section">#</a></h2>
+<p>A force or Nusselt history is an autocorrelated signal that starts with a transient. Aerolume's
+statistics (<code>analysis.stats</code>, applied identically to forces, Nusselt numbers, heat rates and fan
+thrust) are:</p>
+<ul>
+<li><strong>Transient removal</strong> by MSER-5 (White 1997), applied to the signal and to its squared
+deviation (shedding grows in amplitude while its mean barely moves).</li>
+<li><strong>Standard error of the mean</strong> by non-overlapping batch means (Flegal &amp; Jones 2010), with the
+batch size set from the integrated autocorrelation time with Sokal's automatic window (Sokal
+<ol start="1997">
+<li>and from the first zero of the autocorrelation, so that a batch spans whole shedding
+periods; at least 10 batches, otherwise the standard error is flagged unreliable.</li>
+</ol></li>
+<li><strong>Variable time steps</strong> are resampled to a uniform grid with the same number of samples before
+any of this, so means are time-weighted and spectra are valid.</li>
+<li><strong>Convergence verdict</strong> combining the relative standard error, the drift between the two halves
+of the averaging window and the amplitude trend; it drives early stopping.</li>
+</ul>
+<p>A reported value "1.412 ± 0.004" is the mean and one standard error.</p>
+<h2 id="9-discretisation-uncertainty-grid-convergence-studies">9. Discretisation uncertainty: grid-convergence studies<a class="anchor" href="#9-discretisation-uncertainty-grid-convergence-studies" aria-label="Link to this section">#</a></h2>
+<p>A single run says nothing about its grid error. <code>analysis.gci</code> implements the procedure of
+Celik et al. (2008) (based on Roache 1994, 1998) for the same simulation on three or more
+systematically refined grids, h₁ &lt; h₂ &lt; h₃:</p>
+<ul>
+<li>the observed order p from |ln|ε₃₂/ε₂₁| + q(p)| = p ln r₂₁, q(p) = ln((r₂₁ᵖ − s)/(r₃₂ᵖ − s)),
+solved by bracketing and bisection (the fixed-point iteration can find a spurious large-p root
+when r₃₂ ≫ r₂₁);</li>
+<li>Richardson extrapolation φ_ext = (r₂₁ᵖ φ₁ − φ₂)/(r₂₁ᵖ − 1);</li>
+<li>the fine-grid index GCI = F_s |ε₂₁/φ₁| / (r₂₁ᵖ − 1) with F_s = 1.25 for three grids and 3 for two
+(assumed order), reported relative and absolute (u_num);</li>
+<li>convergence type (monotone, oscillatory, divergent) with the unequal-ratio threshold, a
+warning below the recommended refinement ratio 1.3, and, with four or more grids, the order of
+every triplet and a least-squares fit φ = φ₀ + C hᵖ (Eça &amp; Hoekstra 2014, without their
+weighting rules).</li>
+</ul>
+<p>Two additions for the time-averaged results of an unsteady solver: when grid differences are not
+larger than two combined standard errors the study is marked <strong>noise-limited</strong> and its order is
+not used as if known (a Monte Carlo propagation with a fixed seed gives the spread the noise
+alone causes); and the numerical band is combined in quadrature with the statistical band
+(2 standard errors) for the total uncertainty, both parts always reported. The <code>asymptotic</code>
+verdict compares the observed with the formal order (within 10 %, Oberkampf &amp; Roy 2010 §8.7)
+rather than Roache's ratio GCI₃₂/(r^p GCI₂₁), which equals |φ₁/φ₂| identically when p comes from
+the same three grids at a constant ratio and therefore cannot fail.</p>
+<p>The machinery is itself validated (<a href="validation.html#9-automated-validation-run">Validation report, §9</a>, case <code>gci_cavity</code>): on the de Vahl Davis
+cavity at Ra 10³ the 16²/32²/64² study gives p = 2.03 and a 64² band of ±0.00072 in Nu, and the
+128² value lies inside it (0.69 of the half-width). The Richardson value of the three finest
+grids lies within the spread of the benchmark's own values. A first version of that check, which
+asked for the benchmark itself inside the 64² band, failed (1.9 half-widths): the benchmark's
+printed values differ by 0.001 between quantities that are equal in the exact solution, more than
+the band. A GCI bounds the discretisation error of the discrete problem, so it is tested against a
+finer grid; comparison with a benchmark has to include the benchmark's own uncertainty.</p>
+<p>The project finds grid studies by itself (<code>Project.grid_studies</code>: same design and settings apart
+from the resolution settings, three or more resolutions), and the report adds a grid-convergence
+section with the table and figure whenever one exists. A study whose domain size changes with the
+quality preset is flagged: part of the change is then a blockage effect, not discretisation.</p>
+<h2 id="10-reproducibility-and-provenance">10. Reproducibility and provenance<a class="anchor" href="#10-reproducibility-and-provenance" aria-label="Link to this section">#</a></h2>
+<p>Every saved result carries a provenance record (<code>project/provenance.py</code>, <code>Project.provenance</code>):
+the Aerolume, Python, NumPy, PyTorch (with its CUDA build), VTK and OS versions, the GPU; the
+simulation settings and the design as run, with SHA-256 hashes of each and of both together (the
+same <code>config_hash</code> means the same computation was asked for, whatever the names); device,
+precision, grid, wall time; and the random seed (none: the flow computation draws no random
+numbers, section 2.8). When the run hands its plan to the record (<code>provenance.attach(result, design, sim, plan=plan)</code>, called with the plan the run used), the record also holds the
+planner's complete resolved settings, every solver-configuration field, and their hash
+(<code>plan.solver_hash</code>); the record's <code>source</code> map says which parts it has and who captured them,
+so a record without the plan says so rather than implying it. Hashes are of a canonical JSON
+form (sorted keys, exact float representation, arrays by the SHA-256 of their bytes).</p>
+<p><code>Project.export_<wbr>reproduction_<wbr>script(sim_<wbr>id)</code> writes a plain Python script that uses only the
+public scripting API: it embeds the design and the settings <em>as run</em>, builds its own project,
+runs the simulation and compares the new numbers with the recorded ones. Time-averaged CFD values
+must agree within three combined standard errors (with a 0.1 % floor for steady flows); the
+deterministic polar and wing values to 10⁻⁵ relative. The script exits with 0 when everything
+agrees.</p>
+<h2 id="11-validation">11. Validation<a class="anchor" href="#11-validation" aria-label="Link to this section">#</a></h2>
+<p><code>validation/run_all.py</code> runs every validation case (verification, 2D and 3D flow, heat
+transfer, fans and jets, airfoils, wings), compares each quantity with its cited reference and a
+tolerance band fixed before the run, and writes section 9 of the validation report with its
+figures; <code>--quick</code> runs a subset that touches every area in a few minutes. See
+validation/README.md for how to run and extend it. Every run records a
+digest of the code it measured, and <code>--check-docs</code> says whether the published section still
+matches the code. In the run of 1 November 2026 on Aerolume 0.1.0 (25 cases, 30 minutes on
+the development GPU with no other compute job running) 126 of 128 checks passed. The two failures stay in the report: the square
+cylinder's drag at 32 cells per side (+5.9 % against a ± 5 % band; 48 cells per side passes at
++3.7 %) and the momentum-flux drift of a plane jet in a closed box (6.2 % against a 5 % band; the
+jet core's momentum budget closes to 0.27 %, <a href="validation.html#10-what-is-not-validated">Validation report, §10</a>). Two bands that development
+builds had widened after their results were known (square cylinder +8 %, jet drift 8 %) were
+withdrawn before the first release.</p>
+<h2 id="12-limitations">12. Limitations<a class="anchor" href="#12-limitations" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Turbulence</strong>: no wall model and no transition model in the Navier–Stokes solvers; forces
+above Re ≈ 10⁴ are for comparing designs. 3D vehicle drag is not validated (a wall-unresolved
+Ahmed-type body reads about 2.2× its wind-tunnel drag, <a href="validation.html#8-three-dimensions">Validation report, §8</a>).</li>
+<li><strong>Diffuse walls</strong>: the immersed boundary is one cell wide; sharp corners converge most slowly
+(square cylinder drag +3.7 % at 48 cells per side). Observed orders for forces between 1 and 2
+are expected, not the interior's 2.</li>
+<li><strong>Heat transfer</strong>: Boussinesq only (small temperature differences); constant fluid properties;
+no radiation, no conjugate heat transfer inside solids, no phase change; the thermal wall uses
+the momentum calibration with Pe for Re, validated on the cavities, heated cylinder and sphere
+at moderate Pe only.</li>
+<li><strong>Fans</strong> are actuator discs: no blade geometry, tip losses or blade-element performance; the
+swirl is prescribed, not computed.</li>
+<li><strong>Jets</strong>: the spreading of a plane jet follows Bickley's similarity law, but conservation of
+its momentum flux is not validated: in the closed test box the jet's core loses 6.2 % of it
+over 16 port widths, which the core's momentum budget attributes to the box (<a href="validation.html#10-what-is-not-validated">Validation report, §10</a>);
+no free jet has been run.</li>
+<li><strong>Incompressible</strong> CFD only; the polar and wing solvers have low-Mach corrections.</li>
+<li><strong>Airfoils</strong>: maximum lift and stall are over-predicted; <strong>wings</strong>: maximum lift is not
+validated.</li>
+<li><strong>Not in this release</strong>: a Lattice-Boltzmann solver and neural-operator surrogates (deferred).</li>
+</ul>
+<h2 id="references">References<a class="anchor" href="#references" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>P. Angot, C.-H. Bruneau, P. Fabrie, "A penalization method to take into account obstacles in
+incompressible viscous flows", <em>Numerische Mathematik</em> 81(4), 497–520, 1999.
+doi:10.1007/s002110050401</li>
+<li>W. G. Bickley, "The plane jet", <em>Philosophical Magazine</em> 23(156), 727–731, 1937.
+doi:10.1080/14786443708561847</li>
+<li>I. B. Celik, U. Ghia, P. J. Roache, C. J. Freitas, H. Coleman, P. E. Raad, "Procedure for
+estimation and reporting of uncertainty due to discretization in CFD applications", <em>J. Fluids
+Eng.</em> 130(7), 078001, 2008. doi:10.1115/1.2960953</li>
+<li>G. de Vahl Davis, "Natural convection of air in a square cavity: a bench mark numerical
+solution", <em>Int. J. Numer. Meth. Fluids</em> 3(3), 249–264, 1983. doi:10.1002/fld.1650030305</li>
+<li>S. C. R. Dennis, G.-Z. Chang, "Numerical solutions for steady flow past a circular cylinder at
+Reynolds numbers up to 100", <em>J. Fluid Mech.</em> 42(3), 471–489, 1970.
+doi:10.1017/S0022112070001428</li>
+<li>M. Drela, M. B. Giles, "Viscous-inviscid analysis of transonic and low Reynolds number
+airfoils", <em>AIAA J.</em> 25(10), 1347–1355, 1987. doi:10.2514/3.9789</li>
+<li>M. Drela, "XFOIL: an analysis and design system for low Reynolds number airfoils", in <em>Low
+Reynolds Number Aerodynamics</em>, Lecture Notes in Engineering 54, Springer, 1–12, 1989.
+doi:10.1007/978-3-642-84010-4_1</li>
+<li>L. Eça, M. Hoekstra, "A procedure for the estimation of the numerical uncertainty of CFD
+calculations based on grid refinement studies", <em>J. Comput. Phys.</em> 262, 104–130, 2014.
+doi:10.1016/j.jcp.2014.01.006</li>
+<li>K. J. Fidkowski, "A coupled inviscid–viscous airfoil analysis solver, revisited", <em>AIAA J.</em>
+60(5), 2961–2971, 2022. doi:10.2514/1.J061341</li>
+<li>J. M. Flegal, G. L. Jones, "Batch means and spectral variance estimators in Markov chain Monte
+Carlo", <em>Ann. Statist.</em> 38(2), 1034–1070, 2010. doi:10.1214/09-AOS735</li>
+<li>R. E. Froude, "On the part played in propulsion by differences of fluid pressure", <em>Trans.
+Inst. Naval Architects</em> 30, 390–405, 1889.</li>
+<li>T. Fusegi, J. M. Hyun, K. Kuwahara, B. Farouk, "A numerical study of three-dimensional natural
+convection in a differentially heated cubical enclosure", <em>Int. J. Heat Mass Transfer</em> 34(6),
+1543–1557, 1991. doi:10.1016/0017-9310(91)90295-P</li>
+<li>C. Garrett, P. Cummins, "The efficiency of a turbine in a tidal channel", <em>J. Fluid Mech.</em> 588,
+243–251, 2007. doi:10.1017/S0022112007007781</li>
+<li>D. D. Gray, A. Giorgini, "The validity of the Boussinesq approximation for liquids and gases",
+<em>Int. J. Heat Mass Transfer</em> 19(5), 545–551, 1976. doi:10.1016/0017-9310(76)90168-X</li>
+<li>F. H. Harlow, J. E. Welch, "Numerical calculation of time-dependent viscous incompressible flow
+of fluid with free surface", <em>Phys. Fluids</em> 8(12), 2182–2189, 1965. doi:10.1063/1.1761178</li>
+<li>J. Katz, A. Plotkin, <em>Low-Speed Aerodynamics</em>, 2nd ed., Cambridge University Press, 2001.
+doi:10.1017/CBO9780511810329</li>
+<li>J. Makhoul, "A fast cosine transform in one and two dimensions", <em>IEEE Trans. Acoust. Speech
+Signal Process.</em> 28(1), 27–34, 1980. doi:10.1109/TASSP.1980.1163351</li>
+<li>Y. Morinishi, T. S. Lund, O. V. Vasilyev, P. Moin, "Fully conservative higher order finite
+difference schemes for incompressible flow", <em>J. Comput. Phys.</em> 143(1), 90–124, 1998.
+doi:10.1006/jcph.1998.5962</li>
+<li>F. Nicoud, F. Ducros, "Subgrid-scale stress modelling based on the square of the velocity
+gradient tensor", <em>Flow Turbul. Combust.</em> 62(3), 183–200, 1999. doi:10.1023/A:1009995426001</li>
+<li>W. L. Oberkampf, C. J. Roy, <em>Verification and Validation in Scientific Computing</em>, Cambridge
+University Press, 2010. doi:10.1017/CBO9780511760396</li>
+<li>W. F. Phillips, D. O. Snyder, "Modern adaptation of Prandtl's classic lifting-line theory",
+<em>J. Aircraft</em> 37(4), 662–670, 2000. doi:10.2514/2.2649</li>
+<li>W. J. M. Rankine, "On the mechanical principles of the action of propellers", <em>Trans. Inst.
+Naval Architects</em> 6, 13–39, 1865.</li>
+<li>P. J. Roache, "Perspective: a method for uniform reporting of grid refinement studies",
+<em>J. Fluids Eng.</em> 116(3), 405–413, 1994. doi:10.1115/1.2910291</li>
+<li>P. J. Roache, <em>Verification and Validation in Computational Science and Engineering</em>, Hermosa,
+<ol start="1998">
+<li></li>
+</ol></li>
+<li>C.-W. Shu, S. Osher, "Efficient implementation of essentially non-oscillatory shock-capturing
+schemes", <em>J. Comput. Phys.</em> 77(2), 439–471, 1988. doi:10.1016/0021-9991(88)90177-5</li>
+<li>J. Smagorinsky, "General circulation experiments with the primitive equations", <em>Mon. Weather
+Rev.</em> 91(3), 99–164, 1963. doi:10.1175/1520-0493(1963)091&lt;0099:GCEWTP&gt;2.3.CO;2</li>
+<li>A. Sokal, "Monte Carlo methods in statistical mechanics: foundations and new algorithms", in
+<em>Functional Integration</em>, NATO ASI Series, Springer, 131–192, 1997.
+doi:10.1007/978-1-4899-0319-8_6</li>
+<li>E. Tric, G. Labrosse, M. Betrouni, "A first incursion into the 3D structure of natural
+convection of air in a differentially heated cubic cavity, from accurate numerical solutions",
+<em>Int. J. Heat Mass Transfer</em> 43(21), 4043–4056, 2000. doi:10.1016/S0017-9310(00)00037-5</li>
+<li>B. van Leer, "Towards the ultimate conservative difference scheme. II. Monotonicity and
+conservation combined in a second-order scheme", <em>J. Comput. Phys.</em> 14(4), 361–370, 1974.
+doi:10.1016/0021-9991(74)90019-9</li>
+<li>A. W. Vreman, "An eddy-viscosity subgrid-scale model for turbulent shear flow: algebraic theory
+and applications", <em>Phys. Fluids</em> 16(10), 3670–3681, 2004. doi:10.1063/1.1785131</li>
+<li>S. Whitaker, "Forced convection heat transfer correlations for flow in pipes, past flat plates,
+single cylinders, single spheres, and for flow in packed beds and tube bundles", <em>AIChE J.</em>
+18(2), 361–371, 1972. doi:10.1002/aic.690180219</li>
+<li>K. P. White, "An effective truncation heuristic for bias reduction in simulation output",
+<em>Simulation</em> 69(6), 323–334, 1997. doi:10.1177/003754979706900601</li>
+</ul>
+<p>Every DOI above was checked against Crossref when this document was written (October 2026).</p>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="accounts.html"><span>Previous</span><b>Accounts (optional)</b></a><a class="next" href="theory-ns2d.html"><span>Next</span><b>Navier–Stokes solver (2D)</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-the-solvers-at-a-glance">1. The solvers at a glance</a></li><li class="l2"><a href="#2-navier-stokes-solvers">2. Navier–Stokes solvers</a></li><li class="l3"><a href="#21-equations">2.1 Equations</a></li><li class="l3"><a href="#22-grid-boundary-conditions-symmetry">2.2 Grid, boundary conditions, symmetry</a></li><li class="l3"><a href="#23-spatial-discretisation">2.3 Spatial discretisation</a></li><li class="l3"><a href="#24-pressure">2.4 Pressure</a></li><li class="l3"><a href="#25-time-integration">2.5 Time integration</a></li><li class="l3"><a href="#26-immersed-bodies">2.6 Immersed bodies</a></li><li class="l3"><a href="#27-subgrid-models-and-limits-of-the-flow-solvers">2.7 Subgrid models and limits of the flow solvers</a></li><li class="l3"><a href="#28-start-up-and-determinism">2.8 Start-up and determinism</a></li><li class="l2"><a href="#3-heat-transfer">3. Heat transfer</a></li><li class="l3"><a href="#31-energy-equation-and-buoyancy">3.1 Energy equation and buoyancy</a></li><li class="l3"><a href="#32-discretisation">3.2 Discretisation</a></li><li class="l3"><a href="#33-thermal-boundary-conditions">3.3 Thermal boundary conditions</a></li><li class="l3"><a href="#34-nusselt-number-and-heat-balance">3.4 Nusselt number and heat balance</a></li><li class="l2"><a href="#4-fans-jets-and-vents">4. Fans, jets and vents</a></li><li class="l2"><a href="#5-flow-visualisation-smoke-and-tracers">5. Flow visualisation: smoke and tracers</a></li><li class="l2"><a href="#6-airfoil-polars">6. Airfoil polars</a></li><li class="l2"><a href="#7-finite-wings">7. Finite wings</a></li><li class="l2"><a href="#8-statistics-of-time-averaged-outputs">8. Statistics of time-averaged outputs</a></li><li class="l2"><a href="#9-discretisation-uncertainty-grid-convergence-studies">9. Discretisation uncertainty: grid-convergence studies</a></li><li class="l2"><a href="#10-reproducibility-and-provenance">10. Reproducibility and provenance</a></li><li class="l2"><a href="#11-validation">11. Validation</a></li><li class="l2"><a href="#12-limitations">12. Limitations</a></li><li class="l2"><a href="#references">References</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

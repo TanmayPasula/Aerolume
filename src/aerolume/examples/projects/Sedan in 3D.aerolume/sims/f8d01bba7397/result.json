@@ -1,0 +1,804 @@
+{
+ "format": "aerolume-result",
+ "schema": 1,
+ "type": "cfd3d",
+ "token": "9475ed5a3ad344f3b041a585c95a3fd0",
+ "result": {
+  "sim_id": "f8d01bba7397",
+  "cd": {
+   "mean": 0.5147166284490206,
+   "rms": 0.03095462765493771,
+   "min": 0.42708346667713243,
+   "max": 0.5882698080241997,
+   "stderr": 0.006931037769845648,
+   "stderr_reliable": false
+  },
+  "cs": {
+   "mean": 0.0,
+   "rms": 0.0,
+   "min": 0.0,
+   "max": 0.0,
+   "stderr": 0.0,
+   "stderr_reliable": true
+  },
+  "cl": {
+   "mean": 0.17005917432297582,
+   "rms": 0.03579661419916481,
+   "min": 0.09737493371241901,
+   "max": 0.2563858346449817,
+   "stderr": 0.014878832770580237,
+   "stderr_reliable": false
+  },
+  "c_roll": {
+   "mean": 0.0,
+   "rms": 0.0,
+   "min": 0.0,
+   "max": 0.0,
+   "stderr": 0.0,
+   "stderr_reliable": true
+  },
+  "cm": {
+   "mean": 0.02641637404148617,
+   "rms": 0.016956367911102267,
+   "min": -0.010712699642800498,
+   "max": 0.07043237048568031,
+   "stderr": 0.007516032533849591,
+   "stderr_reliable": false
+  },
+  "cn": {
+   "mean": 0.0,
+   "rms": 0.0,
+   "min": 0.0,
+   "max": 0.0,
+   "stderr": 0.0,
+   "stderr_reliable": true
+  },
+  "drag": 641.2034606895925,
+  "side": 0.0,
+  "lift": 211.84963739462083,
+  "moments": [
+   0.0,
+   148.0857870745316,
+   0.0
+  ],
+  "drag_area": 1.1631808638599026,
+  "power": 19236.103820687775,
+  "strouhal": 0.2035323956833216,
+  "strouhal_length": 1.4100000000000001,
+  "re_real": 9242453.577342266,
+  "re_sim": 9242453.577342266,
+  "grid": [
+   260,
+   80,
+   88
+  ],
+  "cells": 1830400,
+  "cells_per_ref": 79.0,
+  "symmetry_plane": true,
+  "t_end": 11.321688652038574,
+  "t_avg_start": 5.001693248748779,
+  "converged": true,
+  "wall_seconds": 66.65154249999978,
+  "device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+  "precision": "float32",
+  "turbulence": "les-wale",
+  "notes": [
+   "Symmetry plane at y = 0: the design is mirror-symmetric (mirror error 0.068 mm RMS) and the wind comes straight on, so only the half y ≥ 0 is simulated (half the cells) and forces are reported for the whole body. Side force, roll and yaw moments are zero by construction, and wake motions that break the symmetry (a sideways-swinging wake) are suppressed; mean drag and lift are not affected by that in the cases measured (theory_ns3d.md 10).",
+   "Domain: 0.750 vehicle lengths of road ahead of the body, 1.54 behind it, 4.56 m to the side of the symmetry plane (the tunnel is 9.11 m wide) and 5.01 m tall under a frictionless ceiling: 4.9 % blockage (the body fills 28 % of the height and 20 % of the width). The belt moves with the free stream, as on a rolling-road wind tunnel.",
+   "The domain was made more compact than usual to keep the grid within the GPU budget of 2,000,000 cells; this costs a little accuracy (inlet and outlet proximity) but keeps the resolution.",
+   "Grid: 260 × 80 × 88 = 1,830,400 cells of 57.0 mm; 79 cells per vehicle length (Draft quality on the GPU), 25 cells per vehicle height. The grid is uniform (the exact pressure solver needs it), so the cells far from the body cost as much as the ones next to it.",
+   "Wheels roll with the belt (|ω| = 90.9 rad/s, ω = −U/r about the +y axle by the right-hand rule).",
+   "Flow model: at Re = 9.24×10^6 a laminar boundary layer is about 0.0016 vehicle lengths thick, i.e. 0.1 cells -- too thin for this grid -- so a WALE large-eddy model represents the unresolved scales and third-order upwind advection keeps the run stable.",
+   "Reading the numbers: this is a wall-unresolved large-eddy simulation on a uniform grid with no wall or transition model, so friction drag and separation from smooth surfaces are approximate. On an Ahmed-type reference body (25° slant, moving road) it gave Cd 0.64 at Draft and 0.61 at Standard where the wind tunnel measures about 0.29, so treat absolute Cd and Cl as indicative only, and compare designs simulated at the same quality and the same conditions.",
+   "Duration: 20 convective times L/U (3.00 s of real flow); forces are averaged from t = 5 (or later, where the start-up transient is found to end), and the run stops early once the mean drag is known to ±5 % and the mean lift to ±10 % (one standard error) and neither drifts.",
+   "Time step ≈ 0.0021 L/U from the stability limit (CFL 0.5): about 9,480 steps, estimated 2 min 07 s on GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) (reference-machine estimate; refined after each run).",
+   "Stopped early at t = 11.3 of 20 L/U: mean Cd known to ±1.3 % and mean Cl to ±0.015 over 4 shedding cycles (targets ±5 % and ±10 %, one standard error from batch means); no drift between the halves of the averaging window.",
+   "Forces averaged over t = 5 … 11.3 L/U.",
+   "Strouhal number based on 1.41 m (the vehicle height).",
+   "Per-part coefficients are means of 148 samples spread over the averaging window; the totals use every time step.",
+   "Per-part values with a symmetry plane: 2 part(s) off the plane share the force measured for them and their mirror image half and half; their individual side force, roll and yaw moments are not separable in a half domain and are given as 0.",
+   "Example project: the stored flow volume and smoke snapshot were block-averaged a further 2 × 1 × 1 (to 130 × 80 × 88 cells) so that the example ships small; forces, surface pressure and slices are as run. Run it again for the full volume."
+  ],
+  "warnings": [
+   "At Re = 9.24×10^6 the boundary layers are much thinner than a grid cell and there is no wall or transition model: separation from smooth surfaces and friction drag are approximate, so absolute Cd and Cl are indicative; differences between designs run the same way are the robust result."
+  ],
+  "per_body": {
+   "body": {
+    "cd": 0.5404580380465533,
+    "cs": 0.0,
+    "cl": 0.22647061561410492,
+    "c_roll": 0.0,
+    "cm": 0.012046697682898093,
+    "cn": 0.0
+   },
+   "wheel_fl": {
+    "cd": -0.001592822219921603,
+    "cs": 0.0,
+    "cl": -0.008884080515771702,
+    "c_roll": 0.0,
+    "cm": -0.0002383547895029502,
+    "cn": 0.0
+   },
+   "wheel_fr": {
+    "cd": -0.001592822219921603,
+    "cs": 0.0,
+    "cl": -0.008884080515771702,
+    "c_roll": 0.0,
+    "cm": -0.0002383547895029502,
+    "cn": 0.0
+   },
+   "wheel_rl": {
+    "cd": -0.011336551038422496,
+    "cs": 0.0,
+    "cl": -0.019190005580517085,
+    "c_roll": 0.0,
+    "cm": 0.007369840394932072,
+    "cn": 0.0
+   },
+   "wheel_rr": {
+    "cd": -0.011336551038422496,
+    "cs": 0.0,
+    "cl": -0.019190005580517085,
+    "c_roll": 0.0,
+    "cm": 0.007369840394932072,
+    "cn": 0.0
+   }
+  }
+ },
+ "arrays": {
+  "history": [
+   "t",
+   "cd",
+   "cs",
+   "cl",
+   "c_roll",
+   "cm",
+   "cn"
+  ],
+  "surface": [
+   {
+    "body": "body",
+    "arrays": {
+     "vertices": {
+      "enc": "shuffle",
+      "shape": [
+       4610,
+       3
+      ],
+      "dtype": "<f4"
+     },
+     "faces": {
+      "enc": "shuffle",
+      "shape": [
+       9216,
+       3
+      ],
+      "dtype": "<i4"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       4610
+      ],
+      "dtype": "<f4"
+     },
+     "cf": {
+      "enc": "shuffle",
+      "shape": [
+       4610
+      ],
+      "dtype": "<f4"
+     },
+     "tau": {
+      "enc": "shuffle",
+      "shape": [
+       4610,
+       3
+      ],
+      "dtype": "<f4"
+     }
+    }
+   },
+   {
+    "body": "wheel_fl",
+    "arrays": {
+     "vertices": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     },
+     "faces": {
+      "enc": "shuffle",
+      "shape": [
+       128,
+       3
+      ],
+      "dtype": "<i4"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "cf": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "tau": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     }
+    }
+   },
+   {
+    "body": "wheel_fr",
+    "arrays": {
+     "vertices": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     },
+     "faces": {
+      "enc": "shuffle",
+      "shape": [
+       128,
+       3
+      ],
+      "dtype": "<i4"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "cf": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "tau": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     }
+    }
+   },
+   {
+    "body": "wheel_rl",
+    "arrays": {
+     "vertices": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     },
+     "faces": {
+      "enc": "shuffle",
+      "shape": [
+       128,
+       3
+      ],
+      "dtype": "<i4"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "cf": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "tau": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     }
+    }
+   },
+   {
+    "body": "wheel_rr",
+    "arrays": {
+     "vertices": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     },
+     "faces": {
+      "enc": "shuffle",
+      "shape": [
+       128,
+       3
+      ],
+      "dtype": "<i4"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "cf": {
+      "enc": "shuffle",
+      "shape": [
+       66
+      ],
+      "dtype": "<f4"
+     },
+     "tau": {
+      "enc": "shuffle",
+      "shape": [
+       66,
+       3
+      ],
+      "dtype": "<f4"
+     }
+    }
+   }
+  ],
+  "slices": [
+   {
+    "axis": "y",
+    "position": 0.028481012658227847,
+    "extent": [
+     -3.375,
+     11.43512658227848,
+     0.0,
+     5.012658227848101
+    ],
+    "label": "mean",
+    "fields": {
+     "u": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 37.68014144897461,
+      "dtype": "<f2"
+     },
+     "v": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 1.7868605852127075,
+      "dtype": "<f2"
+     },
+     "w": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 18.303892135620117,
+      "dtype": "<f2"
+     },
+     "speed": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 37.68198013305664,
+      "dtype": "<f2"
+     },
+     "p": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 567.8709106445312,
+      "dtype": "<f2"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 1.0301512479782104,
+      "dtype": "<f2"
+     },
+     "vorticity": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 443.179931640625,
+      "dtype": "<f2"
+     },
+     "q": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       260
+      ],
+      "scale": 43553.44921875,
+      "dtype": "<f2"
+     }
+    },
+    "mask": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      260
+     ],
+     "scale": 1.0,
+     "dtype": "<f2"
+    }
+   },
+   {
+    "axis": "z",
+    "position": 0.7050000000000001,
+    "extent": [
+     -3.375,
+     11.43512658227848,
+     -4.556962025316455,
+     4.556962025316455
+    ],
+    "label": "mean",
+    "fields": {
+     "u": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 36.71833038330078,
+      "dtype": "<f2"
+     },
+     "v": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 14.723260879516602,
+      "dtype": "<f2"
+     },
+     "w": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 15.826749801635742,
+      "dtype": "<f2"
+     },
+     "speed": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 36.773372650146484,
+      "dtype": "<f2"
+     },
+     "p": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 330.84033203125,
+      "dtype": "<f2"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 0.6001638770103455,
+      "dtype": "<f2"
+     },
+     "vorticity": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 419.63616943359375,
+      "dtype": "<f2"
+     },
+     "q": {
+      "enc": "shuffle",
+      "shape": [
+       160,
+       260
+      ],
+      "scale": 50085.75390625,
+      "dtype": "<f2"
+     }
+    },
+    "mask": {
+     "enc": "shuffle",
+     "shape": [
+      160,
+      260
+     ],
+     "scale": 1.0,
+     "dtype": "<f2"
+    }
+   },
+   {
+    "axis": "x",
+    "position": 4.95,
+    "extent": [
+     -4.556962025316455,
+     4.556962025316455,
+     0.0,
+     5.012658227848101
+    ],
+    "label": "mean",
+    "fields": {
+     "u": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 33.81747055053711,
+      "dtype": "<f2"
+     },
+     "v": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 6.761952877044678,
+      "dtype": "<f2"
+     },
+     "w": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 6.530499458312988,
+      "dtype": "<f2"
+     },
+     "speed": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 34.21668243408203,
+      "dtype": "<f2"
+     },
+     "p": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 140.09291076660156,
+      "dtype": "<f2"
+     },
+     "cp": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 0.2541368007659912,
+      "dtype": "<f2"
+     },
+     "vorticity": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 337.18145751953125,
+      "dtype": "<f2"
+     },
+     "q": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       160
+      ],
+      "scale": 2362.356201171875,
+      "dtype": "<f2"
+     }
+    },
+    "mask": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      160
+     ],
+     "scale": 1.0,
+     "dtype": "<f2"
+    }
+   }
+  ],
+  "volume": {
+   "origin": [
+    -3.375,
+    0.0,
+    0.0
+   ],
+   "spacing": [
+    0.11392405063291139,
+    0.056962025316455694,
+    0.056962025316455694
+   ],
+   "label": "mean",
+   "mirrored": true,
+   "fields": {
+    "u": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      80,
+      130
+     ],
+     "scale": 38.39841079711914,
+     "dtype": "<f2"
+    },
+    "v": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      80,
+      130
+     ],
+     "scale": 18.726791381835938,
+     "dtype": "<f2"
+    },
+    "w": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      80,
+      130
+     ],
+     "scale": 20.903430938720703,
+     "dtype": "<f2"
+    },
+    "cp": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      80,
+      130
+     ],
+     "scale": 1.959067940711975,
+     "dtype": "<f2"
+    },
+    "q": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      80,
+      130
+     ],
+     "scale": 98937.234375,
+     "dtype": "<f2"
+    }
+   },
+   "mask": {
+    "enc": "shuffle",
+    "shape": [
+     88,
+     80,
+     130
+    ],
+    "scale": 1.0,
+    "dtype": "<f2"
+   }
+  },
+  "extra_volumes": [
+   {
+    "origin": [
+     -3.375,
+     0.0,
+     0.0
+    ],
+    "spacing": [
+     0.11392405063291139,
+     0.056962025316455694,
+     0.056962025316455694
+    ],
+    "label": "instant",
+    "mirrored": true,
+    "fields": {
+     "dye": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       80,
+       130
+      ],
+      "scale": 0.9999987483024597,
+      "dtype": "<f2"
+     },
+     "u": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       80,
+       130
+      ],
+      "scale": 40.39209747314453,
+      "dtype": "<f2"
+     },
+     "v": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       80,
+       130
+      ],
+      "scale": 19.44610023498535,
+      "dtype": "<f2"
+     },
+     "w": {
+      "enc": "shuffle",
+      "shape": [
+       88,
+       80,
+       130
+      ],
+      "scale": 23.889572143554688,
+      "dtype": "<f2"
+     }
+    },
+    "mask": {
+     "enc": "shuffle",
+     "shape": [
+      88,
+      80,
+      130
+     ],
+     "scale": 1.0,
+     "dtype": "<f2"
+    }
+   }
+  ]
+ }
+}

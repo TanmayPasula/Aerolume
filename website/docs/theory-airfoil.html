@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Airfoil analysis</title>
+<meta name="description" content="The viscous–inviscid polar method, its inputs and where its results stop being valid.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Airfoil analysis">
+<meta property="og:description" content="The viscous–inviscid polar method, its inputs and where its results stop being valid.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html" aria-current="page">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html" aria-current="page">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-what-is-solved">1. What is solved</a></li><li class="l2"><a href="#2-inputs-and-what-they-mean">2. Inputs and what they mean</a></li><li class="l2"><a href="#3-geometry-handling-prepare_coords">3. Geometry handling (prepare_coords)</a></li><li class="l2"><a href="#4-sweeps-convergence-and-robustness">4. Sweeps, convergence and robustness</a></li><li class="l2"><a href="#5-validity-limits-read-before-trusting-a-number">5. Validity limits — read before trusting a number</a></li><li class="l2"><a href="#6-references">6. References</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Theory</p>
+<h1 id="airfoil-analysis-polars-theory-and-validity">Airfoil analysis (polars): theory and validity</h1>
+<p>Aerolume's <strong>Polar</strong> analysis computes lift, drag and moment of a single airfoil section over a
+range of angles of attack in a few seconds. It is an <em>XFOIL-class viscous–inviscid interaction</em>
+(VII) method, built on <strong>mfoil</strong> by K. J. Fidkowski (MIT licence, vendored in
+<code>src/<wbr>aerolume/<wbr>solvers/<wbr>airfoil/<wbr>_<wbr>mfoil.py</code>; provenance and local patches in
+<code>third_<wbr>party/<wbr>mfoil/<wbr>README.md</code>). This page explains what the method solves, what the knobs mean,
+and where its results stop being trustworthy. Validation against wind-tunnel data is in
+<a href="validation-airfoil.html">Airfoil validation</a>.</p>
+<p>For anything that is not a single, attached-or-mildly-separated airfoil (multi-element sections,
+vehicles, deep stall, bluff bodies, low Reynolds numbers below ~5×10⁴) use the CFD analysis
+(<a href="theory-ns2d.html">Navier–Stokes solver (2D)</a>).</p>
+<h2 id="1-what-is-solved">1. What is solved<a class="anchor" href="#1-what-is-solved" aria-label="Link to this section">#</a></h2>
+<p><strong>Outer (inviscid) flow.</strong> A linear-vorticity panel method with one panel per pair of surface
+points (199 panels by default, re-panelled from the user's outline with curvature-based
+clustering). The stream function is constant on the surface, and the Kutta condition makes the
+vorticity at the two trailing-edge nodes sum to zero. A blunt trailing edge carries an extra
+source/vortex panel across the base. The viscous effect on the outer flow enters as
+<em>transpiration sources</em> <span class="math">σ = <i>d</i>(ue δ*)/ds</span> on the surface and along a wake streamline that leaves the
+trailing edge, so the edge velocity is</p>
+<pre><code>ue = ue_inviscid + D · (ue δ*)        (D = sensitivity matrix of ue to the sources)</code></pre>
+<p><strong>Boundary layer.</strong> Two-equation integral boundary layer (von Kármán momentum and kinetic-energy
+shape-parameter equations) on the upper surface, lower surface and wake, with Drela's laminar and
+turbulent closures (as in XFOIL). The third equation is</p>
+<ul>
+<li>laminar: the <strong>eᴺ envelope amplification equation</strong> <span class="math">dn/<i>d</i>ξ = <i>f</i>(Hk, Reθ)/θ</span>;</li>
+<li>turbulent: a <strong>lagged shear-stress (Cτ) equation</strong>, which lets the turbulent stresses lag the
+local equilibrium value, important near separation.</li>
+</ul>
+<p><strong>Coupling.</strong> The unknowns at every node are <span class="math">[θ, δ*, <i>n</i> or √<i>C</i>τ, ue]</span>. All boundary-layer
+equations plus the edge-velocity relation above are solved <em>simultaneously</em> by Newton's method,
+with the transition location and the stagnation point linearised into the system. Solving
+everything at once is what lets the method handle laminar separation bubbles and trailing-edge
+separation without the instabilities of "direct" (prescribed-pressure) coupling.</p>
+<p><strong>Forces.</strong> Lift and moment come from integrating the surface pressure (<code>cm</code> about the quarter
+chord, positive nose-up). Drag <code>cd</code> comes from the wake momentum thickness far downstream
+(Squire–Young), which is more accurate than integrating surface pressure; <code>cdf</code> integrates the skin
+friction and <span class="math">cdp = cd − cdf</span> is the pressure (form) drag.</p>
+<p><strong>Compressibility.</strong> For Mach &gt; 0 the inviscid pressures get the Kármán–Tsien correction and the
+boundary-layer closures use the local edge Mach number. This is valid while the flow stays
+subsonic everywhere; the polar warns when the minimum Cp drops below the critical (sonic) value.</p>
+<h2 id="2-inputs-and-what-they-mean">2. Inputs and what they mean<a class="anchor" href="#2-inputs-and-what-they-mean" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Input</th><th scope="col">Meaning</th><th scope="col">Guidance</th></tr></thead>
+<tbody>
+<tr><td>Re</td><td>chord Reynolds number <span class="math">ρ <i>U</i> <i>c</i> / μ</span></td><td>the Setup page computes it from speed, chord and fluid</td></tr>
+<tr><td>α</td><td>angle of attack from the <strong>chord line</strong> (LE → TE)</td><td>see section 3 for how the chord line is found</td></tr>
+<tr><td>Ncrit</td><td>log of the disturbance amplification at which laminar flow transitions (eᴺ method)</td><td>9 = clean flight / good low-turbulence tunnel (default); 4–6 = noisy tunnel, sailplanes in turbulence; 11–12 = very quiet flight. Rule of thumb (Mack): <span class="math">Ncrit = −8.43 − 2.4 ln(Tu)</span>, Tu the free-stream turbulence fraction</td></tr>
+<tr><td>xtr upper / lower</td><td>forced transition position (x/c) — a trip strip, grit, or a "fully turbulent" assumption</td><td>1.0 = free transition (default). A trip upstream of the free location wins; one downstream has no effect. Trips closer than 0.06 chord (arc length) to the stagnation point act at 0.06 chord</td></tr>
+<tr><td>Mach</td><td>free-stream Mach number</td><td>keep below ~0.5 and the flow subsonic</td></tr>
+<tr><td>panels</td><td>number of surface panels</td><td>199 is converged for engineering use; more costs time quadratically in places</td></tr>
+</tbody>
+</table></div>
+<h2 id="3-geometry-handling-prepare_coords">3. Geometry handling (<code>prepare_coords</code>)<a class="anchor" href="#3-geometry-handling-prepare_coords" aria-label="Link to this section">#</a></h2>
+<p>Any outline (Design, Body or point array, any scale, position, orientation or point order) is
+converted to Selig order (TE → upper → LE → lower → TE) at unit chord:</p>
+<ul>
+<li>The <strong>trailing edge</strong> is the end of the longest dimension where the outline turns through most
+of 180° within ~1 % of the length: a single sharp point, or the two corners of a blunt base
+(gap up to 10 % of chord; above that the shape is a bluff body and is rejected).</li>
+<li>The <strong>leading edge</strong> is the contour point farthest from the TE (XFOIL's definition), refined on a
+local spline. Exception: an outline already in the design frame (LE at the origin, TE on +x —
+every Aerolume template and NACA generator) keeps that chord line, so polar angles match the
+CFD analysis of the same Design. On a cambered nose the two definitions differ slightly (NACA
+4412: 0.18° and 3×10⁻⁴ c).</li>
+<li>Shapes facing downstream are mirrored; multi-body designs, vehicles, rounded or very thick
+tails (no Kutta condition), self-intersecting outlines, &gt; 50 % thickness or &gt; 25 % camber are
+rejected with a message starting <em>"Polar analysis needs a single airfoil-like body"</em>.</li>
+</ul>
+<p><strong>Trailing-edge gap.</strong> The viscous solver opens exactly sharp or near-sharp trailing edges
+(&lt; 0.05 % c) to 0.05 % c, blending the change linearly along the chord (XFOIL's <code>TGAP</code>). With an
+exactly sharp TE the coupled iteration frequently stalls or converges to a spurious branch; with a
+0.05 % gap it converges and the results match the converged sharp-TE ones to ~0.05 % in Cl
+(measured on NACA 2412, Re 10⁶, 10°). The inviscid panel solution instead closes tiny gaps to an
+exact sharp TE, because the base source panel is ill-conditioned when it is much shorter than its
+neighbours.</p>
+<h2 id="4-sweeps-convergence-and-robustness">4. Sweeps, convergence and robustness<a class="anchor" href="#4-sweeps-convergence-and-robustness" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Warm-started sweeps.</strong> A polar starts with a cold solve at the angle nearest 0°, then walks
+upwards and downwards from there; every point starts from its converged neighbour, keeping the
+viscous edge-velocity correction <code>ue − ue_inviscid</code> (XFOIL-style), which roughly halves the
+Newton iterations per point.</li>
+<li><strong>Retries.</strong> A point that fails is retried with the step split into 2 and 4 sub-steps
+(intermediate angles), then from a freshly marched boundary layer, then by ramping from 0° in
+2° steps. If all fail it is returned with <code>converged = False</code> and NaN coefficients, listed in the
+result's warnings, and excluded from <code>PolarResult.table()</code>. After three failures in a row (deep
+stall) each further angle gets a single cold attempt.</li>
+<li><strong>Convergence.</strong> A point is converged when the 2-norm of all boundary-layer residuals is below
+10⁻⁸. In a few free-transition cases the transition location flips between two neighbouring
+panel intervals and the residual settles at ~10⁻³–10⁻² for ever (the amplification-rate onset
+is so steep that the transition point is not a smooth function of the state). Such a point is
+accepted when six successive iterates all have ‖R‖ &lt; 0.02 and differ by less than 0.002 in Cl
+and 1 % in Cd; the polar's notes list these angles.</li>
+<li><strong>Cancel / progress.</strong> <code>polar(..., progress=f, cancel=event)</code> reports <code>f(fraction, message)</code> after
+each angle and checks the event between Newton iterations; a cancelled sweep returns the points
+finished so far with a warning.</li>
+<li><strong>Threads.</strong> Each call owns its solver state; there is no shared mutable state, so concurrent
+calls from worker threads are safe and give bit-identical results to serial calls.</li>
+</ul>
+<p>Typical cost on the development machine (numpy/scipy, 2 BLAS threads): 0.3–1 s per converged
+point; a 19-point NACA 2412 polar at Re 10⁶ took 12.5 s (validation page). Points that need
+retries (stall, transition hopping) cost several times more. The hot loops run through
+<code>_fast.py</code>, vectorised re-implementations of mfoil's kernels that are tested against the
+originals to round-off; the pure-Python originals take ~6 s per point.</p>
+<h2 id="5-validity-limits-read-before-trusting-a-number">5. Validity limits — read before trusting a number<a class="anchor" href="#5-validity-limits-read-before-trusting-a-number" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Regime</th><th scope="col">Behaviour</th></tr></thead>
+<tbody>
+<tr><td>Attached flow, Re 2×10⁵–10⁷, M &lt; 0.3</td><td>Cl within ~0.03–0.05, Cd within ~10–20 % of good wind-tunnel data (see validation). This is the method's home ground.</td></tr>
+<tr><td>Laminar separation bubbles (Re ≲ 5×10⁵)</td><td>modelled (the coupled method captures bubbles), but sensitive to Ncrit and panel density; treat Cd as ±20–30 %.</td></tr>
+<tr><td>Re &lt; 5×10⁴</td><td>warned; bubble bursting and unsteady separation dominate. Use CFD or experiment.</td></tr>
+<tr><td>Approaching stall (last few degrees before Cl,max)</td><td>Cl,max and the stall angle are <strong>over-predicted</strong>: measured +0.05 to +0.1 on NACA 0012 (Re 3–6×10⁶) and +0.15 to +0.25 on NACA 2412/4412 (Re 6×10⁶), with stall 2–4° late. Integral boundary layers cannot represent massive trailing-edge separation and the wake model assumes a thin wake.</td></tr>
+<tr><td>Cambered sections, linear range</td><td>lift slightly high: NACA 4412 +0.07 in Cl (≈0.7° in zero-lift angle) against Abbott &amp; von Doenhoff; NACA 2412 within 0.01–0.02. A kink in Cl and Cm appears where the lower-surface transition point runs off the trailing edge (edge of the drag bucket; see below).</td></tr>
+<tr><td>Post-stall</td><td><strong>not predicted.</strong> The method has no physics for large separated regions; points either fail to converge (marked) or return optimistic values. Never use post-stall polars from this solver.</td></tr>
+<tr><td>Compressibility</td><td>Kármán–Tsien correction only; no shocks. Above the critical Mach (warned) results are invalid.</td></tr>
+<tr><td>Surface roughness, 3D effects, tunnel walls</td><td>not modelled (roughness only via forced transition). Sections are 2D (infinite span).</td></tr>
+<tr><td>Very thin (&lt; 0.5 % t/c), very thick (&gt; 30 % t/c) sections</td><td>warned; leading-edge separation or early separation makes results uncertain.</td></tr>
+</tbody>
+</table></div>
+<p><strong>Ncrit and transition.</strong> Free transition is the largest single source of drag uncertainty: the
+eᴺ method predicts <em>where natural transition would occur in a flow with a given disturbance
+level</em>, and real surfaces (paint, insects, rivets, rain) usually trip earlier. When in doubt, run
+the polar twice — free (Ncrit 9) and tripped near the leading edge (xtr ≈ 0.05) — and treat the
+pair as the bounds of the real drag.</p>
+<p><strong>The lift-curve kink at the edge of the drag bucket.</strong> As the angle of attack rises, the
+pressure-side (lower) transition point moves aft and finally off the trailing edge. Over the last
+1–3° before it leaves, the laminar boundary layer ahead of it separates a few per cent of chord
+before the trailing edge (H rises from ~3.5 to 6–7 on NACA 2412 at 3.5°, Re 10⁶). Its displacement
+thickness acts as extra aft camber: the lift slope rises by up to 50 % and Cm turns nose-down by
+~0.01, and both recover once that surface is laminar to the trailing edge. NACA 2412, Re 10⁶,
+Ncrit 9: dCl/dα = 0.10–0.11 /deg up to 1.5°, 0.137 and 0.153 /deg over 2–4°, then 0.08–0.09 /deg;
+Cm −0.045 at 2°, −0.060 at 4°, −0.056 at 5°. This is the model's prediction, not a numerical
+artefact: the pristine mfoil run cold at every angle, and XFOIL 6.99 run on the same coordinates,
+give the same curve (Cl within 0.006, Cm within 0.001 over 0–6°; validation page). How
+strongly a real wing section shows it depends on the free-stream disturbance level and surface
+finish, which Ncrit only approximates; a lower Ncrit or a trip moves or removes it. The polar's
+notes name the angles where it occurs.</p>
+<h2 id="6-references">6. References<a class="anchor" href="#6-references" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>K. J. Fidkowski, "A coupled inviscid–viscous airfoil analysis solver, revisited", <em>AIAA Journal</em>,
+2022 — the mfoil method (<a href="https://websites.umich.edu/~kfid/codes.html">https://websites.umich.edu/~kfid/codes.html</a>).</li>
+<li>M. Drela, M. B. Giles, "Viscous-inviscid analysis of transonic and low Reynolds number airfoils",
+<em>AIAA Journal</em> 25(10), 1987; M. Drela, "XFOIL: an analysis and design system for low Reynolds
+number airfoils", 1989 — the closures, eᴺ envelope method and coupling strategy.</li>
+<li>L. M. Mack, "Transition and laminar instability", JPL Publication 77-15, 1977 — the Ncrit–Tu
+relation.</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-ns3d.html"><span>Previous</span><b>Navier–Stokes solver (3D)</b></a><a class="next" href="theory-wing.html"><span>Next</span><b>Finite wings</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-what-is-solved">1. What is solved</a></li><li class="l2"><a href="#2-inputs-and-what-they-mean">2. Inputs and what they mean</a></li><li class="l2"><a href="#3-geometry-handling-prepare_coords">3. Geometry handling (prepare_coords)</a></li><li class="l2"><a href="#4-sweeps-convergence-and-robustness">4. Sweeps, convergence and robustness</a></li><li class="l2"><a href="#5-validity-limits-read-before-trusting-a-number">5. Validity limits — read before trusting a number</a></li><li class="l2"><a href="#6-references">6. References</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

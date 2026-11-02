@@ -1,0 +1,17 @@
+{
+ "format": "aerolume-project",
+ "schema": 2,
+ "app_version": "0.1.0",
+ "name": "Tapered wing",
+ "description": "Tapered NACA 2412 wing, span 3 m, at 25 m/s: polar, span loading, induced drag.",
+ "created": "2026-10-11T21:38:34",
+ "modified": "2026-10-11T21:38:41",
+ "designs": [
+  "485fa5563c6c"
+ ],
+ "simulations": [
+  "449e247755b3"
+ ],
+ "comparisons": [],
+ "settings": {}
+}

@@ -1,0 +1,17 @@
+{
+ "format": "aerolume-project",
+ "schema": 1,
+ "app_version": "0.1.0",
+ "name": "Room with a fan and a heater",
+ "description": "A 4 m × 3 m room (2D, Draft CFD): thrust fan, floor heater, supply jet and vent, smoke emitters. An illustration of the placed-physics tools, not a validation.",
+ "created": "2026-10-31T23:33:56",
+ "modified": "2026-10-31T23:35:42",
+ "designs": [
+  "a6cb2595510d"
+ ],
+ "simulations": [
+  "e03c3508ca53"
+ ],
+ "comparisons": [],
+ "settings": {}
+}

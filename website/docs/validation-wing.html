@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Finite-wing validation</title>
+<meta name="description" content="Lifting-line and lifting-surface theory, Weber &amp; Brebner and NACA TN 1270 wings.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Finite-wing validation">
+<meta property="og:description" content="Lifting-line and lifting-surface theory, Weber &amp; Brebner and NACA TN 1270 wings.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html" aria-current="page">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html" aria-current="page">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#1-elliptic-wings-lifting-line-theory">1. Elliptic wings: lifting-line theory</a></li><li class="l2"><a href="#2-lifting-surface-references">2. Lifting-surface references</a></li><li class="l2"><a href="#3-45-swept-wing-weber-brebner-wind-tunnel">3. 45° swept wing — Weber &amp; Brebner (wind tunnel)</a></li><li class="l2"><a href="#4-viscous-wings-naca-tn-1270-wind-tunnel">4. Viscous wings — NACA TN 1270 (wind tunnel)</a></li><li class="l2"><a href="#5-performance">5. Performance</a></li><li class="l2"><a href="#what-was-not-verified">What was not verified</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Validation</p>
+<h1 id="finite-wing-analysis-validation">Finite-wing analysis: validation</h1>
+<p>This page checks Aerolume's <strong>Wing</strong> analysis (vortex lattice and nonlinear lifting line with
+viscous strip coupling; method in <a href="theory-wing.html">Finite wings</a>) against lifting-line theory,
+published lifting-surface solutions, two wind-tunnel data sets and a textbook lattice. Everything is
+regenerated by</p>
+<pre><code>python validation/wing_validation.py [--cache DIR] [--ncrit-sensitivity 5]</code></pre>
+<p>which prints the tables below and renders <code>docs/img/wing_*.png</code>. The same cases, reference values and
+tolerances (<code>TOL</code>) are asserted in <code>tests/<wbr>test_<wbr>wing_<wbr>validation.py</code> (inviscid cases in the fast suite,
+the viscous wings and the timing with <code>-m slow</code>). Numbers below are from the runs of 2026-10-06
+(defaults: 8 chordwise × 24 spanwise panels per half, cosine spacing).</p>
+<h2 id="summary">Summary<a class="anchor" href="#summary" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">Check</th><th scope="col">Target</th><th scope="col">Result</th></tr></thead>
+<tbody>
+<tr><td>Elliptic wing, AR 4/8/12: CLα vs 2πAR/(AR+2)</td><td>within 2 %</td><td><strong>LLT: +0.0 %</strong> ✔; VLM: −10.9 / −4.7 / −2.7 % — the lifting-surface correction, see below</td></tr>
+<tr><td>Elliptic wing: span efficiency e</td><td>≥ 0.98</td><td>VLM 0.997 / 0.998 / 0.999, LLT 1.000 ✔</td></tr>
+<tr><td>Circular wing (lifting surface, Multhopp R&amp;M 2884)</td><td>—</td><td>1.793 vs 1.799 /rad (−0.3 %) ✔</td></tr>
+<tr><td>Rectangular AR 6 (Falkner R&amp;M 2596, lifting surface)</td><td>—</td><td>4.213 vs 4.231–4.270 (−0.4 … −1.3 %) ✔; LLT 4.530 vs Falkner's lifting line 4.527 ✔</td></tr>
+<tr><td>Rectangular AR 4 / 2 / 1 (Falkner)</td><td>—</td><td>−0.8 / −2.0 / −2.0 % ✔</td></tr>
+<tr><td>Swept constant-chord wings, AR 4 and 6, 30° and 45° (Falkner)</td><td>within 5 %</td><td>inside Falkner's range of solutions or ≤ 0.7 % below it ✔</td></tr>
+<tr><td>45° swept wing AR 5, CL vs Weber &amp; Brebner (wind tunnel, 2.1–10.5°)</td><td>within 5 %</td><td>−3.2 … +3.9 % ✔</td></tr>
+<tr><td>same, section lift at 4.2°, 0.04 ≤ 2y/b ≤ 0.9</td><td>—</td><td>within ±0.011 ✔ (−0.037 at 2y/b = 0.95)</td></tr>
+<tr><td>Bertin &amp; Smith lattice (4 horseshoes/semispan)</td><td>—</td><td>3.4440 vs 3.443 /rad ✔ (identical discretisation)</td></tr>
+<tr><td>Viscous wings, NACA TN 1270 (4 wings): dCL/dα</td><td>—</td><td>VLM +2.4 … +5.6 %, LLT +2.3 … +7.4 %</td></tr>
+<tr><td>… α_L0</td><td>—</td><td>within 0.52° (linear washout assumed)</td></tr>
+<tr><td>… CD_min</td><td>—</td><td><strong>13–22 % low</strong> (free transition, Ncrit 9)</td></tr>
+<tr><td>… (L/D)_max</td><td>—</td><td>6–18 % high (follows from the drag)</td></tr>
+<tr><td>… Cm at zero lift</td><td>—</td><td>VLM within 0.018, LLT within 0.009</td></tr>
+<tr><td>… CL_max</td><td>—</td><td><strong>not validated</strong>: critical-section estimate 0.17–0.31 high (section polars stall late)</td></tr>
+<tr><td>17-point viscous VLM polar, 2-section wing (one airfoil), cold cache</td><td>&lt; ~30 s</td><td><strong>23.4 s</strong> (22.0 s in an earlier run) ✔; warm 0.38 s</td></tr>
+<tr><td>same with two different airfoils (root 2412, tip 0012), cold</td><td>—</td><td>52.8 s ✘ (twice the section polars); warm 0.52 s</td></tr>
+</tbody>
+</table></div>
+<h2 id="1-elliptic-wings-lifting-line-theory">1. Elliptic wings: lifting-line theory<a class="anchor" href="#1-elliptic-wings-lifting-line-theory" aria-label="Link to this section">#</a></h2>
+<p>Flat elliptic planforms with a straight quarter-chord line, inviscid, α = 2° (VLM) and 3–4° (LLT).</p>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">AR</th><th class="r" scope="col">2πAR/(AR+2)</th><th class="r" scope="col">LLT</th><th class="r" scope="col">Δ</th><th class="r" scope="col">e (LLT)</th><th class="r" scope="col">VLM</th><th class="r" scope="col">Δ</th><th class="r" scope="col">e (VLM)</th></tr></thead>
+<tbody>
+<tr><td class="r">4</td><td class="r">4.1888</td><td class="r">4.1900</td><td class="r">+0.0 %</td><td class="r">1.0000</td><td class="r">3.7334</td><td class="r">−10.9 %</td><td class="r">0.9973</td></tr>
+<tr><td class="r">8</td><td class="r">5.0265</td><td class="r">5.0274</td><td class="r">+0.0 %</td><td class="r">1.0000</td><td class="r">4.7894</td><td class="r">−4.7 %</td><td class="r">0.9983</td></tr>
+<tr><td class="r">12</td><td class="r">5.3856</td><td class="r">5.3862</td><td class="r">+0.0 %</td><td class="r">1.0000</td><td class="r">5.2413</td><td class="r">−2.7 %</td><td class="r">0.9989</td></tr>
+</tbody>
+</table></div>
+<p>The lifting line reproduces Prandtl's result to 0.05 % with e = 1.0000. <strong>The vortex lattice does
+not, and should not:</strong> 2πAR/(AR+2) is lifting-<em>line</em> theory, which ignores the chordwise extent of the
+loading; a lifting <em>surface</em> carries less lift at low aspect ratio (Helmbold's approximation gives
+−7 % at AR 4). That the lattice's lower values are the right ones is shown by the lifting-surface
+references of section 2 — above all the circular wing, whose AR (1.27) is the hardest case and
+where the lattice matches Multhopp's lifting-surface solution to 0.3 %. The DESIGN.md bar "CLα =
+2πAR/(AR+2) within 2 %" is therefore met by the LLT; for the VLM it holds only at high AR (−2.7 % at
+AR 12, tending to 0 as AR grows). Both methods keep e ≥ 0.997.</p>
+<p>The semicircle collocation (<a href="theory-wing.html#1-geometry">Finite wings, §1</a>) is what makes e ≈ 1 at practical panel counts: with
+control points at the strip y-midpoints instead, the elliptic AR 4 wing gave e = 1.053 / 1.025 /
+1.012 at 12 / 24 / 48 panels per half (first-order convergence); with them e = 0.997–0.998 for all
+three, and CLα changes by less than 0.1 % between 12 and 96 panels.</p>
+<figure><img src="img/wing_lifting_surface.png" alt="Lift slope vs aspect ratio and sweep" width="1210" height="462" loading="lazy"><figcaption>Lift slope vs aspect ratio and sweep</figcaption></figure>
+<h2 id="2-lifting-surface-references">2. Lifting-surface references<a class="anchor" href="#2-lifting-surface-references" aria-label="Link to this section">#</a></h2>
+<p>Inviscid flat wings; reference values are dCL/dα per radian from H. Multhopp, ARC R&amp;M 2884 (circular
+wing) and V. M. Falkner, ARC R&amp;M 2596 (Tables 5–34: 84- and 126-vortex lattices with 6–9 control
+points, "standard" and "modified" solutions; Falkner notes that his 126-vortex values may need a
+factor 1 + 0.029 tan Λ, so they carry ~1–3 % uncertainty themselves).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">wing</th><th class="r" scope="col">reference</th><th class="r" scope="col">Aerolume</th><th class="r" scope="col">Δ</th></tr></thead>
+<tbody>
+<tr><td>circular (AR 1.27)</td><td class="r">1.799 (Multhopp)</td><td class="r">1.7930</td><td class="r">−0.3 %</td></tr>
+<tr><td>rectangular AR 6</td><td class="r">4.270 / 4.247 / 4.231</td><td class="r">4.2132</td><td class="r">−0.9 % (to the mean)</td></tr>
+<tr><td>rectangular AR 4</td><td class="r">3.639</td><td class="r">3.6105</td><td class="r">−0.8 %</td></tr>
+<tr><td>rectangular AR 2</td><td class="r">2.524</td><td class="r">2.4728</td><td class="r">−2.0 %</td></tr>
+<tr><td>rectangular AR 1</td><td class="r">1.489</td><td class="r">1.4591</td><td class="r">−2.0 %</td></tr>
+<tr><td>rectangular AR 6, <strong>LLT</strong></td><td class="r">4.527 (Falkner's lifting line)</td><td class="r">4.5301</td><td class="r">+0.1 %</td></tr>
+<tr><td>AR 6, 30° sweep</td><td class="r">3.955 / 3.877</td><td class="r">3.8540</td><td class="r">0.6 % below the range</td></tr>
+<tr><td>AR 6, 45° sweep</td><td class="r">3.464 / 3.367 / 3.304 / 3.365</td><td class="r">3.3384</td><td class="r">inside</td></tr>
+<tr><td>AR 4, 30° sweep</td><td class="r">3.467 / 3.400</td><td class="r">3.3750</td><td class="r">0.7 % below</td></tr>
+<tr><td>AR 4, 45° sweep</td><td class="r">3.121 / 3.039 / 2.986</td><td class="r">3.0001</td><td class="r">inside</td></tr>
+</tbody>
+</table></div>
+<p>The lattice converges to these values with the default panelling (24 vs 48 spanwise and 8 vs 16
+chordwise panels change them by &lt; 0.25 %). Span efficiency of the 45° wings (0.885 at AR 6) also falls
+inside Falkner's range (induced-drag factors 1.107–1.157, i.e. e = 0.86–0.90).</p>
+<h2 id="3-45-swept-wing-weber-brebner-wind-tunnel">3. 45° swept wing — Weber &amp; Brebner (wind tunnel)<a class="anchor" href="#3-45-swept-wing-weber-brebner-wind-tunnel" aria-label="Link to this section">#</a></h2>
+<p>J. Weber, G. G. Brebner, ARC R&amp;M 2882: constant chord, AR 5, 45° sweep, RAE 101 (12 %) section,
+Re 1.7×10⁶; lift from pressure plotting (Table 4B) and section lift at α = 4.2° (Table 3), as
+transcribed in the FLOWPanel.jl example <code>liftingline_weber.jl</code>. Compared with the inviscid lattice
+(the viscous coupling does not change the lattice's lift).</p>
+<div class="table-scroll"><table>
+<thead><tr><th class="r" scope="col">α [deg]</th><th class="r" scope="col">CL exp</th><th class="r" scope="col">CL VLM</th><th class="r" scope="col">Δ</th></tr></thead>
+<tbody>
+<tr><td class="r">2.1</td><td class="r">0.121</td><td class="r">0.117</td><td class="r">−3.2 %</td></tr>
+<tr><td class="r">4.2</td><td class="r">0.238</td><td class="r">0.234</td><td class="r">−1.7 %</td></tr>
+<tr><td class="r">6.3</td><td class="r">0.350</td><td class="r">0.350</td><td class="r">+0.1 %</td></tr>
+<tr><td class="r">8.4</td><td class="r">0.456</td><td class="r">0.466</td><td class="r">+2.2 %</td></tr>
+<tr><td class="r">10.5</td><td class="r">0.559</td><td class="r">0.581</td><td class="r">+3.9 %</td></tr>
+</tbody>
+</table></div>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">2y/b</th><th class="r" scope="col">0</th><th class="r" scope="col">0.041</th><th class="r" scope="col">0.082</th><th class="r" scope="col">0.163</th><th class="r" scope="col">0.245</th><th class="r" scope="col">0.367</th><th class="r" scope="col">0.510</th><th class="r" scope="col">0.653</th><th class="r" scope="col">0.898</th><th class="r" scope="col">0.949</th></tr></thead>
+<tbody>
+<tr><td>cl exp (4.2°)</td><td class="r">0.235</td><td class="r">0.241</td><td class="r">0.248</td><td class="r">0.253</td><td class="r">0.251</td><td class="r">0.251</td><td class="r">0.251</td><td class="r">0.246</td><td class="r">0.192</td><td class="r">0.171</td></tr>
+<tr><td>cl VLM</td><td class="r">0.231</td><td class="r">0.232</td><td class="r">0.237</td><td class="r">0.246</td><td class="r">0.252</td><td class="r">0.259</td><td class="r">0.261</td><td class="r">0.256</td><td class="r">0.181</td><td class="r">0.134</td></tr>
+</tbody>
+</table></div>
+<p>The measured lift curve bends over slightly (0.0576/deg at 2.1°, 0.0532/deg at 10.5°: viscous effects
+on the swept, 12 % thick wing) while the lattice is linear (CLα = 3.164/rad over the range), so the
+difference moves from −3 % to +4 %. The span loading matches within ±0.011 over 4–90 % of the span,
+including the reduced loading at the centre of a swept wing; at 95 % of the span the measurement is
+0.037 higher — the suction of the tip vortex rolling up over the upper surface, which a flat wake
+does not model (<a href="theory-wing.html#6-assumptions-and-validity-limits">Finite wings, §6</a>).</p>
+<figure><img src="img/wing_swept_weber.png" alt="Weber &amp; Brebner swept wing" width="1100" height="440" loading="lazy"><figcaption>Weber &amp; Brebner swept wing</figcaption></figure>
+<p><strong>Code-to-code check.</strong> Bertin &amp; Smith's worked VLM example for the same planform (4 horseshoe
+vortices per semispan, 1 chordwise, uniform spacing) gives CLα = 3.443/rad (as quoted by T. Melin,
+"A vortex lattice MATLAB implementation…", KTH 2000); Aerolume with the identical lattice gives
+3.4440/rad. The four strip circulations are 0.0250, 0.0286, 0.0287, 0.0273 × 4πbV∞α from tip to root.</p>
+<h2 id="4-viscous-wings-naca-tn-1270-wind-tunnel">4. Viscous wings — NACA TN 1270 (wind tunnel)<a class="anchor" href="#4-viscous-wings-naca-tn-1270-wind-tunnel" aria-label="Link to this section">#</a></h2>
+<p>R. H. Neely, T. V. Bollech, G. C. Westrick, R. R. Graham, NACA TN 1270 (1947): unswept tapered wings
+(taper 2.5, AR 8–12, NACA 44-series sections from 4416–4424 at the root to 4412 at the tip, 2.4–4.5°
+washout, parabolic tips over the outer 5 % of the semispan) tested smooth in the Langley 19-ft
+pressure tunnel at R = 2.9–4.3×10⁶ (Mach ≈ 0.13). Table I gives the geometry and Table II the
+experimental characteristics compared here, together with NACA's own lifting-line calculation from
+<strong>measured</strong> 2D section data (the "generalized method"). XFLR5's guidelines validate against the same
+report. Only the four wings with integer NACA thicknesses were run.</p>
+<p>Modelling choices (the report does not give them all): planform area matched to Table I (MAC then
+agrees to 0.75 %), the parabolic tip as a chord falling parabolically to zero, <strong>linear washout</strong>,
+thickness interpolated from the root to the 4412 at 95 % semispan, Mach 0.13 (estimated from the
+stated tunnel density and Re), free transition with <strong>Ncrit 9</strong>, moments about the (unswept)
+quarter-chord line, α from −6° to 20° in 1° steps. All 27 points converged for every wing and method.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">wing</th><th scope="col">quantity</th><th class="r" scope="col">experiment</th><th class="r" scope="col">NACA calc.</th><th class="r" scope="col">VLM</th><th class="r" scope="col">LLT</th></tr></thead>
+<tbody>
+<tr><td>2.5-8-44,16 (R 4.32e6)</td><td>dCL/dα [/deg]</td><td class="r">0.0820</td><td class="r">0.0823</td><td class="r">0.0840</td><td class="r">0.0881</td></tr>
+<tr><td></td><td>α_L0 [deg]</td><td class="r">−2.90</td><td class="r">−2.90</td><td class="r">−2.38</td><td class="r">−2.40</td></tr>
+<tr><td></td><td>CD_min</td><td class="r">0.0090</td><td class="r">0.0080</td><td class="r">0.0070</td><td class="r">0.0070</td></tr>
+<tr><td></td><td>(L/D)_max</td><td class="r">27.8</td><td class="r">29.4</td><td class="r">30.3</td><td class="r">30.5</td></tr>
+<tr><td></td><td>Cm at CL = 0</td><td class="r">−0.099</td><td class="r">−0.093</td><td class="r">−0.102</td><td class="r">−0.102</td></tr>
+<tr><td></td><td>dCm/dCL</td><td class="r">0.012</td><td class="r">0.007</td><td class="r">0.006</td><td class="r">0.008</td></tr>
+<tr><td></td><td>CL_max</td><td class="r">1.54</td><td class="r">1.48</td><td class="r">1.71 (18.2°)</td><td class="r">—</td></tr>
+<tr><td>2.5-10-44,20 (R 3.49e6)</td><td>dCL/dα</td><td class="r">0.0860</td><td class="r">0.0827</td><td class="r">0.0886</td><td class="r">0.0898</td></tr>
+<tr><td></td><td>α_L0</td><td class="r">−3.20</td><td class="r">−3.00</td><td class="r">−2.83</td><td class="r">−2.79</td></tr>
+<tr><td></td><td>CD_min</td><td class="r">0.0083</td><td class="r">0.0083</td><td class="r">0.0072</td><td class="r">0.0072</td></tr>
+<tr><td></td><td>(L/D)_max</td><td class="r">31.6</td><td class="r">32.0</td><td class="r">33.6</td><td class="r">33.9</td></tr>
+<tr><td></td><td>Cm at CL = 0</td><td class="r">−0.095</td><td class="r">−0.087</td><td class="r">−0.103</td><td class="r">−0.099</td></tr>
+<tr><td></td><td>CL_max</td><td class="r">1.43</td><td class="r">1.41</td><td class="r">1.63 (15.7°)</td><td class="r">—</td></tr>
+<tr><td>2.5-12-44,24 (R 2.87e6)</td><td>dCL/dα</td><td class="r">0.0870</td><td class="r">0.0848</td><td class="r">0.0919</td><td class="r">0.0890</td></tr>
+<tr><td></td><td>α_L0</td><td class="r">−3.20</td><td class="r">−3.00</td><td class="r">−3.08</td><td class="r">−2.84</td></tr>
+<tr><td></td><td>CD_min</td><td class="r">0.0091</td><td class="r">0.0088</td><td class="r">0.0075</td><td class="r">0.0074</td></tr>
+<tr><td></td><td>(L/D)_max</td><td class="r">33.4</td><td class="r">32.6</td><td class="r">35.8</td><td class="r">36.4</td></tr>
+<tr><td></td><td>Cm at CL = 0</td><td class="r">−0.097</td><td class="r">−0.085</td><td class="r">−0.103</td><td class="r">−0.092</td></tr>
+<tr><td></td><td>CL_max</td><td class="r">1.27</td><td class="r">1.31</td><td class="r">1.58 (14.3°)</td><td class="r">—</td></tr>
+<tr><td>2.5-8-44,24 (R 4.32e6)</td><td>dCL/dα</td><td class="r">0.0795</td><td class="r">0.0795</td><td class="r">0.0839</td><td class="r">0.0843</td></tr>
+<tr><td></td><td>α_L0</td><td class="r">−3.20</td><td class="r">−3.10</td><td class="r">−3.36</td><td class="r">−3.10</td></tr>
+<tr><td></td><td>CD_min</td><td class="r">0.0081</td><td class="r">0.0084</td><td class="r">0.0070</td><td class="r">0.0069</td></tr>
+<tr><td></td><td>(L/D)_max</td><td class="r">26.1</td><td class="r">28.0</td><td class="r">30.2</td><td class="r">30.8</td></tr>
+<tr><td></td><td>Cm at CL = 0</td><td class="r">−0.084</td><td class="r">−0.083</td><td class="r">−0.102</td><td class="r">−0.093</td></tr>
+<tr><td></td><td>CL_max</td><td class="r">1.37</td><td class="r">1.35</td><td class="r">1.64 (16.3°)</td><td class="r">—</td></tr>
+</tbody>
+</table></div>
+<p>(dCL/dα and α_L0 from a straight-line fit over −4…4°; CD_min the minimum over the 1° sweep; Cm and
+dCm/dCL at zero lift; CL_max the critical-section stall onset of <a href="theory-wing.html#5-viscous-strip-coupling">Finite wings, §5</a>, "—" when no strip
+away from the tips reached its section cl_max by 20°, where the LLT's CL was 1.65–1.70.)</p>
+<figure><img src="img/wing_tn1270.png" alt="NACA TN 1270 wings" width="1320" height="836" loading="lazy"><figcaption>NACA TN 1270 wings</figcaption></figure>
+<p>What this shows:</p>
+<ul>
+<li><strong>Lift slope.</strong> VLM +2.4 … +5.6 %, growing with root thickness (16 → 24 %): the lattice's lift is
+that of the thin mean surface, while thick sections lose lift slope to the boundary layer. The LLT
+takes the viscous section slopes but has no chordwise loading, which over-predicts the slope at
+low AR (+7.4 % at AR 8, +2.3 % at AR 12). NACA's calculation added the Jones edge-velocity
+correction to its lifting line and was within 4 %.</li>
+<li><strong>Zero-lift angle</strong> within 0.52°. The two AR-8 wings differ only in washout (4.5° vs 2.4°) and
+root section, and the error shrinks with the washout (+0.52° → −0.16° VLM, +0.50° → +0.10° LLT):
+consistent with the assumed linear twist distribution being wrong (the report gives only the tip
+value), not with a solver bias.</li>
+<li><strong>Profile drag is 13–22 % low</strong> (both methods: it is the same strip drag). The section solver's
+free-transition drag at Ncrit 9 is itself low (<a href="validation-airfoil.html">Airfoil validation</a>: up to −15 % against
+Abbott &amp; von Doenhoff), and the 19-ft pressure tunnel is a more disturbed environment than the
+low-turbulence tunnels Ncrit 9 represents. With <strong>Ncrit 5</strong> the 2.5-8-44,16 wing gives CD_min
+0.0075 (−17 %) and (L/D)_max 29.3 (+5 %) — closer, but Ncrit is not a calibration knob and the
+table keeps the default. NACA's calculation with measured section data was 11 % low on this
+wing too, so part of the gap is in the 3D test itself (support tare and interference corrections,
+the report discusses this).</li>
+<li><strong>(L/D)_max 6–18 % high</strong>, as a direct consequence of the drag.</li>
+<li><strong>Pitching moment at zero lift</strong>: the LLT, which takes cm from the viscous polars, is within 0.009;
+the lattice's cm is the inviscid camber moment (−0.102 for every 44-series wing) and misses the
+thick root sections' viscous decambering (−0.084 measured on 2.5-8-44,24: 0.018 off).</li>
+<li><strong>CL_max is not validated.</strong> The section polars stall late and high (<a href="validation-airfoil.html">Airfoil validation</a>: cl_max
+over-predicted by 0.1–0.25 for 4-digit sections), so the critical-section estimate of the lattice is
+0.17–0.31 high, and the LLT's sections had not reached their cl_max by α = 20°. Treat Aerolume's
+stall onset as optimistic; use CFD or test data for maximum lift.</li>
+</ul>
+<h2 id="5-performance">5. Performance<a class="anchor" href="#5-performance" aria-label="Link to this section">#</a></h2>
+<p>Two-section tapered wing (span 2 m, chords 0.30 / 0.15 m, 20 m/s → strip Re 2.1–4.0×10⁵),
+17 angles (−4° to 12°), viscous VLM, 8 × 48 panels, single process, <code>OPENBLAS_NUM_THREADS=2</code>, on the
+development machine <strong>while other agents' GPU and CPU jobs were running</strong> (shared machine):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th class="r" scope="col">cold (empty polar cache)</th><th class="r" scope="col">section points</th><th class="r" scope="col">warm</th><th class="r" scope="col">inviscid</th></tr></thead>
+<tbody>
+<tr><td>NACA 2412 root and tip</td><td class="r"><strong>23.4 s</strong> (22.0 s in a second run)</td><td class="r">42 (2 Re × 21 α)</td><td class="r">0.38 s</td><td class="r">0.44 s</td></tr>
+<tr><td>NACA 2412 root, 0012 tip</td><td class="r">52.8 s (50.1 s)</td><td class="r">84</td><td class="r">0.52 s</td><td class="r">0.42 s</td></tr>
+</tbody>
+</table></div>
+<p>The cost is the 2D section polars (≈0.55 s per point here), which is why <code>SectionPolars</code> places as
+few Reynolds nodes as the interpolation allows and computes only the angles the wing needs; a
+two-airfoil wing needs twice the polars and misses the ~30 s target. Running polars in parallel
+processes would roughly halve it; not done (threads do not help: measured 13.4 s serial vs 15.1 s
+with two threads for two polars, the solver holds the GIL). The NACA TN 1270 wings (2 airfoils,
+3 Re nodes each, VLM and LLT sweeps to 20° with polars extended to stall) took 6–7 minutes each from
+an empty cache in the slow test run, mostly in section points near and beyond stall, where the 2D
+solver needs several retries; the same run measured the 17-point target case at 21.6 s.</p>
+<h2 id="what-was-not-verified">What was not verified<a class="anchor" href="#what-was-not-verified" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Sideslip: signs, antisymmetry and the dihedral effect's direction are unit-tested
+(<code>tests/<wbr>test_<wbr>wing_<wbr>solver.py</code>), but no lateral-derivative data were compared.</li>
+<li>Compressibility: the Prandtl–Glauert implementation is tested against Göthert's rule (exact
+identity with the stretched incompressible wing), not against compressible test data.</li>
+<li>Twisted, cranked or multi-airfoil wings beyond the NACA TN 1270 set; wings with dihedral (only the
+kinematics are tested); low Reynolds numbers (&lt; 2×10⁵) against data.</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="validation-airfoil.html"><span>Previous</span><b>Airfoil validation</b></a><a class="next" href="design-guidelines.html"><span>Next</span><b>Design guidelines</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#1-elliptic-wings-lifting-line-theory">1. Elliptic wings: lifting-line theory</a></li><li class="l2"><a href="#2-lifting-surface-references">2. Lifting-surface references</a></li><li class="l2"><a href="#3-45-swept-wing-weber-brebner-wind-tunnel">3. 45° swept wing — Weber &amp; Brebner (wind tunnel)</a></li><li class="l2"><a href="#4-viscous-wings-naca-tn-1270-wind-tunnel">4. Viscous wings — NACA TN 1270 (wind tunnel)</a></li><li class="l2"><a href="#5-performance">5. Performance</a></li><li class="l2"><a href="#what-was-not-verified">What was not verified</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

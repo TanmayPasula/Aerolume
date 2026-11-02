@@ -1,0 +1,19 @@
+{
+ "format": "aerolume-project",
+ "schema": 1,
+ "app_version": "0.1.0",
+ "name": "Sedan vs fastback",
+ "description": "Two side profiles at 30 m/s on a moving road (Draft CFD), ready to compare.",
+ "created": "2026-10-05T23:11:04",
+ "modified": "2026-10-05T23:13:16",
+ "designs": [
+  "db1907160b48",
+  "76646ff893fd"
+ ],
+ "simulations": [
+  "1ce24c7ba3ab",
+  "9d0c11d83c9e"
+ ],
+ "comparisons": [],
+ "settings": {}
+}

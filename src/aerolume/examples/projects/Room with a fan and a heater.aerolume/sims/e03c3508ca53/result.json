@@ -1,0 +1,1212 @@
+{
+ "format": "aerolume-result",
+ "schema": 1,
+ "type": "cfd",
+ "token": "3b34b21271c9419b984f671f8a8b5eee",
+ "result": {
+  "sim_id": "e03c3508ca53",
+  "cd": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "cl": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "cm": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "drag": NaN,
+  "lift": NaN,
+  "moment": NaN,
+  "drag_area": NaN,
+  "power": NaN,
+  "strouhal": null,
+  "strouhal_length": 0.5,
+  "re_real": 30928.258472549842,
+  "re_sim": 30928.258472549842,
+  "grid": [
+   96,
+   72
+  ],
+  "cells_per_ref": 12.0,
+  "t_end": 276.48431396484375,
+  "t_avg_start": 156.49134826660156,
+  "converged": false,
+  "wall_seconds": 105.51551969999946,
+  "device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+  "precision": "float32",
+  "turbulence": "les-wale",
+  "notes": [
+   "Closed box: 4.00 m × 3.00 m with no-slip walls on every side (from Domain ▸ Extent); gravity along −y. There is no free stream: the reference velocity U = 0.904 m/s is the fan “Fan” (momentum theory), and coefficients use q = ½ρU².",
+   "Grid: 96 × 72 = 6,912 cells of 41.7 mm, set by 64 cells across the box's smaller side (Draft quality on the GPU).",
+   "Flow model: WALE large-eddy model at Re = 3.09×10^4 (U L/ν).",
+   "Duration: 240 L/U (30.0 box turnovers max(W, H)/U, 133 s of real flow); averages from t = 120, and the run stops early once the monitored quantities have settled.",
+   "Time step ≈ 0.0052 L/U: about 46,290 steps, estimated 3 min 35 s on GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) (the placed physics costs about 110 % per step). The step is sized for the slipstream of fan “Fan” (2 × its disc velocity), 1.81 m/s (2 times the reference velocity), the fastest air the run is expected to reach.",
+   "Heat transfer: air at 15 °C (ideal gas, Sutherland's law): Pr 0.711, k 0.0253 W/(m·K), cp 1,006 J/(kg·K), β 0.00347 1/K.",
+   "Planned estimate: Temperature scale ΔT = 1.05 K (estimated rise at the heater “Heater”: P/(ρ·c_p·u·A), the air its plume or the stream carries through it); the solver carries θ = (T − 15.00 °C) / ΔT.",
+   "Planned estimate: β·ΔT = 0.0036 (ΔT 1.05 K): inside the Boussinesq range (below about 0.1).",
+   "Planned estimate: Buoyancy: Boussinesq, gravity along −y. Ri = gβΔT L/U² = 0.0218 on the reference length L = 0.500 m (the solver's buoyancy coefficient); Ri = Gr/Re² = 0.13 on the height of the closed box 3.00 m (the Richardson number of the Estimate, which sets the regime). Gr 4.51×10^9 and Ra 3.21×10^9 on 3.00 m, the height of the closed box.",
+   "Thermal resolution: no body or wall exchanges heat with the fluid (the heat comes from heaters or jets), so there is no thermal boundary layer to resolve and no Nusselt number; the heat input is imposed.",
+   "A fan in a closed box drives the air until the walls' friction balances its thrust, so the box recirculates faster than the fan's own disc velocity (the reference used here). The time step is planned on the peak such boxes measured (max|u| + max|v| about 3 times twice the disc velocity at Draft); later runs of the same kind of box (a fan alone, or with jets or heaters, with or without bodies, on a similar grid) refine it, by at most 1.5 times per run.",
+   "The start-up transient lasted longer than planned (the monitored values were still drifting at t = 156), so averaging restarted there and the run was extended to t = 276.5.",
+   "Heat rate 60.00 W/m: the heat put into the fluid by the heaters (60.00 W/m measured, 60.00 W/m set). No Nusselt number: nothing in the run is held at a fixed temperature to define one; the heat balance and the fluid temperatures are the result.",
+   "Fluid temperature (time-averaged): mean 15.30 °C, min 15.00 °C, max 15.49 °C (ambient 15.00 °C).",
+   "Measured temperature difference ΔT = 0.488 K: the warmest fluid reached 15.49 °C at a 15.00 °C ambient (the planned estimate was 1.05 K, the estimated rise at the heater “Heater”: P/(ρ·c_p·u·A), the air its plume or the stream carries through it). On the measured ΔT: Gr 2.1×10⁹, Ra 1.5×10⁹ on 3.00 m, the height of the closed box (planned estimate Gr 4.5×10⁹, Ra 3.2×10⁹); Richardson number Gr/Re² 0.061 (planned 0.13); convection forced. The run itself used the planned scale only as its unit of temperature."
+  ],
+  "warnings": [
+   "In a 2D closed room the fan's speeds are qualitative and grid-dependent: speeds, the disc velocity, volume flow and convective heat transfer have no grid-converged answer (for a 1 N/m fan in a 4 × 3 m room the mean speed is 2.4 m/s at 6 and 12 cells per fan width and 3.4 m/s at 24, and the room needs 500–900 L/U to settle; theory_ns2d.md §18.4). The thrust is exact and the flow pattern is meaningful. The fan's power can only leave through wall friction and numerical dissipation (2D flow has no vortex stretching), so the room spins up into room-sized vortices. Use 3D for rooms. This run's 240 L/U end inside that start-up transient, so its averages are one sample of it.",
+   "Not converged by t = 276 of 276.5 L/U: fan 1's disc velocity — The fluctuation amplitude is still changing (×0.68 between the two halves of the window). Run longer (Duration) before relying on it. This closed box is judged on fan 1's disc velocity, the warmest fluid's rise above the ambient, the mean fluid temperature's rise above the ambient and the kinetic energy; force coefficients mean nothing inside it and are not used.",
+   "The temperature field had not settled: 31 % of the heat put into the fluid was still being stored in it at the end (heat balance, W/m), so the fluid temperatures were still changing and their error bars understate the uncertainty. Run longer (Duration) before relying on them.",
+   "Ra = 1.49×10^9: above about 10⁸ the thermal boundary layers become unsteady and then turbulent; this laminar / LES grid resolves the mean flow at best, so treat the heat transfer as indicative."
+  ],
+  "per_body": {},
+  "nusselt": {
+   "mean": NaN,
+   "rms": NaN,
+   "min": NaN,
+   "max": NaN,
+   "stderr": NaN,
+   "stderr_reliable": true
+  },
+  "heat_rate": 60.000003572609224,
+  "fans_report": [
+   {
+    "name": "Fan",
+    "mode": "thrust",
+    "thrust": 0.9999999999999999,
+    "pressure_jump": 1.9999999999999996,
+    "volume_flow": 0.08779746580733373,
+    "disc_velocity": 0.17559493161466747,
+    "induced_velocity": 0.17559493161466747,
+    "ideal_power": 0.17559493161466744,
+    "target": 1.0,
+    "diameter": 0.5,
+    "thrust_stderr": 1.1102230246251565e-16,
+    "thrust_reliable": false
+   }
+  ],
+  "diagnostics": {
+   "step": 47030.0,
+   "t": 276.44952392578125,
+   "dt": 0.005809304304420948,
+   "cfl": 0.485627642520984,
+   "div_rms": 1.2099221112713704e-06,
+   "div_max": 5.7220458984375e-06,
+   "p_residual": 1.7873837921534373e-05,
+   "du_l2": 0.026694285250337214,
+   "du_rms": 0.0038330759767897507,
+   "du_max": 0.021074920892715454,
+   "du_rel": 0.0025967036289072567,
+   "dv_l2": 0.026272819227768168,
+   "dv_rms": 0.0037660915848547,
+   "dv_max": 0.017650365829467773,
+   "dv_rel": 0.0028946979180259516,
+   "dp_l2": 0.03385619260801892,
+   "dp_rms": 0.004886720478993886,
+   "dp_max": 0.022282719612121582,
+   "dp_rel": 0.0016659287171495265,
+   "dtheta_l2": 0.006358263969517181,
+   "dtheta_rms": 0.0009177363535948608,
+   "dtheta_max": 0.009521514177322388,
+   "dtheta_rel": 0.0027846000366266712,
+   "steps_per_s": 42.19655577652621,
+   "heat_in_bodies": 0.0,
+   "heat_in_walls": 0.0,
+   "heat_in_sources": 60.000003572609224,
+   "heat_in_ports": -1.2396053908416693,
+   "heat_in_inlet": 0.0,
+   "heat_out_outlet": 0.0,
+   "heat_out_ports": 39.953817821821325,
+   "heat_storage_rate": 18.80715814915973,
+   "heat_balance_residual": -0.0005777892134972302,
+   "heat_sources_set": 60.0,
+   "t_fluid_mean": 15.296117047359383,
+   "t_fluid_min": 15.000000006606282,
+   "t_fluid_max": 15.487850255591946,
+   "t_fluid_dev_max": 0.5362650087440927
+  },
+  "bodies_wind": []
+ },
+ "arrays": {
+  "history": [
+   "t",
+   "cd",
+   "cl",
+   "cm",
+   "fan0_thrust",
+   "fan0_velocity",
+   "fan0_flow",
+   "ke",
+   "t_rise_max",
+   "t_rise_mean"
+  ],
+  "surface": [],
+  "mean_fields": {
+   "extent": [
+    0.0,
+    4.0,
+    0.0,
+    3.0
+   ],
+   "label": "mean",
+   "fields": {
+    "u": {
+     "scale": 2.9547815322875977,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "v": {
+     "scale": 2.863042116165161,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "speed": {
+     "scale": 2.966247797012329,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "p": {
+     "scale": 10.104147911071777,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "cp": {
+     "scale": 20.208295822143555,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "vorticity": {
+     "scale": 28.112245559692383,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "u_rms": {
+     "scale": 0.9227994084358215,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "v_rms": {
+     "scale": 1.0301604270935059,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "p_rms": {
+     "scale": 2.014329195022583,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "cp_rms": {
+     "scale": 4.028658390045166,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "temperature": {
+     "scale": 0.2439250946044922,
+     "shape": [
+      72,
+      96
+     ],
+     "offset": 15.243925094604492
+    },
+    "temperature_rms": {
+     "scale": 0.14986039698123932,
+     "shape": [
+      72,
+      96
+     ]
+    }
+   },
+   "mask": {
+    "scale": 1.0
+   }
+  },
+  "instant_fields": {
+   "extent": [
+    0.0,
+    4.0,
+    0.0,
+    3.0
+   ],
+   "label": "instant",
+   "fields": {
+    "u": {
+     "scale": 3.3668835163116455,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "v": {
+     "scale": 2.9265024662017822,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "speed": {
+     "scale": 3.3752973079681396,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "p": {
+     "scale": 9.732305526733398,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "cp": {
+     "scale": 19.464611053466797,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "vorticity": {
+     "scale": 52.46104049682617,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "dye": {
+     "scale": 1.0,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "nut": {
+     "scale": 0.003218849888071418,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "dye1": {
+     "scale": 1.0,
+     "shape": [
+      72,
+      96
+     ]
+    },
+    "temperature": {
+     "scale": 0.26813268661499023,
+     "shape": [
+      72,
+      96
+     ],
+     "offset": 15.26813268661499
+    }
+   },
+   "mask": {
+    "scale": 1.0
+   }
+  },
+  "diagnostics_history": [
+   "step",
+   "t",
+   "dt",
+   "cfl",
+   "div_rms",
+   "div_max",
+   "p_residual",
+   "du_l2",
+   "du_rms",
+   "du_max",
+   "du_rel",
+   "dv_l2",
+   "dv_rms",
+   "dv_max",
+   "dv_rel",
+   "dp_l2",
+   "dp_rms",
+   "dp_max",
+   "dp_rel",
+   "dtheta_l2",
+   "dtheta_rms",
+   "dtheta_max",
+   "dtheta_rel"
+  ]
+ },
+ "provenance": {
+  "format": "aerolume-provenance",
+  "schema": 1,
+  "captured": "2026-10-31T23:35:41",
+  "source": {
+   "software": "store",
+   "simulation": "store",
+   "settings_hash": "store",
+   "design": "store",
+   "design_hash": "store",
+   "config_hash": "store",
+   "run": "store",
+   "plan": "store (re-planned at save; grid and Reynolds number match the run)"
+  },
+  "software": {
+   "aerolume": "0.1.0",
+   "python": "3.11.9",
+   "implementation": "CPython",
+   "os": "Windows 10",
+   "os_version": "10.0.26200",
+   "machine": "AMD64",
+   "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+   "packages": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "torch": "2.14.1+cu130",
+    "vtk": "9.7.1",
+    "matplotlib": "3.11.2",
+    "pyqtgraph": "0.14.0"
+   },
+   "torch_cuda": "13.0",
+   "cudnn": 92400,
+   "gpu": "NVIDIA GeForce RTX 4060 Ti",
+   "gpu_capability": "8.9",
+   "gpu_count": 1
+  },
+  "simulation": {
+   "name": "Room · fan 1 N/m · heater 60 W/m",
+   "design_id": "a6cb2595510d",
+   "analysis": "cfd",
+   "conditions": {
+    "fluid": {
+     "name": "Air, ISA sea level",
+     "density": 1.225000018124288,
+     "viscosity": 1.7892976260350732e-05
+    },
+    "speed": 0.9035078962213993,
+    "alpha_deg": 0.0,
+    "yaw_deg": 0.0
+   },
+   "ground": {
+    "enabled": false,
+    "moving": true,
+    "rotate_wheels": false
+   },
+   "cfd": {
+    "quality": "draft",
+    "cells_per_ref": null,
+    "domain_upstream": null,
+    "domain_downstream": null,
+    "domain_height": null,
+    "duration": null,
+    "average_from": null,
+    "turbulence": "auto",
+    "reynolds_mode": "real",
+    "reynolds_cap": null,
+    "precision": "auto",
+    "device": "auto",
+    "compute_sensitivity": false,
+    "sensitivity_objective": "cd",
+    "symmetry": "auto",
+    "domain_width": null,
+    "domain_mode": "closed",
+    "domain_box": [
+     0.0,
+     4.0,
+     0.0,
+     3.0
+    ],
+    "record_diagnostics": true,
+    "adaptive_dt": "cfl"
+   },
+   "airfoil": {
+    "alpha_start": -4.0,
+    "alpha_end": 14.0,
+    "alpha_step": 1.0,
+    "ncrit": 9.0,
+    "xtr_upper": 1.0,
+    "xtr_lower": 1.0,
+    "mach": 0.0,
+    "panels": 199
+   },
+   "id": "e03c3508ca53",
+   "status": "new",
+   "created": "2026-10-31T23:33:56",
+   "finished": null,
+   "notes": "",
+   "error": null,
+   "wing": {
+    "alpha_start": -4.0,
+    "alpha_end": 12.0,
+    "alpha_step": 1.0,
+    "method": "vlm",
+    "viscous": true,
+    "ncrit": 9.0,
+    "mach": 0.0
+   },
+   "emitters": [
+    {
+     "name": "Smoke rake",
+     "species": "dye",
+     "kind": "rake",
+     "position": [
+      0.4,
+      0.4
+     ],
+     "end": [
+      0.4,
+      2.6
+     ],
+     "size": [],
+     "normal": null,
+     "count": 8,
+     "radius": 0.0,
+     "rate": 1.0,
+     "color": "#f0a040",
+     "pulse_period": 0.0,
+     "pulse_duty": 0.5,
+     "start": 0.0,
+     "stop": null,
+     "frame": "wind",
+     "enabled": true
+    },
+    {
+     "name": "Plume tracer",
+     "species": "dye",
+     "kind": "point",
+     "position": [
+      3.0,
+      0.45
+     ],
+     "end": null,
+     "size": [],
+     "normal": null,
+     "count": 8,
+     "radius": 0.0,
+     "rate": 1.0,
+     "color": "#e04040",
+     "pulse_period": 0.0,
+     "pulse_duty": 0.5,
+     "start": 0.0,
+     "stop": null,
+     "frame": "wind",
+     "enabled": true
+    }
+   ],
+   "thermal": {
+    "enabled": true,
+    "t_ambient": 15.0,
+    "buoyancy": true,
+    "gravity": 9.80665,
+    "beta": null,
+    "prandtl": null,
+    "conductivity": null,
+    "cp": null,
+    "walls": []
+   },
+   "heat_sources": [
+    {
+     "name": "Heater",
+     "kind": "rect",
+     "position": [
+      3.0,
+      0.25
+     ],
+     "size": [
+      0.4,
+      0.2
+     ],
+     "power": 60.0,
+     "frame": "body",
+     "enabled": true
+    }
+   ],
+   "fans": [
+    {
+     "name": "Fan",
+     "position": [
+      1.3333333333333333,
+      1.5
+     ],
+     "direction": [
+      1.0,
+      0.0
+     ],
+     "diameter": 0.5,
+     "thickness": null,
+     "mode": "thrust",
+     "value": 1.0,
+     "swirl": 0.0,
+     "frame": "body",
+     "enabled": true
+    }
+   ],
+   "ports": [
+    {
+     "name": "Supply",
+     "kind": "jet",
+     "position": [
+      0.05,
+      2.7
+     ],
+     "direction": [
+      1.0,
+      0.0
+     ],
+     "size": 0.2,
+     "speed": 0.5,
+     "temperature": null,
+     "dye": false,
+     "frame": "body",
+     "enabled": true
+    },
+    {
+     "name": "Vent",
+     "kind": "vent",
+     "position": [
+      3.95,
+      2.7
+     ],
+     "direction": [
+      1.0,
+      0.0
+     ],
+     "size": 0.2,
+     "speed": 0.5,
+     "temperature": null,
+     "dye": false,
+     "frame": "body",
+     "enabled": true
+    }
+   ]
+  },
+  "settings_hash": "59c6d7723d7610366fde899cb2fcfef507a643ca0bd1db81c0b9e00155194d25",
+  "design": {
+   "name": "Fan in a room · 1 N/m",
+   "kind": "generic",
+   "bodies": [],
+   "length_ref": 0.5,
+   "force_ref": 0.5,
+   "moment_ref": [
+    1.3333333333333333,
+    1.5
+   ],
+   "id": "a6cb2595510d",
+   "source": {
+    "type": "case",
+    "case": "fan_room",
+    "room": [
+     4.0,
+     3.0
+    ],
+    "diameter": 0.5,
+    "thrust": 1.0
+   },
+   "created": "2026-10-31T23:33:56",
+   "notes": "",
+   "dimension": 2,
+   "meshes": [],
+   "wing": null,
+   "ref_area": 0.0,
+   "span_ref": 0.0,
+   "moment_ref3": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "symmetric": false
+  },
+  "design_hash": "47746f34dd0a4a0eb3d24b6ab9cbe00eeacfeada6fdc8f0ee90eb2de5b301eb0",
+  "config_hash": "d09befa51aafef17d9c9b6a129a820689a6f6607b88b0be0ac397233fd7637dd",
+  "run": {
+   "device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+   "precision": "float32",
+   "wall_seconds": 105.51551969999946,
+   "grid": [
+    96,
+    72
+   ],
+   "cells_per_ref": 12.0,
+   "re_real": 30928.258472549842,
+   "re_sim": 30928.258472549842,
+   "t_end": 276.48431396484375,
+   "t_avg_start": 156.49134826660156,
+   "converged": false,
+   "turbulence": "les-wale",
+   "result_type": "CFDResult"
+  },
+  "seed": null,
+  "deterministic_inputs": true,
+  "determinism": "The flow computation draws no random numbers (the start-up perturbation is a fixed Lamb-Oseen vortex), so the inputs determine every field, force and heat rate; only the display positions of 3D tracer particles are random. Floating-point reductions on a GPU are not bitwise reproducible across devices or driver versions, which changes time-averaged values only within their statistical uncertainty.",
+  "plan": {
+   "type": "SimPlan",
+   "length_ref": 0.5,
+   "speed": 0.9035078962213993,
+   "fluid": {
+    "name": "Air, ISA sea level",
+    "density": 1.225000018124288,
+    "viscosity": 1.7892976260350732e-05
+   },
+   "re_real": 30928.258472549842,
+   "re_sim": 30928.258472549842,
+   "turbulence": "les-wale",
+   "t_end": 240.0,
+   "t_avg_start": 120.0,
+   "dt": 0.005889677235770689,
+   "steps_estimate": 40750,
+   "est_seconds": 119.14652736573996,
+   "cells": 6912,
+   "cells_per_ref": 12.0,
+   "extent": [
+    0.0,
+    4.0,
+    0.0,
+    3.0
+   ],
+   "notes": [
+    "Closed box: 4.00 m × 3.00 m with no-slip walls on every side (from Domain ▸ Extent); gravity along −y. There is no free stream: the reference velocity U = 0.904 m/s is the fan “Fan” (momentum theory), and coefficients use q = ½ρU².",
+    "Grid: 96 × 72 = 6,912 cells of 41.7 mm, set by 64 cells across the box's smaller side (Draft quality on the GPU).",
+    "Flow model: WALE large-eddy model at Re = 3.09×10^4 (U L/ν).",
+    "Duration: 240 L/U (30.0 box turnovers max(W, H)/U, 133 s of real flow); averages from t = 120, and the run stops early once the monitored quantities have settled.",
+    "Time step ≈ 0.0059 L/U: about 40,750 steps, estimated 1 min 59 s on GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) (the placed physics costs about 110 % per step). The step is sized for the slipstream of fan “Fan” (2 × its disc velocity), 1.81 m/s (2 times the reference velocity), the fastest air the run is expected to reach.",
+    "Heat transfer: air at 15 °C (ideal gas, Sutherland's law): Pr 0.711, k 0.0253 W/(m·K), cp 1,006 J/(kg·K), β 0.00347 1/K.",
+    "Temperature scale ΔT = 1.05 K (estimated rise at the heater “Heater”: P/(ρ·c_p·u·A), the air its plume or the stream carries through it); the solver carries θ = (T − 15.00 °C) / ΔT.",
+    "β·ΔT = 0.0036 (ΔT 1.05 K): inside the Boussinesq range (below about 0.1).",
+    "Buoyancy: Boussinesq, gravity along −y. Ri = gβΔT L/U² = 0.0218 on the reference length L = 0.500 m (the solver's buoyancy coefficient); Ri = Gr/Re² = 0.13 on the height of the closed box 3.00 m (the Richardson number of the Estimate, which sets the regime). Gr 4.51×10^9 and Ra 3.21×10^9 on 3.00 m, the height of the closed box.",
+    "Thermal resolution: no body or wall exchanges heat with the fluid (the heat comes from heaters or jets), so there is no thermal boundary layer to resolve and no Nusselt number; the heat input is imposed.",
+    "A fan in a closed box drives the air until the walls' friction balances its thrust, so the box recirculates faster than the fan's own disc velocity (the reference used here). The time step is planned on the peak such boxes measured (max|u| + max|v| about 3 times twice the disc velocity at Draft); later runs of the same kind of box (a fan alone, or with jets or heaters, with or without bodies, on a similar grid) refine it, by at most 1.5 times per run."
+   ],
+   "warnings": [
+    "In a 2D closed room the fan's speeds are qualitative and grid-dependent: speeds, the disc velocity, volume flow and convective heat transfer have no grid-converged answer (for a 1 N/m fan in a 4 × 3 m room the mean speed is 2.4 m/s at 6 and 12 cells per fan width and 3.4 m/s at 24, and the room needs 500–900 L/U to settle; theory_ns2d.md §18.4). The thrust is exact and the flow pattern is meaningful. The fan's power can only leave through wall friction and numerical dissipation (2D flow has no vortex stretching), so the room spins up into room-sized vortices. Use 3D for rooms. This run's 240 L/U end inside that start-up transient, so its averages are one sample of it.",
+    "Ra = 3.21×10^9: above about 10⁸ the thermal boundary layers become unsteady and then turbulent; this laminar / LES grid resolves the mean flow at best, so treat the heat transfer as indicative."
+   ],
+   "device": "cuda",
+   "device_name": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB)",
+   "precision": "float32",
+   "advection": "upwind3",
+   "quality": "draft",
+   "ground": false,
+   "ground_moving": false,
+   "strouhal_length": 0.5,
+   "blockage": "nan",
+   "ref_label": "reference length",
+   "live": false,
+   "capped": false,
+   "geometry_class": "generic",
+   "conv_rtol": 0.05,
+   "blockage_limit": "nan",
+   "est_seconds_headless": 97.53032804552453,
+   "bl_resolved": false,
+   "domain_mode": "closed",
+   "physics": {
+    "dim": 2,
+    "closed": true,
+    "length": 0.5,
+    "speed": 0.9035078962213993,
+    "speed_basis": "fan “Fan” (momentum theory)",
+    "nu": 1.4606511016831119e-05,
+    "thermal": true,
+    "buoyancy": true,
+    "t_ambient": 15.0,
+    "delta_t": 1.0465724601771815,
+    "delta_t_basis": "estimated rise at the heater “Heater”: P/(ρ·c_p·u·A), the air its plume or the stream carries through it",
+    "length_ra": 3.0,
+    "length_ra_basis": "height of the closed box",
+    "props": {
+     "prandtl": 0.7114808466363868,
+     "conductivity": 0.025299815452533445,
+     "cp": 1006.0,
+     "beta": 0.00347041471455839,
+     "density": 1.225000018124288,
+     "viscosity": 1.7892976260350732e-05,
+     "basis": "air at 15 °C (ideal gas, Sutherland's law)",
+     "known": true,
+     "typed": []
+    },
+    "g_beta": 0.03403314246052403,
+    "u_forced": 0.9035078962213993,
+    "re": 30928.258472549842,
+    "pr": 0.7114808466363868,
+    "pe": 22004.863523038763,
+    "gr": 4507566442.24768,
+    "ra": 3207047188.600145,
+    "ri": 0.021816116972665372,
+    "ri_flow": 0.13089670183599222,
+    "regime": "Mixed",
+    "natural": false,
+    "surfaces": 0,
+    "bodies": 0
+   },
+   "placed": {
+    "emitters": [
+     {
+      "position": [
+       0.8,
+       0.8
+      ],
+      "kind": "rake",
+      "end": [
+       0.8,
+       5.2
+      ],
+      "size": [],
+      "count": 8,
+      "radius": 0.0,
+      "species": "dye",
+      "channel": 0,
+      "rate": 1.0,
+      "pulse_period": 0.0,
+      "pulse_duty": 0.5,
+      "start": 0.0,
+      "stop": null,
+      "name": "Smoke rake"
+     },
+     {
+      "position": [
+       6.0,
+       0.9
+      ],
+      "kind": "point",
+      "end": null,
+      "size": [],
+      "count": 8,
+      "radius": 0.0,
+      "species": "dye",
+      "channel": 1,
+      "rate": 1.0,
+      "pulse_period": 0.0,
+      "pulse_duty": 0.5,
+      "start": 0.0,
+      "stop": null,
+      "name": "Plume tracer"
+     }
+    ],
+    "thermal": {
+     "prandtl": 0.7114808466363868,
+     "richardson": 0.021816116972665372,
+     "gravity": [
+      0.0,
+      -1.0
+     ],
+     "prandtl_turbulent": 0.85,
+     "walls": [],
+     "theta_inlet": 0.0,
+     "theta_initial": 0.0,
+     "eta": null
+    },
+    "heat_sources": [
+     {
+      "position": [
+       6.0,
+       0.5
+      ],
+      "kind": "rect",
+      "size": [
+       0.8,
+       0.4
+      ],
+      "power": 0.10297834678155507,
+      "name": "Heater"
+     }
+    ],
+    "fans": [
+     {
+      "position": [
+       2.6666666666666665,
+       3.0
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "width": 1.0,
+      "thickness": null,
+      "mode": "thrust",
+      "value": 2.0000000000000004,
+      "name": "Fan"
+     }
+    ],
+    "ports": [
+     {
+      "position": [
+       0.1,
+       5.4
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "size": 0.4,
+      "speed": 0.5533985946233257,
+      "kind": "jet",
+      "depth": null,
+      "theta": null,
+      "dye_channel": null,
+      "name": "Supply"
+     },
+     {
+      "position": [
+       7.9,
+       5.4
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "size": 0.4,
+      "speed": 0.5533985946233257,
+      "kind": "vent",
+      "depth": null,
+      "theta": null,
+      "dye_channel": null,
+      "name": "Vent"
+     }
+    ],
+    "body_thermal": [],
+    "dye_channels": [
+     {
+      "field": "dye",
+      "color": "#f0a040",
+      "names": [
+       "Smoke rake"
+      ]
+     },
+     {
+      "field": "dye1",
+      "color": "#e04040",
+      "names": [
+       "Plume tracer"
+      ]
+     }
+    ],
+    "particle_palette": [],
+    "particle_names": [],
+    "fans_si": [
+     {
+      "name": "Fan",
+      "position": [
+       1.3333333333333333,
+       1.5
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "diameter": 0.5,
+      "thickness": null,
+      "mode": "thrust",
+      "value": 1.0,
+      "swirl": 0.0,
+      "frame": "body",
+      "enabled": true
+     }
+    ],
+    "ports_si": [
+     {
+      "name": "Supply",
+      "kind": "jet",
+      "position": [
+       0.05,
+       2.7
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "size": 0.2,
+      "speed": 0.5,
+      "temperature": null,
+      "dye": false,
+      "frame": "body",
+      "enabled": true
+     },
+     {
+      "name": "Vent",
+      "kind": "vent",
+      "position": [
+       3.95,
+       2.7
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "size": 0.2,
+      "speed": 0.5,
+      "temperature": null,
+      "dye": false,
+      "frame": "body",
+      "enabled": true
+     }
+    ],
+    "heaters_si": [
+     {
+      "name": "Heater",
+      "kind": "rect",
+      "position": [
+       3.0,
+       0.25
+      ],
+      "size": [
+       0.4,
+       0.2
+      ],
+      "power": 60.0,
+      "frame": "body",
+      "enabled": true
+     }
+    ],
+    "dye_inlet": false,
+    "notes": [],
+    "warnings": []
+   },
+   "monitors": [
+    "fan0_velocity",
+    "t_rise_max",
+    "t_rise_mean",
+    "ke"
+   ],
+   "calibration_kind": "closed-fan+jet+heat@64",
+   "step_cost": 2.098,
+   "speed_ratio": 2.0,
+   "peak_basis": "slipstream of fan “Fan” (2 × its disc velocity)",
+   "est_seconds_planned": 119.14652736573996,
+   "est_after_seconds": 0.0,
+   "thermal_grid": [
+    0.041666666666666664,
+    0.34117210676508763,
+    4.0
+   ],
+   "grid": [
+    96,
+    72
+   ],
+   "time_unit": 0.5533985946233257,
+   "estimate_label": "~2 min",
+   "summary": {
+    "Simulated Reynolds number": "3.09×10^4 (U L / ν with U the reference velocity)",
+    "Flow model": "LES (WALE sub-grid model), upwind3 advection",
+    "Grid": "96 × 72",
+    "Cells": "6,912",
+    "Cells per reference length": "12",
+    "Domain": "4.00 m × 3.00 m",
+    "Road": "fixed walls",
+    "Time step": "0.00589 L/U (3.26 ms)",
+    "Duration": "240 L/U (133 s of flow)",
+    "Averaging from": "t = 120 L/U",
+    "Stops early when": "the peak and mean fluid temperature rises to ±5 %, the fans' flow to ±5 %, the kinetic energy to ±5 %",
+    "Steps (estimate)": "≈ 40,750",
+    "Estimated run time": "1 min 59 s",
+    "Device": "GPU · NVIDIA GeForce RTX 4060 Ti (8.0 GB) · float32",
+    "Domain type": "Closed box (walls on every side)",
+    "Reference velocity": "0.904 m/s (fan “Fan” (momentum theory))",
+    "Temperature scale": "1.05 K",
+    "Prandtl number": "0.71",
+    "Length of Gr, Ra and Ri": "3.00 m (height of the closed box)",
+    "Grashof number": "4.5×10⁹",
+    "Rayleigh number": "3.2×10⁹",
+    "Richardson number": "0.13",
+    "Péclet number": "2.2×10⁴",
+    "Convection": "Mixed",
+    "Emitters": "2 smoke (2 colours)",
+    "Fans": "Fan (thrust 1.00 N/m)",
+    "Jets and vents": "1 jet, 1 vent",
+    "Heat sources": "1 (60.0 W/m in all)"
+   },
+   "solver_config": {
+    "type": "SolverConfig",
+    "nx": 96,
+    "ny": 72,
+    "h": 0.08333333333333333,
+    "x0": 0.0,
+    "y0": 0.0,
+    "re": 30928.258472549842,
+    "bodies": [],
+    "inlet": "uniform",
+    "bc_top": "noslip",
+    "bc_bottom": "noslip",
+    "ground_speed": 1.0,
+    "periodic": false,
+    "advection": "upwind3",
+    "turbulence": "wale",
+    "cfl": 0.5,
+    "dt": null,
+    "force_ref": 1.0,
+    "moment_ref": [
+     2.6666666666666665,
+     3.0
+    ],
+    "dtype": "float32",
+    "device": "cuda",
+    "use_cuda_graphs": true,
+    "dye": true,
+    "perturb": true,
+    "eta": null,
+    "mask_width": 1.0,
+    "les_constant": null,
+    "domain": "closed",
+    "bc_left": "noslip",
+    "bc_right": "noslip",
+    "dye_inlet": false,
+    "emitters": [
+     {
+      "position": [
+       0.8,
+       0.8
+      ],
+      "kind": "rake",
+      "end": [
+       0.8,
+       5.2
+      ],
+      "size": [],
+      "count": 8,
+      "radius": 0.0,
+      "species": "dye",
+      "channel": 0,
+      "rate": 1.0,
+      "pulse_period": 0.0,
+      "pulse_duty": 0.5,
+      "start": 0.0,
+      "stop": null,
+      "name": "Smoke rake"
+     },
+     {
+      "position": [
+       6.0,
+       0.9
+      ],
+      "kind": "point",
+      "end": null,
+      "size": [],
+      "count": 8,
+      "radius": 0.0,
+      "species": "dye",
+      "channel": 1,
+      "rate": 1.0,
+      "pulse_period": 0.0,
+      "pulse_duty": 0.5,
+      "start": 0.0,
+      "stop": null,
+      "name": "Plume tracer"
+     }
+    ],
+    "thermal": {
+     "prandtl": 0.7114808466363868,
+     "richardson": 0.021816116972665372,
+     "gravity": [
+      0.0,
+      -1.0
+     ],
+     "prandtl_turbulent": 0.85,
+     "walls": [],
+     "theta_inlet": 0.0,
+     "theta_initial": 0.0,
+     "eta": null
+    },
+    "heat_sources": [
+     {
+      "position": [
+       6.0,
+       0.5
+      ],
+      "kind": "rect",
+      "size": [
+       0.8,
+       0.4
+      ],
+      "power": 0.10297834678155507,
+      "name": "Heater"
+     }
+    ],
+    "fans": [
+     {
+      "position": [
+       2.6666666666666665,
+       3.0
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "width": 1.0,
+      "thickness": null,
+      "mode": "thrust",
+      "value": 2.0000000000000004,
+      "name": "Fan"
+     }
+    ],
+    "ports": [
+     {
+      "position": [
+       0.1,
+       5.4
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "size": 0.4,
+      "speed": 0.5533985946233257,
+      "kind": "jet",
+      "depth": null,
+      "theta": null,
+      "dye_channel": null,
+      "name": "Supply"
+     },
+     {
+      "position": [
+       7.9,
+       5.4
+      ],
+      "direction": [
+       1.0,
+       0.0
+      ],
+      "size": 0.4,
+      "speed": 0.5533985946233257,
+      "kind": "vent",
+      "depth": null,
+      "theta": null,
+      "dye_channel": null,
+      "name": "Vent"
+     }
+    ],
+    "particle_capacity": 32768,
+    "diagnostics": true,
+    "adaptive_dt": "cfl",
+    "wall_model": "none"
+   },
+   "solver_hash": "71d78b92ea43db26487c96378384aee33c768c830c08f79f42253beaa2d13b36"
+  },
+  "saved": "2026-10-31T23:35:41"
+ }
+}

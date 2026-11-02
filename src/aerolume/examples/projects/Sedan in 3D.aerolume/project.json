@@ -1,0 +1,17 @@
+{
+ "format": "aerolume-project",
+ "schema": 2,
+ "app_version": "0.1.0",
+ "name": "Sedan in 3D",
+ "description": "Draft 3D CFD of a generic sedan at 30 m/s: smoke, streamlines, surface pressure.",
+ "created": "2026-10-11T21:33:29",
+ "modified": "2026-10-11T21:34:47",
+ "designs": [
+  "6057639fcc0c"
+ ],
+ "simulations": [
+  "f8d01bba7397"
+ ],
+ "comparisons": [],
+ "settings": {}
+}

@@ -1,0 +1,17 @@
+{
+ "format": "aerolume-project",
+ "schema": 1,
+ "app_version": "0.1.0",
+ "name": "Heated cavity Ra 1e5",
+ "description": "Natural convection in a differentially heated square cavity, Ra 10⁵, Pr 0.71 (Draft CFD): a validation case against de Vahl Davis (1983).",
+ "created": "2026-10-31T23:33:40",
+ "modified": "2026-10-31T23:33:56",
+ "designs": [
+  "871654687002"
+ ],
+ "simulations": [
+  "414f0dca8ce8"
+ ],
+ "comparisons": [],
+ "settings": {}
+}

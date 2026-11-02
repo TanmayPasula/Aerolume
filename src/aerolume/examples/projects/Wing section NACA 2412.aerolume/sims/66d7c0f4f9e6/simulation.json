@@ -1,0 +1,51 @@
+{
+ "name": "CFD · α 4°",
+ "design_id": "3bc00a331c49",
+ "analysis": "cfd",
+ "conditions": {
+  "fluid": {
+   "name": "Air, ISA sea level",
+   "density": 1.225,
+   "viscosity": 1.7894e-05
+  },
+  "speed": 14.607346938775509,
+  "alpha_deg": 4.0
+ },
+ "ground": {
+  "enabled": false,
+  "moving": true,
+  "rotate_wheels": true
+ },
+ "cfd": {
+  "quality": "draft",
+  "cells_per_ref": null,
+  "domain_upstream": null,
+  "domain_downstream": null,
+  "domain_height": null,
+  "duration": null,
+  "average_from": null,
+  "turbulence": "auto",
+  "reynolds_mode": "capped",
+  "reynolds_cap": 2500.0,
+  "precision": "auto",
+  "device": "auto",
+  "compute_sensitivity": false,
+  "sensitivity_objective": "cd"
+ },
+ "airfoil": {
+  "alpha_start": -4.0,
+  "alpha_end": 14.0,
+  "alpha_step": 1.0,
+  "ncrit": 9.0,
+  "xtr_upper": 1.0,
+  "xtr_lower": 1.0,
+  "mach": 0.0,
+  "panels": 199
+ },
+ "id": "66d7c0f4f9e6",
+ "status": "done",
+ "created": "2026-10-05T23:10:23",
+ "finished": "2026-10-05T23:11:04",
+ "notes": "",
+ "error": null
+}

@@ -1,0 +1,724 @@
+/* Aerolume website.
+
+   The look: monochrome ink and paper, one type family
+   (Atkinson Hyperlegible Next, with its Mono for numbers, code and code blocks), generous
+   whitespace and 6 px controls. The only image in the hero is the live flow behind it
+   (assets/hero/hero.js), which reads --field-bg and --field-ink, so it follows the same theme
+   switch as the text. Everything below the hero is type, real screenshots and measured numbers.
+
+   Contrast: every text token is at least 4.5:1 on --bg and on --code-bg in both themes, and
+   control borders at least 3:1 (website/tests/test_build.py measures them from these hex
+   values). Text over the moving hero is measured from pixels by the capture scripts. */
+
+/* The two families, self-hosted (SIL Open Font License 1.1; licences in assets/fonts/): the
+   variable Latin subsets from Fontsource 5.3.0, one file per family covering every weight, so
+   the site makes no request to another host for its type. build.py preloads the upright Next. */
+/* The upright face is preloaded by every page and uses font-display: optional: Chrome then holds
+   the first paint for it briefly instead of painting the stand-in and swapping, so text never
+   rewraps after load (a paragraph full of digits still lost a line in the swap even with the
+   metric-matched stand-in below: CLS 0.08 on docs/theory-ns3d, website round 4). On a connection
+   too slow for that, the page simply keeps the stand-in until the next visit. */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: optional;
+  src: url("fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("fonts/atkinson-hyperlegible-next-latin-wght-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("fonts/atkinson-hyperlegible-mono-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched stand-in while the web font loads: Atkinson Hyperlegible Next sets body text
+   1.6 % narrower than Arial (a 300-character paragraph, 2434 px against 2473 px at 15 px) and its
+   line box is 1.30 em (ascent 0.98 em, descent 0.32 em; the overrides apply after the scaling,
+   hence 98/0.984 and 32/0.984), all measured in Chrome, so with these overrides the swap moves
+   nothing by more than a fraction of a pixel. local("ArialMT") comes first: Chrome on Windows
+   matched local("Arial") to a different, 17 % wider face, so the "stand-in" rewrapped every
+   paragraph and the docs jumped by up to 500 px when the real font arrived (website round 4). */
+@font-face {
+  font-family: "Atkinson Fallback";
+  src: local("ArialMT"), local("Arial"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 98.4%;
+  ascent-override: 99.6%;
+  descent-override: 32.5%;
+  line-gap-override: 0%;
+}
+/* Headings (weight 500) get their own stand-in: when font-display: optional misses its window
+   (a slow first visit, a file:// open), the face above set them as Arial Regular, a visibly
+   lighter, more generic headline (website round 4 critique). Segoe UI Semibold is the closest
+   local weight on Windows; at 100 px a test line measured 3329.8 px against the web font's
+   3306.5 px at weight 500, hence 99.3 % (overrides divided by 0.993 as above). Elsewhere this
+   face is unavailable and headings fall through to system-ui, which has a true medium. */
+@font-face {
+  font-family: "Atkinson Fallback";
+  font-weight: 500 800;
+  src: local("Segoe UI Semibold"), local("SegoeUI-Semibold");
+  size-adjust: 99.3%;
+  ascent-override: 98.7%;
+  descent-override: 32.2%;
+  line-gap-override: 0%;
+}
+/* The same for the Mono, whose characters are 0.632 em wide where Consolas's are 0.550 em, and
+   whose line box is 1.30 em (both measured in Chrome): scaled by 114.95 % (the overrides are
+   applied after the scaling, hence 98/1.1495 and 32.3/1.1495), Consolas sets every code span to
+   the same width, so swapping in the web font cannot rewrap a line. Without this, a paragraph
+   with inline code lost a line when the Mono arrived and the docs below it jumped 26 px (CLS
+   0.066 to 0.139 on four docs pages, website round 4). */
+@font-face {
+  font-family: "Atkinson Mono Fallback";
+  src: local("Consolas");
+  size-adjust: 114.95%;
+  ascent-override: 85.3%;
+  descent-override: 28.1%;
+  line-gap-override: 0%;
+}
+/* macOS and Linux: Menlo, Liberation Mono and Courier New all advance 0.600-0.602 em. */
+@font-face {
+  font-family: "Atkinson Mono Fallback 2";
+  src: local("Menlo"), local("Liberation Mono"), local("Courier New");
+  size-adjust: 105.1%;
+  ascent-override: 93.2%;
+  descent-override: 30.7%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --bg: #f6f6f6;
+  --surface: #ffffff;        /* screenshot frames, the docs index rows on hover */
+  --code-bg: #e9e9e9;        /* code blocks and inline code chips */
+  --fg: #0e0e0e;
+  --muted: #474747;          /* secondary text: 8.7:1 on bg */
+  --faint: #5c5c5c;          /* tertiary text (sources, units): 6.3:1 on bg, 5.6:1 on code-bg */
+  --line: #cdcdcd;           /* hairlines between rows (decorative) */
+  --line-strong: #858585;    /* control borders: 3.4:1 on bg */
+  --field-bg: #f6f6f6;
+  --field-ink: #141414;
+  --btn-bg: #0e0e0e;
+  --btn-fg: #f6f6f6;
+  --focus: #0e0e0e;
+  --scroll-shadow: rgba(0, 0, 0, 0.18);
+
+  --font: "Atkinson Hyperlegible Next", "Atkinson Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Atkinson Hyperlegible Mono", "Atkinson Mono Fallback", "Atkinson Mono Fallback 2", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  /* Code blocks use the same Mono as inline code. The docs' box-drawing diagrams need glyphs it
+     does not have; build.py wraps every such glyph in a one-cell span (pre.diagram .g), so the
+     per-glyph fallback cannot break the columns. */
+  --pre: var(--mono);
+  --math: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", serif;
+
+  --gutter: clamp(1rem, 6vw, 5.5rem);
+  --content: 1200px;
+  --measure: 40rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000;
+    --surface: #0f0f0f;
+    --code-bg: #171717;
+    --fg: #f1f1f1;
+    --muted: #b1b1b1;
+    --faint: #939393;
+    --line: #2e2e2e;
+    --line-strong: #6e6e6e;
+    --field-bg: #000000;
+    --field-ink: #e9e9e9;
+    --btn-bg: #f1f1f1;
+    --btn-fg: #000000;
+    --focus: #f1f1f1;
+    /* a black shadow on a black page is invisible: the scroll cue is a light edge here */
+    --scroll-shadow: rgba(255, 255, 255, 0.14);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #0f0f0f;
+  --code-bg: #171717;
+  --fg: #f1f1f1;
+  --muted: #b1b1b1;
+  --faint: #939393;
+  --line: #2e2e2e;
+  --line-strong: #6e6e6e;
+  --field-bg: #000000;
+  --field-ink: #e9e9e9;
+  --btn-bg: #f1f1f1;
+  --btn-fg: #000000;
+  --focus: #f1f1f1;
+  --scroll-shadow: rgba(255, 255, 255, 0.14);
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------- base */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 1rem; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--fg); text-decoration-thickness: 1px; text-underline-offset: 0.2em; text-decoration-color: var(--line-strong); }
+a:hover { text-decoration-color: var(--fg); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--fg); color: var(--bg); }
+h1, h2, h3, h4 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+code, kbd, samp { font-family: var(--mono); font-size: 0.9em; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: -9999px; top: 0; z-index: 10; }
+.skip:focus { left: var(--gutter); top: 0.75rem; background: var(--bg); color: var(--fg); padding: 0.4rem 0.75rem;
+  border: 1px solid var(--line-strong); border-radius: 6px; }
+
+/* Theme-specific images (documentation plots): the toggle sets data-theme, so a <picture media>
+   query cannot follow it; these classes can. */
+.only-dark { display: none; }
+:root[data-theme="dark"] .only-light { display: none; }
+:root[data-theme="dark"] .only-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .only-light { display: none; }
+  :root:not([data-theme="light"]) .only-dark { display: block; }
+}
+
+/* One container for everything, the hero's text included, so every left edge lines up. */
+.wrap { width: 100%; max-width: calc(var(--content) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.docs-page .wrap { --content: 1360px; }
+
+/* Scroll cue: a shadow appears at whichever edge has more to scroll to; the "local" layers move
+   with the content and cover the shadows at the ends. */
+.table-scroll, pre, .eq {
+  --scroll-bg: var(--bg);
+  background:
+    linear-gradient(to right, var(--scroll-bg) 30%, transparent) left center / 28px 100% no-repeat local,
+    linear-gradient(to left, var(--scroll-bg) 30%, transparent) right center / 28px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, var(--scroll-shadow), transparent) left center / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, var(--scroll-shadow), transparent) right center / 12px 100% no-repeat scroll,
+    var(--scroll-bg);
+}
+.table-scroll { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ---------------------------------------------------------------- header */
+.top { position: relative; z-index: 2; }
+.top-inner { display: flex; align-items: center; gap: 0.5rem clamp(1rem, 2.4vw, 2rem); min-height: 4.25rem; flex-wrap: wrap;
+  padding-block: 0.75rem; font-size: 0.9375rem; }
+.top nav { display: flex; align-items: center; gap: 0.25rem clamp(1rem, 2.4vw, 2rem); margin-left: auto; flex-wrap: wrap; }
+.top nav a { color: var(--fg); text-decoration: none; padding-block: 0.375rem; white-space: nowrap; }
+.top nav a:hover, .top nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; text-decoration-color: currentColor; }
+.top-tools { display: flex; gap: 0.5rem; align-items: center; }
+.wordmark { font-weight: 500; font-size: 1.375rem; letter-spacing: -0.035em; line-height: 1; color: var(--fg); text-decoration: none; padding-block: 0.375rem;
+  display: inline-flex; align-items: baseline; gap: 0.5rem; }
+.wordmark .ver { font-size: 0.8125rem; letter-spacing: 0; color: var(--faint); font-weight: 400; }
+/* Home: the bar sits over the hero's flow, not above it. */
+.home .top { position: absolute; top: 0; left: 0; right: 0; }
+.docs-page .top { border-bottom: 1px solid var(--line); }
+
+.icon-btn {
+  font: inherit; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  width: 2.375rem; height: 2.375rem; display: grid; place-items: center; padding: 0;
+  cursor: pointer; flex: none;
+}
+.icon-btn:hover { border-color: var(--fg); }
+/* The theme switch keeps its place while site.js has not run yet (it unhides it), so the bar
+   never moves when the script arrives; without scripts it simply stays invisible. */
+.icon-btn[data-theme-toggle][hidden] { display: grid !important; visibility: hidden; }
+.icon-btn svg { width: 1rem; height: 1rem; }
+.hero-pause .i-play { display: none; }
+.hero-pause[aria-pressed="true"] .i-play { display: block; }
+.hero-pause[aria-pressed="true"] .i-pause { display: none; }
+
+/* ---------------------------------------------------------------- buttons */
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  min-height: 2.875rem; padding: 0 1.25rem;
+  border-radius: 6px;
+  font: 500 1rem/1 var(--font);
+  text-decoration: none;
+  border: 1px solid var(--btn-bg);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-primary:hover { opacity: 0.88; }
+.btn-secondary { background: var(--bg); color: var(--fg); border-color: var(--line-strong); }
+.btn-secondary:hover { border-color: var(--fg); }
+.btn svg { width: 1.05rem; height: 1.05rem; flex: none; }
+
+/* ---------------------------------------------------------------- hero */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  background: var(--field-bg);
+}
+/* The canvas is absolutely positioned and sized by CSS, so it never moves the layout; it fades
+   in once the flow has developed. */
+.field {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 1.6s ease-out;
+}
+.field.is-live { opacity: 1; }
+/* The flow dissolves into the page instead of stopping at a hard edge where the hero ends. */
+.field { -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent); mask-image: linear-gradient(to bottom, #000 78%, transparent); }
+.hero-copy { align-self: end; padding-top: 7rem; padding-bottom: clamp(2.5rem, 9vh, 6.5rem); }
+.hero-copy > * { max-width: 46rem; }
+.hero h1 {
+  margin: 0 0 0 -0.04em;     /* optical: the A overhangs */
+  font-weight: 500;
+  font-size: clamp(3.5rem, 10.5vw, 9.25rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+.hero .lede {
+  margin: 1.25rem 0 0;
+  max-width: 37rem;
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.45;
+  color: var(--muted);
+}
+.hero .actions { margin-top: 2rem; }
+/* Contrast probe: keeps the layout but hides the ink, so the field behind the text can be
+   measured from pixels (?notext). */
+.hero-notext .hero-copy, .hero-notext .top-inner { visibility: hidden; }
+
+/* ---------------------------------------------------------------- sections */
+.sec { padding-top: clamp(4rem, 8vw, 7.5rem); }
+.sec-head { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.sec h2 {
+  margin: 0 0 1.25rem;
+  font-weight: 500;
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  max-width: 22ch;
+}
+.sec h3 { margin: 0 0 0.6rem; font-weight: 500; font-size: 1.375rem; line-height: 1.2; letter-spacing: -0.015em; }
+.lede { margin: 0; max-width: var(--measure); color: var(--muted); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem); line-height: 1.5; }
+.lede + .lede { margin-top: 1em; }
+.prose { max-width: var(--measure); }
+.prose p { margin: 0 0 1em; }
+.prose p:last-child { margin-bottom: 0; }
+.more { margin: 1.5rem 0 0; color: var(--muted); }
+.small { font-size: 0.875rem; color: var(--muted); }
+
+/* the positioning statement right under the hero */
+.trust h2.statement { font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.25rem); line-height: 1.02; letter-spacing: -0.04em; max-width: 21ch;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+.trust-lede { max-width: 46rem; margin-bottom: clamp(2rem, 4vw, 3rem); }
+.trust-lede .lede { color: var(--fg); max-width: none; }
+.tally { margin: 1.25rem 0 0; color: var(--muted); }
+.tally strong { color: var(--fg); font-weight: 700; }
+/* The passing share as a thin bar above the sentence; the end it leaves uncovered, in the
+   stronger line colour, is the failing checks. Full measure wide, so 2 of 125 is a visible
+   12 px rather than a 4 px nick that read as a plain rule (design critique, round 5). The
+   number beside it is static text (see validation_tally in build.py). */
+.tally-bar { display: block; position: relative; width: 100%; height: 3px; margin: 0 0 0.75rem;
+  background: var(--line-strong); }
+.tally-fill { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--frac, 1) * 100%); background: var(--fg);
+  transform-origin: left center; }
+
+/* The ledger: the closest call of each solver area and every failure, from the validation
+   record. Numbers sit in Mono, right-aligned, and never break inside a range. */
+.ledger { width: 100%; min-width: 820px; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.9375rem; }
+.ledger caption { text-align: left; font-size: 0.875rem; color: var(--muted); padding-bottom: 1rem; caption-side: top; max-width: 72ch; }
+.ledger th, .ledger td { padding: 0.75rem 1.25rem 0.75rem 0; border-top: 1px solid var(--line); vertical-align: baseline; text-align: left; }
+.ledger td:last-child, .ledger th:last-child { padding-right: 0; }
+.ledger thead th { font-weight: 400; font-size: 0.8125rem; color: var(--faint); border-top: 0; padding-top: 0; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--fg); white-space: nowrap; }
+.ledger thead th.num { text-align: right; font-family: var(--font); font-size: 0.8125rem; }
+.ledger tbody tr:last-child th, .ledger tbody tr:last-child td { border-bottom: 1px solid var(--line); }
+.ledger tr.group th { font-weight: 500; padding-top: 1.75rem; padding-bottom: 0.5rem; border-top: 0; }
+.ledger tbody tr.group:first-child th { padding-top: 1rem; }
+.ledger tr.group a { text-decoration-color: var(--line-strong); }
+.ledger tr.group span { font-weight: 400; color: var(--muted); font-size: 0.875rem; margin-left: 1rem; }
+.ledger tr.group + tr th, .ledger tr.group + tr td { border-top-color: var(--line-strong); }
+.ledger th[scope="row"] { font-weight: 400; max-width: 30rem; }
+.ledger .case { display: block; }
+.ledger .src, .ledger .flag { display: block; font-size: 0.8125rem; color: var(--faint); margin-top: 0.15rem; }
+.ledger .src a { color: var(--faint); }
+.ledger .flag { color: var(--fg); }
+.ledger .num { font-family: var(--mono); font-size: 0.875rem; text-align: right; white-space: nowrap; }
+.ledger td.ref, .ledger td.diff, .ledger td.band { color: var(--muted); }
+.ledger td.res { white-space: nowrap; color: var(--muted); }
+.ledger tr.fail td.res strong { color: var(--fg); font-weight: 700; }
+.ledger tr.fail td.val { font-weight: 700; color: var(--fg); }
+.ledger-wrap { margin-inline: -2px; padding-inline: 2px; }
+
+/* limits: the heading on the left, the list on the right */
+.limits { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 1.5rem clamp(2rem, 5vw, 5rem); align-items: start; }
+.limits .sec-head { margin-bottom: 0; }
+.limit-list ul { list-style: none; margin: 0; padding: 0; }
+.limit-list li { padding: 0.9rem 0; border-top: 1px solid var(--line); color: var(--muted); }
+.limit-list li:last-child { border-bottom: 1px solid var(--line); }
+.limit-list strong { color: var(--fg); font-weight: 700; }
+
+/* computed figure */
+.plate-fig { margin-top: clamp(4rem, 8vw, 7.5rem); }
+/* The aspect ratios (--ar, and --ar-m for the phone crop) come from assets/figures.json through
+   inline styles written by build.py, so the plate reserves its height before the image loads. */
+.plate { position: relative; background: #1a1c20; overflow: hidden; border-radius: 8px; aspect-ratio: var(--ar, auto); }
+.plate picture { display: block; width: 100%; height: 100%; }
+.plate img { width: 100%; height: 100%; object-fit: cover; }
+figcaption { font-size: 0.875rem; line-height: 1.5; color: var(--muted); max-width: 72ch; margin-top: 0.75rem; }
+figcaption b { color: var(--fg); font-weight: 500; }
+
+/* feature rows: words on the left, the program on the right */
+.feature { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 2rem clamp(2rem, 5vw, 4.5rem);
+  align-items: start; margin-top: clamp(3rem, 6vw, 5rem); }
+.feature-text { min-width: 0; }
+.feature-text p { margin: 0 0 1em; color: var(--muted); }
+.feature-text p:last-child { margin-bottom: 0; }
+.feature-text .small { margin-top: 0.75rem; }
+.facts { list-style: none; margin: 1.25rem 0 0; padding: 0; font-size: 0.9375rem; }
+.facts li { padding: 0.55rem 0; border-top: 1px solid var(--line); }
+.facts li:last-child { border-bottom: 1px solid var(--line); }
+.facts b { font-family: var(--mono); font-weight: 400; }
+.feature-media { min-width: 0; display: grid; gap: 1.5rem; }
+
+/* Screenshots, each cropped to the panel the text talks about. The frame takes the crop's shape
+   (--crop-ar, from build.py) and the full 1600 x 1000 capture is scaled and offset inside it
+   (inline width/left/top), so the frame reserves its height before the image loads. The frame
+   is a link to the full capture. */
+.shot { margin: 0; min-width: 0; }
+.shot .frame { display: block; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; }
+.shot .crop { position: relative; aspect-ratio: var(--crop-ar, 16 / 10); }
+.shot .crop img { position: absolute; max-width: none; height: auto; }
+.shot .frame:hover { border-color: var(--line-strong); }
+.shot figcaption { margin-top: 0.6rem; }
+.feature-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+
+/* get Aerolume */
+.two-col { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 2.5rem clamp(2rem, 5vw, 4.5rem); align-items: start; }
+.two-col.code-right { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.codeblock { position: relative; margin: 0 0 1.5rem; min-width: 0; }
+.codeblock .label { font-size: 0.875rem; color: var(--muted); margin: 0 0 0.5rem; display: flex; justify-content: space-between;
+  align-items: center; gap: 1rem; }
+pre {
+  --scroll-bg: var(--code-bg);
+  font-family: var(--pre);
+  margin: 0; padding: 1rem 1.125rem; border-radius: 8px;
+  overflow-x: auto; line-height: 1.6; font-size: 0.8125rem; color: var(--fg); tab-size: 4;
+}
+pre code { font-family: inherit; font-size: inherit; background: none; padding: 0; }
+pre .ph { font-style: italic; color: var(--muted); }
+.copy {
+  font: 400 0.8125rem/1 var(--font); border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg);
+  border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; min-height: 1.75rem;
+}
+.copy:hover { border-color: var(--fg); }
+
+/* footer */
+.foot { margin-top: clamp(5rem, 10vw, 9rem); border-top: 1px solid var(--line); padding-block: 2rem 3rem; }
+.foot .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.25rem 3rem; align-items: start; }
+.foot p { margin: 0; font-size: 0.875rem; color: var(--muted); max-width: 64ch; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.875rem; }
+.foot nav a { color: var(--fg); padding-block: 0.25rem; display: inline-block; }
+
+/* ---------------------------------------------------------------- docs */
+.docs-layout {
+  display: grid; grid-template-columns: 220px minmax(0, 1fr) 220px; gap: clamp(2rem, 4vw, 3.5rem);
+  max-width: calc(1360px + 2 * var(--gutter)); margin: 0 auto; padding: 2.5rem var(--gutter) 0;
+}
+.docs-nav, .docs-toc { font-size: 0.875rem; line-height: 1.4; min-width: 0; }
+.docs-nav .sticky, .docs-toc .sticky { position: sticky; top: 1.5rem; max-height: calc(100vh - 3rem); overflow-y: auto; padding-bottom: 1rem; }
+.docs-nav h2, .docs-toc h2 { font-size: 0.875rem; font-weight: 500; color: var(--faint); margin: 0 0 0.5rem; }
+.docs-nav ul, .docs-toc ul { list-style: none; margin: 0 0 1.5rem; padding: 0; }
+.docs-nav li a { display: block; padding: 0.3rem 0 0.3rem 0.75rem; color: var(--muted); text-decoration: none; border-left: 1px solid var(--line); }
+.docs-nav li a:hover { color: var(--fg); border-left-color: var(--line-strong); }
+.docs-nav li a[aria-current="page"] { color: var(--fg); font-weight: 500; border-left: 2px solid var(--fg); padding-left: calc(0.75rem - 1px); }
+.docs-toc li a { display: block; padding: 0.25rem 0; color: var(--muted); text-decoration: none; }
+.docs-toc li.l3 a { padding-left: 0.75rem; font-size: 0.8125rem; }
+.docs-toc li a:hover { color: var(--fg); text-decoration: underline; }
+.docs-mobile { display: none; }
+.docs-mobile details { border: 1px solid var(--line-strong); border-radius: 8px; margin: 0 0 0.75rem; }
+.docs-mobile summary { font-size: 0.9375rem; font-weight: 500; padding: 0.6rem 0.9rem; cursor: pointer; }
+.docs-mobile ul { list-style: none; margin: 0; padding: 0 0.9rem 0.75rem; font-size: 0.9375rem; }
+.docs-mobile li a { display: block; padding: 0.3rem 0; text-decoration: none; color: var(--muted); }
+.docs-mobile li a[aria-current="page"] { color: var(--fg); font-weight: 500; }
+.docs-mobile li.l3 a { padding-left: 0.75rem; }
+
+.doc { min-width: 0; max-width: 46rem; overflow-wrap: break-word; }   /* long URLs in references wrap */
+.doc .crumb { font-size: 0.875rem; color: var(--faint); margin: 0 0 0.75rem; }
+.doc .crumb a { color: var(--faint); }
+.doc .crumb.src-link { margin-top: 2.5rem; }
+.doc h1 { font-weight: 500; font-size: clamp(2.125rem, 1.4rem + 2.6vw, 3.25rem); line-height: 1.05; letter-spacing: -0.035em; margin: 0 0 1.75rem; }
+.doc h2 { font-weight: 500; font-size: 1.625rem; line-height: 1.2; letter-spacing: -0.02em; margin: 2.6em 0 0.7em; padding-top: 0.8em;
+  border-top: 1px solid var(--line); }
+.doc h3 { font-weight: 500; font-size: 1.25rem; letter-spacing: -0.01em; margin: 1.9em 0 0.5em; }
+.doc h4, .doc h5, .doc h6 { font-weight: 700; font-size: 1.0625rem; margin: 1.6em 0 0.4em; }
+.doc h2:first-of-type { margin-top: 1.6em; }
+.doc .anchor { margin-left: 0.5rem; color: var(--faint); text-decoration: none; font-weight: 400; opacity: 0; }
+.doc :is(h2, h3, h4):hover .anchor, .doc .anchor:focus-visible { opacity: 1; }
+.doc p { margin: 0 0 1em; }
+.doc ul, .doc ol { margin: 0 0 1em; padding-left: 1.4em; }
+.doc li { margin: 0.3em 0; }
+.doc li > ul, .doc li > ol { margin: 0.3em 0 0.4em; }
+.doc li > p { margin: 0 0 0.5em; }
+.doc a { text-decoration-color: var(--faint); }
+.doc a:hover { text-decoration-color: var(--fg); }
+/* Inline code breaks only where build.py put a <wbr> (after / and _ in long paths), never
+   inside a word. */
+.doc :not(pre) > code { background: var(--code-bg); padding: 0.08em 0.3em; border-radius: 4px; overflow-wrap: break-word; font-size: 0.86em; }
+.doc pre { margin: 0 0 1.25em; }
+.doc hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
+.doc hr:has(+ h2) { display: none; }   /* an h2 already draws its own rule */
+.doc blockquote { margin: 0 0 1em; padding: 0.1rem 0 0.1rem 1rem; border-left: 2px solid var(--line-strong); color: var(--muted); }
+.doc figure { margin: 1.5em 0; }
+.doc figure > img { border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.doc figcaption { margin-top: 0.5rem; }
+.doc .table-scroll { margin: 0 0 1.5em; }
+.doc table { border-collapse: collapse; width: 100%; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.doc th, .doc td { padding: 0.45rem 1rem 0.45rem 0; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+.doc th:last-child, .doc td:last-child { padding-right: 0; }
+.doc thead th { font-weight: 500; color: var(--muted); border-bottom: 1px solid var(--fg); text-align: left; }
+.doc tbody tr:last-child td { border-bottom: 0; }
+.doc td code, .doc th code { font-size: 0.8125rem; }
+.doc th.r, .doc td.r { text-align: right; }
+.doc th.c, .doc td.c { text-align: center; }
+.doc .math-block { overflow-x: auto; margin: 0 0 1.25em; }
+.doc .placeholder { font-size: 0.9375rem; color: var(--faint); border: 1px dashed var(--line-strong); border-radius: 6px; padding: 0.6rem 0.9rem; }
+
+/* plain-text formulas typeset by build.py: inline (.math) and displayed (.eq). A displayed
+   equation never wraps mid-expression; it scrolls inside its box (with the scroll cue). */
+.math { font-family: var(--math); font-size: 1.04em; font-variant-numeric: lining-nums; }
+.math i, .eq i { font-style: italic; }
+.math sub, .math sup, .eq sub, .eq sup { font-size: 0.72em; line-height: 0; }
+.math sub i, .eq sub i { padding-right: 0.04em; }
+.eq { overflow-x: auto; margin: 0.2em 0 1.3em; padding: 0.35em 0 0.35em 1.5em; white-space: nowrap; }
+.eq table { border-collapse: collapse; width: auto; font-family: var(--math); font-size: 1.0625rem; }
+.doc .eq td { border: 0; padding: 0.12em 0; white-space: nowrap; vertical-align: baseline; }
+.doc .eq td.l { text-align: right; padding-right: 0.3em; }
+.doc .eq td.rel { text-align: center; padding: 0.12em 0.35em; }
+.doc .eq td.r { text-align: left; padding-left: 0.3em; }
+.doc .eq td.cond { padding-left: 2.5em; color: var(--muted); }
+/* box-drawing diagrams: every non-ASCII glyph held to one character cell */
+pre.diagram .g { display: inline-block; width: 1ch; text-align: center; overflow: hidden; vertical-align: bottom; }
+
+/* documentation plots: separately sized panels, light and dark variants */
+.doc .doc-fig { margin: 1.75em 0; }
+.doc-fig .panels { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 1rem; }
+.doc-fig .panel { display: block; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.doc-fig .panel:hover { border-color: var(--line-strong); }
+.doc-fig .panel img { width: 100%; height: auto; }
+.doc-fig figcaption { margin-top: 0.5rem; }
+
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 3.5rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.pager a { text-decoration: none; display: flex; flex-direction: column; gap: 0.15rem; color: var(--fg); }
+.pager a span { font-size: 0.875rem; color: var(--faint); }
+.pager a b { font-weight: 500; }
+.pager a:hover b { text-decoration: underline; text-underline-offset: 0.2em; }
+.pager .next { text-align: right; grid-column: 2; }
+.doc .doc-index { list-style: none; padding: 0; margin: 0; }
+.doc .doc-index li { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: 0.4rem 1.5rem; padding: 0.9rem 0;
+  border-top: 1px solid var(--line); margin: 0; }
+.doc .doc-index li a { font-weight: 500; }
+.doc .doc-index li p { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+.doc .doc-index-group { border: 0; padding: 0; font-size: 1.125rem; font-weight: 500; letter-spacing: -0.01em; margin: 2.5rem 0 0.5rem; }
+
+/* ---------------------------------------------------------------- responsive */
+@media (max-width: 1180px) {
+  .docs-layout { grid-template-columns: 200px minmax(0, 1fr); }
+  .docs-toc { display: none; }
+  .docs-mobile { display: block; }
+  .docs-mobile .m-nav { display: none; }
+}
+@media (max-width: 980px) {
+  .feature, .two-col, .two-col.code-right, .limits { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 820px) {
+  .docs-layout { grid-template-columns: minmax(0, 1fr); padding-top: 1.25rem; gap: 0; }
+  .docs-nav { display: none; }
+  .docs-mobile .m-nav { display: block; }
+}
+@media (max-width: 640px) {
+  /* phone header: the links spread over the row */
+  .home .top nav { margin-left: 0; flex: 1 1 auto; justify-content: space-between; }
+  .docs-page .top nav { order: 2; width: 100%; margin-left: 0; justify-content: space-between; }
+  .docs-page .top-tools { margin-left: auto; }
+  .hero-copy { padding-bottom: 2rem; }
+  .hero .lede { margin-top: 1rem; }
+  .hero .actions { margin-top: 1.5rem; }
+  .hero .btn { flex: 1 1 auto; }
+
+  .feature-pair { grid-template-columns: minmax(0, 1fr); }
+  /* the plates switch to their phone crops (<picture> sources); match the crops' shape */
+  .plate { aspect-ratio: var(--ar-m, var(--ar, auto)); }
+  .foot .wrap { grid-template-columns: minmax(0, 1fr); }
+  .doc .doc-index li { grid-template-columns: minmax(0, 1fr); }
+  .pager { grid-template-columns: minmax(0, 1fr); }
+  .pager .next { grid-column: 1; }
+  .eq { padding-left: 0.5em; }
+
+  /* The ledger restacks into one card per check: the check on its own line, then the five
+     values in labelled cells, so nothing scrolls sideways and no range breaks. */
+  .ledger { min-width: 0; }
+  .ledger thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .ledger tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem 0.75rem; padding: 0.9rem 0;
+    border-top: 1px solid var(--line); }
+  .ledger tbody tr.group { display: block; padding: 1.5rem 0 0.4rem; border-top: 0; }
+  .ledger tr.group + tr { border-top-color: var(--line-strong); }
+  .ledger tbody tr:last-child { border-bottom: 1px solid var(--line); }
+  .ledger th, .ledger td, .ledger tbody tr:last-child th, .ledger tbody tr:last-child td { border: 0; padding: 0; }
+  .ledger tr.group th { padding: 0; display: block; }
+  .ledger tr.group span { display: block; margin: 0.15rem 0 0; }
+  .ledger th[scope="row"] { grid-column: 1 / -1; max-width: none; }
+  .ledger .num { text-align: left; }
+  /* a published value with a remark ("1.087 unconfined") wraps at its space instead of running
+     into the next cell; a bare range still fits its third of the card */
+  .ledger td.ref { white-space: normal; }
+  .ledger .gauge { margin-left: 0; }
+  .ledger td[data-label]::before { content: attr(data-label); display: block; font-family: var(--font); font-size: 0.75rem; color: var(--faint); }
+
+  /* commands wrap with a hanging indent instead of running off the edge */
+  pre.cmd { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre.cmd .ln { display: block; padding-left: 2ch; text-indent: -2ch; }
+}
+
+/* ---------------------------------------------------------------- scroll motion
+   Opt-in: site.js puts "motion" on the root element only with IntersectionObserver and reduced
+   motion off, so a block is never hidden unless the script that shows it is running. Transform
+   and opacity only (plus the divider's stroke-dashoffset, which paints but never lays out), and
+   every sequence settles within about 600 ms of a block entering the view.
+   Few, large units, and one motif: a section head with its text arrives as one block (a 400 ms
+   fade with a 10 px rise; prose inside it never animates on its own), while every picture is
+   uncovered left to right, the way the flow runs in all of them: the smoke figure, the program
+   screenshots, and the streamline divider, whose lines are drawn from the airfoil outwards. The
+   ledger fades in as one table and only its band gauges move row by row. */
+.motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms),
+              transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms);
+}
+.motion [data-reveal].is-in { opacity: 1; transform: none; }
+.motion [data-reveal].no-anim, .motion [data-reveal].no-anim *, .motion [data-reveal].no-anim::after,
+.motion [data-reveal].no-anim *::after { transition: none !important; }
+
+/* Band gauge in the ledger: the band as a bracketed line, the measured value as a mark (outside
+   the brackets when the check failed). Drawn by build.py from the record (--p = position of the
+   value in its band, 0 to 1). Decorative: the band and the result are in the cells as text. */
+.gauge { position: relative; display: block; width: 7.5rem; height: 9px; margin: 0.45rem 0 0 auto; }
+.gauge .band { position: absolute; left: 18%; right: 18%; top: 1px; height: 7px;
+  border: solid var(--line-strong); border-width: 0 1px; transform-origin: left center; }
+.gauge .band::after { content: ""; position: absolute; left: 0; right: 0; top: 3px; height: 1px; background: var(--line-strong); }
+.gauge .mark { position: absolute; top: 0; height: 9px; width: 2px; margin-left: -1px; background: var(--fg);
+  left: calc(18% + 64% * var(--p, 0.5)); }
+.ledger tr.fail .gauge .mark { width: 3px; margin-left: -1.5px; }
+.motion .ledger-wrap[data-reveal] .gauge .band { transform: scaleX(0);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--reveal-delay, 0ms) + var(--gi, 0) * 25ms); }
+.motion .ledger-wrap[data-reveal] .gauge .mark { opacity: 0; transform: translateY(-5px);
+  transition: opacity 0.2s ease-out calc(var(--reveal-delay, 0ms) + var(--gi, 0) * 25ms + 320ms),
+    transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--reveal-delay, 0ms) + var(--gi, 0) * 25ms + 320ms); }
+.motion .ledger-wrap.is-in .gauge .band, .motion .ledger-wrap.is-in .gauge .mark { transform: none; opacity: 1; }
+/* the tally's pass bar draws once, left to right, as the trust head arrives */
+.motion .trust-head[data-reveal] .tally-fill { transform: scaleX(0);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--reveal-delay, 0ms) + 100ms); }
+.motion .trust-head.is-in .tally-fill { transform: none; }
+
+/* The cavity plot (build.py: cavity_plot). The published rings and the bands are there from the
+   start; Aerolume's line then draws through them left to right (420 ms, stroke-dashoffset on a
+   pathLength-1 line: paint only, no layout) and each dot lands as the line reaches it (the four
+   points are evenly spaced in log Ra, so 140 ms apart); all of it done by 600 ms. */
+.vplot { display: grid; grid-template-columns: minmax(0, 30rem) minmax(0, 1fr); gap: 1rem clamp(2rem, 5vw, 4rem);
+  align-items: end; margin: clamp(2.5rem, 5vw, 4rem) 0 0; }
+.vplot-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font); }
+.vplot figcaption { font-size: 0.875rem; color: var(--muted); max-width: 34rem; }
+.vplot figcaption b { color: var(--fg); font-weight: 700; }
+.vplot .grid { stroke: var(--line); stroke-width: 1; }
+.vplot .zero { stroke: var(--line-strong); stroke-width: 1; }
+.vplot .tick { fill: var(--faint); font-size: 12px; font-variant-numeric: tabular-nums; }
+.vplot .axis { fill: var(--muted); font-size: 12px; }
+.vplot .bandbar { fill: none; stroke: var(--line-strong); stroke-width: 1.25; }
+.vplot .ref { fill: var(--bg); stroke: var(--muted); stroke-width: 1.25; }
+.vplot .curve { fill: none; stroke: var(--fg); stroke-width: 1.5; stroke-linejoin: round; }
+.vplot .val { fill: var(--fg); }
+.motion .vplot[data-reveal] .curve { stroke-dasharray: 1; stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.42s linear calc(var(--reveal-delay, 0ms) + 60ms); }
+.motion .vplot[data-reveal] .val { opacity: 0;
+  transition: opacity 0.12s ease-out calc(var(--reveal-delay, 0ms) + 60ms + var(--i, 0) * 140ms); }
+.motion .vplot.is-in .curve { stroke-dashoffset: 0; }
+.motion .vplot.is-in .val { opacity: 1; }
+@media (max-width: 760px) {
+  .vplot { grid-template-columns: minmax(0, 1fr); }
+  .vplot-svg { max-width: 30rem; }
+  /* the drawing scales down with the column; keep its labels near 11 px on a phone */
+  .vplot .tick, .vplot .axis { font-size: 14px; }
+}
+
+/* The flow-direction wipe. A cover in the page colour over the picture shrinks towards its right
+   edge (scaleX from the right, so it never reaches outside the block and needs no clipping that
+   would also clip focus rings), uncovering the picture from left to right in 450 ms. */
+.feature-media { position: relative; }
+.plate::after, .motion [data-reveal="wipe"]::after {
+  content: ""; position: absolute; inset: -4px; background: var(--bg); pointer-events: none;
+  transform-origin: right center; transform: scaleX(0);
+}
+.plate::after { inset: -1px; }
+.motion [data-reveal="wipe"], .motion .plate-fig[data-reveal], .motion .streak[data-reveal] { opacity: 1; transform: none; }
+.motion [data-reveal="wipe"]::after, .motion .plate-fig[data-reveal] .plate::after {
+  transform: scaleX(1); transition: transform 0.45s cubic-bezier(0.6, 0, 0.25, 1) var(--reveal-delay, 0ms); }
+.motion [data-reveal="wipe"].is-in::after, .motion .plate-fig[data-reveal].is-in .plate::after { transform: scaleX(0); }
+/* the smoke picture settles as it is uncovered */
+.motion .plate-fig[data-reveal] .plate img { transform: scale(1.03); transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms); }
+.motion .plate-fig[data-reveal].is-in .plate img { transform: none; }
+
+/* The streamline divider (computed by build.py: inviscid flow past a Joukowski airfoil). */
+.streak { margin-top: clamp(4rem, 8vw, 7.5rem); color: var(--faint); }
+.streak svg { display: block; width: 100%; height: 6.5rem; }
+.streak .foil { fill: var(--line); }
+.streak + .sec { padding-top: clamp(2rem, 4vw, 3rem); }
+.motion .streak[data-reveal] .sl path { stroke-dasharray: 1; stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.48s cubic-bezier(0.3, 0.6, 0.2, 1) calc(var(--k, 0) * 12ms); }
+.motion .streak[data-reveal] .foil { opacity: 0; transition: opacity 0.3s ease-out; }
+.motion .streak.is-in .sl path { stroke-dashoffset: 0; }
+.motion .streak.is-in .foil { opacity: 1; }
+
+/* As the hero scrolls away its flow moves at a fraction of the page's speed (depth). The copy
+   does not move or fade: it scrolls with the page and stays at full contrast until it has left,
+   and hero.js re-measures the calm zone behind it as the field shifts (website round 4: a fading,
+   lifting copy over a lagging field had dropped the lede to 2.7:1 on phones). Scroll-driven, so it
+   costs no script; browsers without scroll timelines simply scroll the hero as one piece. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero .field.is-live { animation: hero-lag linear both; animation-timeline: scroll(root); animation-range: 0 100svh; }
+  }
+}
+@keyframes hero-lag { to { transform: translate3d(0, 28svh, 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .top, .docs-nav, .docs-toc, .docs-mobile, .icon-btn, .copy, .field { display: none !important; }
+  .hero { min-height: 0; }
+  .docs-layout { grid-template-columns: minmax(0, 1fr); }
+}

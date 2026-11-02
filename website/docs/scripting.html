@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Scripting API</title>
+<meta name="description" content="import aerolume as al: designs, runs, sweeps, plots and exports from Python.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Scripting API">
+<meta property="og:description" content="import aerolume as al: designs, runs, sweeps, plots and exports from Python.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html" aria-current="page">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html" aria-current="page">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-five-lines">1. Five lines</a></li><li class="l2"><a href="#2-projects">2. Projects</a></li><li class="l2"><a href="#3-designs">3. Designs</a></li><li class="l2"><a href="#4-running">4. Running</a></li><li class="l2"><a href="#5-results">5. Results</a></li><li class="l3"><a href="#figures">Figures</a></li><li class="l3"><a href="#exports">Exports</a></li><li class="l2"><a href="#6-sweeps">6. Sweeps</a></li><li class="l2"><a href="#7-heat-fans-jets-and-smoke">7. Heat, fans, jets and smoke</a></li><li class="l2"><a href="#8-reference-cases-and-grid-studies">8. Reference cases and grid studies</a></li><li class="l2"><a href="#9-comparisons-reports-plans">9. Comparisons, reports, plans</a></li><li class="l2"><a href="#10-progress-cancel-verbose-errors">10. Progress, cancel, verbose, errors</a></li><li class="l2"><a href="#11-the-script-dock">11. The Script dock</a></li><li class="l2"><a href="#12-command-line">12. Command line</a></li><li class="l2"><a href="#13-examples">13. Examples</a></li><li class="l2"><a href="#14-for-integrators-hosts">14. For integrators: hosts</a></li><li class="l2"><a href="#15-reference">15. Reference</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="scripting-aerolume">Scripting Aerolume</h1>
+<p>Everything the desktop app does with designs, simulations and results can be done from
+Python: build geometry, plan and run 2D and 3D CFD, airfoil polars and finite-wing analyses,
+add heat transfer, fans, jets and smoke emitters, run reference cases and grid-convergence
+studies, sweep parameters, compare designs, make figures (including 3D streamlines, smoke and
+vortex pictures), export data and write reports. Scripts run in three places and behave the
+same in each:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">where</th><th scope="col">how</th><th scope="col"><code>project</code> is</th></tr></thead>
+<tbody>
+<tr><td>the app</td><td><strong>View ▸ Script</strong> dock (Alt+4, or <strong>Script</strong> on the toolbar): editor, Run (Ctrl+Enter), output with inline figures</td><td>the open project</td></tr>
+<tr><td>the command line</td><td><code>aerolume-cli script study.py --project "Study.aerolume"</code></td><td>the <code>--project</code> folder</td></tr>
+<tr><td>Python, Jupyter</td><td><code>import aerolume as al</code></td><td>what you open or create</td></tr>
+</tbody>
+</table></div>
+<p>Claude Desktop, Claude Code and other MCP clients can drive the same API through the
+<code>aerolume-mcp</code> server, with no API key inside Aerolume: see <a href="mcp.html">MCP server</a>.</p>
+<p>Whatever a script does is recorded in the project exactly as if it had been done in the app:
+its designs appear in the Project tree, its simulations run through the app's job queue (with
+the live view on the Simulate page), and its results open on the Results, Compare and Report
+pages.</p>
+<p>The API lives in <code>aerolume.api</code> and is re-exported by the package: <code>import aerolume as al</code>
+is fast and loads neither PyTorch, VTK nor Qt until a solver, a 3D picture or a figure is
+needed.</p>
+<hr>
+<h2 id="1-five-lines">1. Five lines<a class="anchor" href="#1-five-lines" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">import aerolume as al
+
+p = al.new_project("Airfoil study")              # a folder "Airfoil study.aerolume"
+d = p.add_naca("2412", chord=1.0)
+polar = p.run_polar(d, re=1e6, alpha=(-4, 14, 1))
+print(polar)                                     # Cl,max, best L/D, the table of points</code></pre>
+<p>In the app's Script dock the first two lines are not needed: <code>project</code> and <code>al</code> are already
+bound.</p>
+<h2 id="2-projects">2. Projects<a class="anchor" href="#2-projects" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">p = al.open_project("C:/Studies/Wing study.aerolume")      # ".aerolume" may be left out
+p = al.open_project("Wing study", create=True)              # create it when missing
+p = al.new_project("Wing study")                             # refuses an existing project
+p = al.new_project()                                         # temporary, deleted when Python exits
+with al.open_project("Wing study") as p:                     # saved on exit (changes are saved anyway)
+    ...</code></pre>
+<p><code>p.designs</code> (list of <code>Design</code>), <code>p.simulations</code>, <code>p.design(name_or_id)</code>,
+<code>p.simulation(name_or_id)</code>, <code>p.result(name_or_id)</code> (the stored result or None),
+<code>p.results(design=None)</code> and <code>p.summary()</code> (plain data: designs, simulations, status, key
+numbers) read the project. Names match without regard to case; ids and unique id prefixes work
+too. <code>p.remove_design(d)</code> and <code>p.remove_simulation(s)</code> delete (with results, immediately).</p>
+<p><strong>Re-running a script is cheap.</strong> Adding a design that already exists with the same name and
+geometry returns the existing one. Running a simulation whose design and settings equal an
+existing simulation that has a complete result returns the stored result (<code>r.reused</code> is True)
+instead of running again; <code>rerun=True</code> runs that same simulation again. <code>print(r)</code> says so ("Stored
+result of an identical run, reused"), and the Script console's end line counts the reused results
+("Finished in 1.3 s · 1 stored result of an identical run reused, not run again"), so a result
+computed earlier is never mistaken for a 1.3 s run. A stopped or failed
+simulation with the same settings is run again in place. A script that is edited and run again
+therefore only computes what changed, and the project does not fill up with duplicates.</p>
+<h2 id="3-designs">3. Designs<a class="anchor" href="#3-designs" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">d = p.add_naca("2412", chord=0.3)                      # NACA 4/5 digit, built like Geometry ▸ NACA
+d = p.add_airfoil("e387.dat", chord=0.2)                 # Selig / Lednicer file, or an (N, 2) array
+d = p.add_template("sedan")                              # the template gallery (2D)
+d = p.add_template("ahmed", slant_angle=30)              # named "Ahmed body (2D) · slant angle 30°"
+d = p.import_geometry("side.svg", kind="vehicle", length=4.6)   # SVG, DXF, image, CSV outline
+d = p.import_mesh("car.stl", units="mm", kind="vehicle")        # STL / OBJ / PLY, holes tolerated
+d = p.add_sphere(0.2)                                    # also add_primitive("box"|"cylinder", ...)
+w = p.add_wing(span=10, root_chord=1.2, tip_chord=0.6, sweep_deg=5, dihedral_deg=3,
+               twist_deg=-2, airfoil="2412")             # finite wing, symmetric about y = 0</code></pre>
+<p><code>import_mesh</code> takes <code>units</code> ("auto" guesses from the size, or "m", "cm", "mm", "in", "ft", or
+metres per unit), <code>kind</code> ("vehicle": nose at x = 0, on the road; "generic": free flight),
+<code>length</code> (scale to this length), <code>clearance</code> and <code>on_road</code>. References (frontal area, length,
+width, mirror symmetry) are measured as the import dialog does. Every file import (<code>import_mesh</code>,
+<code>import_geometry</code>, <code>add_airfoil</code> from a file) records its provenance in <code>design.raw.source</code>: the
+file name, format, full path, size in bytes and the SHA-256 of the bytes read
+(<code>al.file_source(path)</code> gives the same dictionary), so the Mesh inspector's Source group
+names the file and a result can be traced to it after the file moves or changes. <code>add_wing</code> takes the
+quarter-chord sweep (the aerodynamic one), the tip twist (negative = washout) and NACA codes or
+2D airfoil designs of the project for <code>airfoil</code> / <code>tip_airfoil</code>; <code>sections=</code> takes any planform
+as <code>aerolume.model.WingSection</code> stations.</p>
+<p>A <code>Design</code> has <code>name</code>, <code>kind</code>, <code>dimension</code>, <code>id</code>, <code>references</code>, <code>analyses</code> (what it can run,
+default first), <code>summary()</code>, <code>simulations()</code>, <code>results()</code>, <code>check()</code> (the Geometry page's
+diagnostics), <code>plot(path=None)</code> (outline drawing, or iso/side/front/top views in 3D),
+<code>export(path)</code> (.svg .dxf .dat in 2D; .stl .obj in 3D, a wing is lofted), <code>rename(name)</code>,
+<code>copy(name=None)</code> and, for meshes, <code>transform(scale=, length=, rotate_deg=(rx, ry, rz), clearance=)</code> (the design is then placed and its references re-derived as after an edit on the
+Geometry page). <code>d.raw</code> is the <code>aerolume.model.Design</code>.</p>
+<h2 id="4-running">4. Running<a class="anchor" href="#4-running" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">call</th><th scope="col">analysis</th><th scope="col">typical time</th></tr></thead>
+<tbody>
+<tr><td><code>p.run_cfd(d, speed=30, alpha=4)</code></td><td>Navier–Stokes, 2D or 3D by the design</td><td>10 s (2D airfoil, Draft, GPU) to minutes (3D car)</td></tr>
+<tr><td><code>p.run_polar(d, re=1e6, alpha=(-4, 14, 1))</code></td><td>viscous–inviscid airfoil polar (XFOIL-class)</td><td>~1.5 s per angle (+10 s the first time)</td></tr>
+<tr><td><code>p.run_wing(w, speed=30, alpha=(-4, 12, 1), method="vlm")</code></td><td>vortex lattice / lifting line on viscous section polars</td><td>1 s (25 s the first time per airfoil)</td></tr>
+<tr><td><code>p.run(name_or_id)</code></td><td>a simulation already in the project</td><td>as above</td></tr>
+</tbody>
+</table></div>
+<p><code>run_cfd</code> keywords (every one optional):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">keyword</th><th scope="col">meaning</th></tr></thead>
+<tbody>
+<tr><td><code>speed</code> or <code>re</code></td><td>free-stream speed [m/s] (default 30), or the Reynolds number on the design's reference length</td></tr>
+<tr><td><code>alpha</code>, <code>yaw</code></td><td>angle of attack / pitch and sideslip [°] (yaw: 3D only; positive = wind from the left)</td></tr>
+<tr><td><code>quality</code></td><td>"draft" (the app's start), "standard", "fine"</td></tr>
+<tr><td><code>ground</code>, <code>moving_ground</code>, <code>rotate_wheels</code></td><td>road on/off (default: vehicles on a moving road), belt, spinning wheels</td></tr>
+<tr><td><code>fluid</code>, <code>altitude</code></td><td>"air", "water" or an <code>aerolume.model.Fluid</code>; or ISA air at an altitude [m]</td></tr>
+<tr><td><code>device</code>, <code>precision</code></td><td>"auto", "cuda", "cpu"; "auto", "float32", "float64"</td></tr>
+<tr><td><code>sensitivity</code></td><td>"cd", "cl", "ld" or "cm": also compute the shape-sensitivity map</td></tr>
+<tr><td><code>symmetry</code></td><td>3D: "auto" (half domain for a symmetric body at zero yaw) or "full"</td></tr>
+<tr><td><code>reynolds</code>, <code>re_cap</code></td><td>"real" or "capped" and the cap</td></tr>
+<tr><td><code>duration</code>, <code>average_from</code>, <code>cells_per_ref</code>, <code>turbulence</code></td><td>run length and averaging start [L/U], grid, "auto" / "laminar" / "les"</td></tr>
+<tr><td>any other <code>aerolume.model.CFDSettings</code> field</td><td>passed through (<code>domain_upstream=8</code>, ...)</td></tr>
+</tbody>
+</table></div>
+<p>New simulations start from the same defaults as in the app: Draft quality, and for 2D airfoils
+above Re 10⁵ the capped Reynolds mode (no affordable 2D grid resolves an airfoil boundary layer
+at Re 10⁶, and an under-resolved run looks authoritative while being wrong). <code>r.re_sim</code> and
+<code>r.re_real</code> say what was simulated; the polar gives the answer at the real Reynolds number.</p>
+<p><code>run_polar</code> takes <code>re</code> (default 10⁶) or <code>speed</code>, <code>alpha=(start, end, step)</code>, <code>ncrit</code> (default
+9), <code>xtr</code> or <code>xtr_upper</code> / <code>xtr_lower</code> (forced transition, 1 = free), <code>mach</code>, <code>fluid</code>.
+<code>run_wing</code> takes <code>speed</code>, <code>alpha</code>, <code>method</code> ("vlm" any planform, "llt" straight wings),
+<code>viscous</code> (False: induced drag only, fast), <code>yaw</code>, <code>ncrit</code>, <code>mach</code>, <code>fluid</code>.</p>
+<p>Every run also takes <code>name=</code> (default: the app's style, "CFD · 30 m/s · α 4°"), <code>rerun=</code>,
+<code>progress=</code>, <code>cancel=</code> and <code>verbose=</code>.</p>
+<h2 id="5-results">5. Results<a class="anchor" href="#5-results" aria-label="Link to this section">#</a></h2>
+<p>A <code>Result</code> holds the numbers people ask for first:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col"></th><th scope="col">CFD (2D and 3D): one operating point</th><th scope="col">polar and wing: curves</th></tr></thead>
+<tbody>
+<tr><td><code>cd</code>, <code>cl</code>, <code>cm</code></td><td>mean coefficients (3D also <code>cs</code>, <code>c_roll</code>, <code>cn</code>)</td><td>arrays over the converged angles</td></tr>
+<tr><td><code>ld</code></td><td>Cl / Cd (printed and tabled only when <code>lifting</code>: airfoils and wings)</td><td>array</td></tr>
+<tr><td><code>alpha</code></td><td>the angle</td><td>array</td></tr>
+<tr><td><code>stats[name]</code></td><td><code>Stat</code>: mean, stderr (± of the mean), rms, min, max</td><td>—</td></tr>
+<tr><td><code>stderr(name)</code></td><td>standard error of the mean</td><td>—</td></tr>
+<tr><td><code>forces</code></td><td>drag, lift, moment, drag area, power (2D per metre of span; 3D N, N·m)</td><td>—</td></tr>
+<tr><td><code>converged</code></td><td>the runner's statistical verdict</td><td>every angle converged</td></tr>
+<tr><td><code>metrics</code></td><td>—</td><td>Cl,max (and whether it was reached), best L/D, lift slope, Oswald factor, ...</td></tr>
+<tr><td><code>best()</code>, <code>at(alpha)</code></td><td>—</td><td>the point of best L/D; a point interpolated at an angle</td></tr>
+<tr><td><code>re_sim</code>, <code>re_real</code></td><td>simulated and real Reynolds numbers</td><td>the Reynolds number (MAC for wings)</td></tr>
+</tbody>
+</table></div>
+<p>Also <code>name</code>, <code>kind</code> ("cfd2d", "cfd3d", "polar", "wing"), <code>status</code>, <code>cancelled</code>, <code>reused</code>,
+<code>warnings</code> and <code>notes</code> (always read the warnings), <code>conditions</code>, <code>design</code>, <code>simulation</code>,
+<code>wall_seconds</code>, <code>raw</code> (the model object), <code>summary()</code> (flat dict), <code>table()</code> (the Summary table,
+or one row per angle) and <code>show()</code> (select it in the app). <code>print(r)</code> prints the table with
+each mean rounded to its standard error as the Results page rounds it (the error to one or two
+significant figures by the Particle Data Group rule, the mean to the same decimal place; "steady"
+for a settled series, "≈0" for a mean inside its own error bar), in plain notation (<code>-</code>,
+<code>1.2e-06</code>); <code>table()</code> keeps the unrounded numbers for your own arithmetic.</p>
+<p>The tables follow the Results page. L/D appears only for lifting designs (<code>r.lifting</code> is true
+for airfoils and wings): a car's or a sphere's L/D is arithmetic nobody optimises, and
+<code>sweep.best()</code> of such runs picks the lowest drag instead. On a half-domain 3D run (a
+mirror-symmetric body at zero yaw) the side force, rolling and yawing moments are zero by
+construction; the table marks them <code>by_symmetry</code> and <code>print(r)</code> writes <code>0 (symmetry)</code>, as
+the report does, rather than a measured-looking <span class="math">0 ± 0</span>.</p>
+<h3 id="figures">Figures<a class="anchor" href="#figures" aria-label="Link to this section">#</a></h3>
+<p><code>r.plot(kind=None, path=None, style="print", **options)</code> returns a matplotlib figure (no
+pyplot, safe on any thread), or writes it when <code>path</code> is given (PNG, SVG or PDF).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">result</th><th scope="col">kinds (the first is the default)</th></tr></thead>
+<tbody>
+<tr><td>2D CFD</td><td>"history", "cp", "field" (<code>field="speed"</code>, "cp", "vorticity", "temperature", "dye", ...; <code>streamlines=True</code>), "geometry", "sensitivity", "diagnostics"</td></tr>
+<tr><td>3D CFD</td><td>"history", "surface" (<code>field="cp"</code>, "cf", "sensitivity"), "streamlines" (3D streamlines through the mean flow around the body), "smoke" (the instantaneous smoke cloud), "vortices" (Q-criterion iso-surface), "slice" (<code>index=</code>, <code>field=</code>), "geometry", "diagnostics"</td></tr>
+<tr><td>polar</td><td>"polar" (Cl–α, drag polar, Cm, L/D), "cp" (<code>alpha=</code> one or several)</td></tr>
+<tr><td>wing</td><td>"polar", "span" (span loading, <code>alphas=</code>), "planform"</td></tr>
+</tbody>
+</table></div>
+<p>3D pictures are the 3D viewer's renders (VTK, off-screen) with the app's colour maps; they need
+an OpenGL context. "streamlines" start on a rake upstream of the body and run through the
+time-averaged flow; "smoke" is the dye the run released upstream, as it was at the end of the
+run (a snapshot, so the filaments stay sharp), drawn as a volume around the grey body:
+<code>opacity=</code> scales it, <code>color=</code> replaces the theme's grey, <code>threshold=</code> hides thin smoke.
+Results of runs made before smoke was recorded say so and suggest <code>rerun=True</code>.
+<code>al.show(fig)</code> displays a figure: inline in the Script dock, a PNG file on the command line and
+in plain Python.</p>
+<h3 id="exports">Exports<a class="anchor" href="#exports" aria-label="Link to this section">#</a></h3>
+<p><code>r.export(path, what=None)</code> chooses the format by the suffix:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">suffix</th><th scope="col">what is written</th></tr></thead>
+<tbody>
+<tr><td><code>.csv</code></td><td><code>what</code>: "summary" (default), "history", "surface" (2D), "polar" / "points", "span" (wings), "slice" (3D), "diagnostics" (CFD: divergence and change norms over time)</td></tr>
+<tr><td><code>.vtp</code></td><td>3D surface with Cp, Cf, wall shear, sensitivity (ParaView)</td></tr>
+<tr><td><code>.vti</code> / <code>.npz</code></td><td>flow fields; 3D: the mean volume, or <code>what="smoke"</code> the smoke snapshot (mirrored to the full body)</td></tr>
+<tr><td><code>.json</code></td><td><code>summary()</code></td></tr>
+<tr><td><code>.png</code> / <code>.svg</code></td><td><code>plot(what)</code></td></tr>
+<tr><td><code>.pdf</code> / <code>.html</code></td><td>a report of the result</td></tr>
+</tbody>
+</table></div>
+<h2 id="6-sweeps">6. Sweeps<a class="anchor" href="#6-sweeps" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">sw = p.sweep(d, alpha=[0, 2, 4, 6], speed=30)                 # one simulation per point
+sw = p.sweep(d, alpha=[0, 4, 8], speed=[20, 30])               # a full factorial: 6 points
+pols = p.sweep(d, analysis="polar", re=[2e5, 5e5, 1e6], alpha=(-4, 14, 1))
+cars = p.sweep(lambda slant: p.add_template("ahmed", slant_angle=slant),
+               slant=[15, 25, 35], speed=40)                   # a geometry study</code></pre>
+<p>Lists, tuples, ranges and arrays are swept; scalars go to every run. For polars and wing
+sweeps <code>alpha</code> is the curve's own range, never a sweep parameter. When the first argument is a
+function, its own keyword arguments are swept too: name them explicitly (<code>lambda slant: ...</code>).</p>
+<p>A <code>Sweep</code> has <code>params</code>, <code>values</code>, <code>results</code> (iterate it, index it), <code>table()</code> (one row per
+point: the swept values and the key numbers), <code>best(key, minimize=None)</code> (lower is better for
+drag-like keys), <code>plot(x, y, by=None, path=None)</code> and <code>export("sweep.csv")</code>. CFD points carry
+±1 standard-error bars; unconverged points are drawn hollow. For a sweep of curves, <code>plot</code> can
+overlay the curves themselves: <code>pols.plot("alpha", "cl")</code> (lift curves),
+<code>pols.plot("cd", "cl")</code> (drag polars).</p>
+<h2 id="7-heat-fans-jets-and-smoke">7. Heat, fans, jets and smoke<a class="anchor" href="#7-heat-fans-jets-and-smoke" aria-label="Link to this section">#</a></h2>
+<p>CFD runs take placed physics as keywords of <code>run_cfd</code> (and of <code>sweep</code>, <code>plan</code> and <code>grid_study</code>).
+Each one is checked before anything is recorded: a wrong position, a vent with a temperature, a
+fifth smoke colour or a heat source without heat transfer is an <code>al.InputError</code> that says why,
+and the project is left as it was.</p>
+<pre><code class="language-python">d = p.add_template("ahmed")
+hot = d.copy("Heated Ahmed").set_thermal("temperature", 60)      # bodies at 60 °C (or "heat_flux", W/m²)
+
+r = p.run_cfd(hot, speed=2,
+              thermal={"ambient": 20, "buoyancy": True},          # or thermal=True
+              walls={"bottom": ("heat_flux", 50), "top": "adiabatic"},
+              heat_sources=[al.HeatSource(kind="rect", position=(1.2, 0.1), size=(0.2, 0.1), power=200)],
+              fans=[al.Fan(position=(-1.0, 0.4), direction=(1, 0), diameter=0.3, value=5)],      # 5 N/m
+              ports=[al.Port(kind="jet", position=(0.0, 0.8), direction=(0, -1), size=0.05, speed=3,
+                             temperature=40)],
+              emitters=[{"kind": "rake", "position": (-1.5, 0.1), "end": (-1.5, 1.0), "count": 8}])
+print(r.nusselt, r.heat_rate, r.fans, r.diagnostics)
+
+room = p.add_case(al.fan_room_case())                           # an empty 4 m x 3 m room (its design)
+r2 = p.run_cfd(room, domain="closed", domain_box=(0, 4, 0, 3), thermal=True,     # a radiator in the room
+               heat_sources=[{"kind": "rect", "position": (0.5, 0.3), "size": (0.4, 0.2), "power": 300}])</code></pre>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">keyword</th><th scope="col">what it adds</th><th scope="col">values</th></tr></thead>
+<tbody>
+<tr><td><code>thermal</code></td><td>the energy equation with Boussinesq buoyancy along −y (2D) / −z (3D)</td><td><code>True</code>, a dict of <code>al.ThermalSettings</code> fields (<code>ambient</code> / <code>t_ambient</code> °C, <code>buoyancy</code>, <code>prandtl</code>, <code>beta</code>, <code>gravity</code>, <code>conductivity</code>, <code>cp</code>) or the object. Without an ambient temperature it is the fluid's own (15 °C for the default ISA sea-level air); with one and no <code>fluid=</code>, the run uses air at that temperature, so the density and viscosity match it</td></tr>
+<tr><td><code>walls</code></td><td>conditions on the domain sides</td><td><code>{"bottom": 40.0}</code> (°C), <code>("heat_flux", 50)</code> (W/m²), <code>"adiabatic"</code>; in a tunnel the left side is the inlet and the right the outlet, so only bottom and top (3D: front, back) take them</td></tr>
+<tr><td><code>heat_sources</code></td><td>volumetric heaters</td><td><code>al.HeatSource</code>: <code>kind</code> "rect" / "disc" (2D), "box" / "sphere" (3D), <code>position</code>, <code>size</code>, <code>power</code> (W in 3D, W/m in 2D; negative cools)</td></tr>
+<tr><td><code>fans</code></td><td>actuator discs (momentum sources, not resolved blades)</td><td><code>al.Fan</code>: <code>position</code>, <code>direction</code>, <code>diameter</code>, <code>mode</code> "thrust" (N, N/m in 2D), "pressure_jump" (Pa) or "velocity" (target axial speed, m/s), <code>swirl</code> (3D)</td></tr>
+<tr><td><code>ports</code> (or <code>jets</code>)</td><td>jets that blow in, vents that suck out</td><td><code>al.Port</code>: <code>kind</code> "jet" / "vent", <code>position</code>, <code>direction</code>, <code>size</code>, <code>speed</code>, <code>temperature</code> (jets, needs <code>thermal</code>), <code>dye</code></td></tr>
+<tr><td><code>emitters</code></td><td>smoke (dye) or tracer particles, for pictures only</td><td><code>al.Emitter</code> or dicts: <code>kind</code> "point", "line", "rake" (<code>end</code>, <code>count</code>), "rect" (<code>size</code>), 3D "disc" / "plane"; <code>species</code> "dye" / "particles", <code>color</code> (up to four smoke colours), <code>rate</code>, <code>pulse_period</code>, <code>start</code>, <code>stop</code></td></tr>
+<tr><td><code>domain</code>, <code>domain_box</code></td><td>"tunnel" (free stream from the left, default) or "closed" (walls on every side: cavities, rooms) and its extent in metres</td><td><code>domain_box=(xmin, xmax, ymin, ymax[, zmin, zmax])</code></td></tr>
+<tr><td><code>diagnostics</code>, <code>adaptive_dt</code></td><td>the solver's divergence and change norms; the time-step controller</td><td><code>True</code> / <code>False</code>; "cfl" or "pid"</td></tr>
+</tbody>
+</table></div>
+<p>A simulation that is already in the project (set up on the Setup page, or with
+<code>p.add_simulation</code>) takes placed physics one object at a time:</p>
+<pre><code class="language-python">sim = p.add_simulation(room, domain="closed", domain_box=(0, 4, 0, 3), speed=1.0)
+sim = p.add_emitter(sim, kind="rake", position=(0.4, 0.4), end=(0.4, 2.6), count=8)   # fields as keywords
+sim = p.add_fan(sim, al.Fan(position=(1.3, 1.5), direction=(1, 0), diameter=0.5, value=1.0))
+sim = p.edit_simulation(sim, thermal=True)                       # a heater needs heat transfer first
+sim = p.add_heat_source(sim, {"kind": "rect", "position": (2, 0.3), "size": (0.4, 0.2), "power": 300})
+sim = p.add_port(sim, kind="jet", position=(3.5, 2.5), direction=(0, -1), size=0.1, speed=2)
+r = p.run(sim)</code></pre>
+<p>Each call runs the <code>run_cfd</code> keyword's checks on the simulation's existing objects plus the new
+one (the four-colour smoke limit counts the emitters already there; a fan outside the domain box
+is refused) and records nothing when one fails. Like <code>edit_simulation</code>, a simulation that has
+a result is copied rather than edited (pass <code>copy=False</code> to insist, which is refused), and an
+automatically named simulation is renamed after its new physics.</p>
+<p>Bodies are heated on the design (<code>d.set_thermal(mode, value, body=None)</code>, recorded in the
+project; <code>d.copy()</code> first keeps an unheated original). A design with a heated body refuses a run
+without <code>thermal=</code>, since the heating would silently do nothing. A closed domain without <code>speed</code>
+takes the speed that drives it (the free-fall velocity √(gβΔT H) the planner states, a fan's or a
+jet's speed) as its reference, so its coefficients and Reynolds number mean something. ΔT is the
+largest set temperature difference or, for heat given as a power or a flux (a heater, a heat-flux
+body or wall), the rise it produces, q″L/(k·Nu): a closed room heated only by a 300 W/m heater
+runs on buoyancy alone (ΔT ≈ 58 K estimated at the heater, Ra 1.8×10¹¹ in a 4 m × 3 m room). Runs are named after
+their physics ("CFD · 2 m/s · α 0° · heated · 1 fan"), so two runs that differ only in a fan do
+not share a name.</p>
+<p><strong>What this build can run.</strong> <code>al.supported_physics(2)</code> and <code>al.supported_physics(3)</code> list the
+features the planner and solver implement ("emitters", "thermal", "heat_sources", "fans",
+"ports", "closed_domain", "adaptive_dt"). A run that asks for one that is missing is refused,
+naming it ("This version's 2D solver does not implement heat transfer yet: ... nothing was
+run"), rather than run without it; <code>p.plan()</code> says the same.</p>
+<p>Results of these runs add <code>r.nusselt</code> (mean Nusselt number Nu = Q L / (k ΔT A) of the heated
+surfaces) with <code>r.nusselt_stat</code> (its standard error), <code>r.heat_rate</code> (W, or W/m in 2D),
+<code>r.fans</code> (per fan: delivered thrust with its standard error, volume flow, mean induced velocity, ideal
+power; <code>print(r)</code> lists them with their units and their standard errors: the thrust's own, the volume
+flow's and the induced velocity's from the recorded <code>fan&lt;i&gt;_flow</code> / <code>fan&lt;i&gt;_velocity</code> histories),
+<code>r.physics</code> (the features used), <code>r.diagnostics</code> and <code>r.diagnostics_history()</code>;
+<code>r.plot("diagnostics")</code> draws the solver's own health over time and
+<code>r.export("diag.csv", what="diagnostics")</code> writes it. A 2D field plot takes
+<code>field="temperature"</code> (°C), <code>"theta"</code> (θ = (T − T_amb)/ΔT_ref) and <code>"dye"</code>, <code>"dye1"</code>... for smoke.</p>
+<p>The models and their limits are in <a href="theory-ns2d.html">Navier–Stokes solver (2D)</a> and <a href="theory-ns3d.html">Navier–Stokes solver (3D)</a>, and what is
+validated (and how closely) in <a href="validation.html">Validation report</a>. In short: heat transfer is a Boussinesq
+model with constant properties; fans are actuator discs, so their delivered thrust and volume
+flow are meaningful but blade loading and noise are not; jets are penalised velocity regions,
+not resolved nozzles; smoke and tracers never change the flow.</p>
+<h2 id="8-reference-cases-and-grid-studies">8. Reference cases and grid studies<a class="anchor" href="#8-reference-cases-and-grid-studies" aria-label="Link to this section">#</a></h2>
+<p>A <strong>case</strong> is a ready set-up with the published number it should reproduce:</p>
+<pre><code class="language-python">case = al.cavity_case(ra=1e4)              # differentially heated square cavity, air, de Vahl Davis (1983)
+print(case, case.reference, *case.notes)   # ΔT that gives Ra exactly, the free-fall velocity
+r = p.run_case(case, quality="standard")   # or p.run_cfd(case, ...); keywords override the case
+print(case.check(r))                       # measured ± standard error, reference, difference in %</code></pre>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th scope="col">set-up</th><th scope="col">reference</th></tr></thead>
+<tbody>
+<tr><td><code>al.cavity_case(ra=1e4, pr=0.71, size=0.1, dimension=2)</code></td><td>closed square (cube) of air, hot left and cold right wall, the others adiabatic; ΔT chosen so Ra = g β ΔT L³ / (ν κ) is exactly <code>ra</code></td><td>mean Nu of the hot wall, the quantity the run measures: de Vahl Davis' (1983) Nu₀ for Ra 10³–10⁶ (1.117, 2.238, 4.509, 8.817; the paper's cavity-average Nū 1.118, 2.243, 4.519, 8.800 is a different quantity); 3D: Tric et al. (2000), Ra 10⁴–10⁶ (2.0542, 4.3370, 8.6407)</td></tr>
+<tr><td><code>al.heated_cylinder_case(re=40, d=0.01, delta_t=10)</code></td><td>a cylinder <code>delta_t</code> above the stream, buoyancy off (forced convection)</td><td>Lange, Durst &amp; Breuer (1998) correlation at Pr 0.7, valid for 10⁻⁴ ≤ Re ≤ 200 (Nu 3.28 at Re 40)</td></tr>
+<tr><td><code>al.fan_room_case(thrust=1.0, room=(4, 3), diameter=0.5)</code></td><td>one thrust fan in a closed room</td><td>a <strong>consistency</strong> check, not a validation (<code>case.kind == "consistency"</code>): thrust mode imposes the set thrust, so agreement shows the disc delivers it. Froude momentum theory does not apply in a closed room (the fan recirculates its own wake, and the induced velocity reads several times below the free-air value); the fan model is validated in a channel against confined momentum theory (<a href="validation.html">Validation report</a>)</td></tr>
+</tbody>
+</table></div>
+<p>A case has <code>name</code>, <code>design</code> (not yet in a project; <code>p.add_case(case)</code> adds it), <code>settings</code> (the
+<code>run_cfd</code> keywords), <code>reference</code> (None off the published parameters, for instance Pr ≠ 0.71),
+<code>kind</code> ("validation" for an independent published value, "consistency" when the set-up imposes
+it) and <code>check(result)</code>. <code>check</code> returns the measured value, its standard error, the reference,
+the difference in %, <code>kind</code>, <code>within_stderr</code> (the reference lies within two standard
+errors) and, where <a href="validation.html">Validation report</a> states one, <code>band_pct</code>, <code>band_source</code> and <code>within_band</code>
+(the difference lies inside the tolerance band that reference is checked with: ± 2 % for the
+cavity at Ra 10⁴, ± 4 % for the heated cylinder at Re 20-40). That is the statistical part only: the grid error needs a grid study.</p>
+<p>A refused case run records nothing: the run is built and checked (keywords, physics this
+build's solver implements) before the case's design is added, so a refusal leaves no empty
+"Heated cavity" design behind. <code>p.add_simulation(case)</code> prepares the run without that physics
+check, for a build that will run it later.</p>
+<p>A stored result finds its reference again, in a later session, in the app or for the
+assistant: <code>r.reference_check()</code> matches the run's design and settings to the case it
+reproduces (<code>al.reference_case(design, simulation)</code>) and returns <code>case.check(r)</code> with
+<code>"applies": True</code>. When the design is a reference set-up whose settings left the published
+conditions (buoyancy switched on for the forced-convection cylinder, the cavity's walls changed,
+Re outside the correlation's 10⁻⁴–200) it returns <code>{"applies": False, "why": ...}</code> rather than
+a comparison under conditions the reference was not published for; a design that is no
+reference set-up gives None. A heated 2D cylinder template run in forced convection is matched
+to the Lange correlation too, with a note when its Pr is 0.71 rather than the correlation's 0.7.</p>
+<p>A <strong>grid study</strong> runs the same case on three systematically refined grids and estimates the
+discretisation error by the procedure of Celik et al. (2008), as the Results page and the
+report do (<code>aerolume.analysis.gci</code>, one implementation):</p>
+<pre><code class="language-python">gs = p.grid_study(case, quality="draft", quantity="nusselt")    # grids 1, 1.5 and 2.25 x the planner's
+print(gs)                       # the table, then per quantity: fine value ± GCI band, order, extrapolation
+gs.gci["nusselt"].p             # observed order; .phi_ext, .gci_fine, .u_num, .noise_limited, .asymptotic
+gs.plot("nusselt", "gci.png"); gs.export("grid_study.csv")
+
+# your own three grids: Celik et al. (2008) Table 1 gives p 1.53, φ_ext 6.1685, GCI 2.2 %
+g = al.grid_convergence(h=[18000 ** -0.5, 8000 ** -0.5, 4500 ** -0.5], phi=[6.063, 5.972, 5.863])
+print(g.summary())</code></pre>
+<p><code>p.grid_<wbr>study_<wbr>of(simulation)</code> studies a CFD simulation that is already in the project (one set up
+on the Setup page, a case's, a run with fans or heating) exactly as it is set up: the simulation
+itself is the coarsest grid (its stored result is reused) and two copies that differ only in
+<code>cells_per_ref</code> are the finer ones ("… · 18 cells/ref").</p>
+<p><code>grid_study</code> takes <code>cells_per_ref=[...]</code> (three resolutions) or <code>refinement=</code> (default 1.5;
+Celik et al. recommend at least 1.3), <code>quantity</code> ("cd", "cl", "cm", "nusselt" or a summary key;
+default Nu for heat-transfer runs without forces, else Cd and, for lifting designs, Cl) and the
+<code>run_cfd</code> keywords. Each grid is an ordinary recorded simulation, so a re-run reuses them.
+Because CFD values are time averages, every grid's standard error goes into the analysis: when
+a grid-to-grid change is not larger than twice the combined standard errors, the study is
+<em>noise-limited</em> and no order or GCI is claimed (average longer or refine further). The
+asymptotic verdict compares the observed order with the scheme's formal order (2) within 10 %.
+Cost grows with the cell count, about refinement³ per level in 2D and refinement⁴ in 3D.</p>
+<h2 id="9-comparisons-reports-plans">9. Comparisons, reports, plans<a class="anchor" href="#9-comparisons-reports-plans" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">cmp = p.compare([r1, r2, r3], baseline=0)      # or p.compare(sweep)
+print(cmp)                                     # the Compare page's table, Δ % and significance
+cmp.table(); cmp.warnings; cmp.plot(["cd", "cl"], "bars.png")
+p.report([r1, r2], "study.pdf", title="Rear slant study")     # or .html; default: reports folder
+pl = p.plan(d, speed=30, quality="standard")   # nothing is run or recorded
+print(pl.cells, pl.grid, pl.estimate, pl.re_sim, pl.warnings)</code></pre>
+<p>A difference is marked <em>significant</em> when it exceeds twice the combined standard error of the
+two means; the comparison's warnings say when runs differ in speed, angle, fluid or simulated
+Reynolds number, or mix 2D with 3D (which are never compared in one table). <code>al.plan(design, ...)</code> plans a design that is not in a project.</p>
+<h2 id="10-progress-cancel-verbose-errors">10. Progress, cancel, verbose, errors<a class="anchor" href="#10-progress-cancel-verbose-errors" aria-label="Link to this section">#</a></h2>
+<p>Every call is synchronous and prints nothing unless <code>verbose=True</code> (or <code>al.set_verbose()</code>).
+Calls that run solvers take <code>progress(fraction, message)</code> and <code>cancel</code> (a
+<code>threading.Event</code>): a cancelled run keeps its partial result in the project, marked
+"cancelled", and the call raises <code>al.Cancelled</code> (<code>exc.result</code> is the partial result).
+<code>al.context(cancel=, progress=, verbose=)</code> sets defaults for every call made on the current
+thread inside a <code>with</code> block; the Script dock and the command line use it, so Stop and Ctrl+C
+reach every run of a script.</p>
+<p>Errors are <code>al.AerolumeError</code> subclasses with messages written for people:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">class</th><th scope="col">when</th><th scope="col">also a</th></tr></thead>
+<tbody>
+<tr><td><code>al.InputError</code></td><td>a bad argument (an unknown NACA code, a negative speed, an analysis the design cannot have; unknown keywords get a "Did you mean" hint)</td><td><code>ValueError</code></td></tr>
+<tr><td><code>al.NotFoundError</code></td><td>an unknown design, simulation, template or file (the message lists what exists)</td><td><code>LookupError</code></td></tr>
+<tr><td><code>al.RunError</code></td><td>a run failed (planner refused the set-up, solver diverged, GPU out of memory)</td><td><code>RuntimeError</code></td></tr>
+<tr><td><code>al.ProjectFileError</code></td><td>the project folder could not be read or written</td><td><code>OSError</code></td></tr>
+<tr><td><code>al.Cancelled</code></td><td>stopped</td><td>—</td></tr>
+</tbody>
+</table></div>
+<p><code>al.plain(obj)</code> turns <code>summary()</code> / <code>table()</code> output into strict JSON data (NaN becomes None).</p>
+<h2 id="11-the-script-dock">11. The Script dock<a class="anchor" href="#11-the-script-dock" aria-label="Link to this section">#</a></h2>
+<p><strong>View ▸ Script</strong> (Alt+4) opens an editor (Python highlighting, line numbers, auto-indent)
+beside an output pane; <strong>Tools ▸ Run script…</strong> opens a <code>.py</code> file in it and runs it. Names
+bound in a script: <code>project</code> (the open project, or None), <code>al</code>, <code>show(obj)</code> (figures appear
+inline in the output; anything else is printed) and <code>log(text, level="info")</code> (a line in the
+output and in the Messages dock). Inline figures are as wide as the pane allows and stay
+readable in a short dock (it scrolls instead of shrinking them); click one to open it at full
+size, where <strong>Save image…</strong> writes the PNG (to the project's <code>exports</code> folder by default) and
+<strong>Copy</strong> puts it on the clipboard. The output follows the newest text until a run shows its
+first figure; it then stays at that figure's top while the run prints and plots more below it
+(scroll to the end to follow again; a failed run jumps to its traceback). While a script runs,
+the line beside the status reports the simulation it started (<em>Simulation: Averaging forces…</em>)
+and clears when the script ends. The dock opens at about 40 % of the window height and keeps
+that share (or the height you drag it to) when the window is resized.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">key (console focused)</th><th scope="col">action</th></tr></thead>
+<tbody>
+<tr><td>Ctrl+Enter, F5</td><td>run the script</td></tr>
+<tr><td>Ctrl+Shift+Enter</td><td>run the selection, or the current line</td></tr>
+<tr><td>Shift+F5</td><td>stop</td></tr>
+<tr><td>Ctrl+S</td><td>save the script in the project</td></tr>
+<tr><td>Ctrl+/</td><td>comment / uncomment lines</td></tr>
+<tr><td>Tab, Shift+Tab</td><td>indent, dedent</td></tr>
+<tr><td>Ctrl+Tab, Ctrl+Shift+Tab</td><td>leave the editor: focus moves to the next / previous control</td></tr>
+<tr><td>Esc, then Tab (or Shift+Tab)</td><td>leave the editor the same way (one Tab after Esc)</td></tr>
+</tbody>
+</table></div>
+<p>Because Tab indents, the editor has explicit ways out for keyboard-only use (WCAG 2.1.2, no
+keyboard trap): Ctrl+Tab always moves focus on to the Run button and the rest of the window,
+and so does a Tab pressed right after Esc. <strong>⋯ ▸ Tab key moves focus</strong> makes plain Tab and
+Shift+Tab move focus for as long as it is ticked (Tab then no longer indents; untick it to indent
+with Tab again). The editor's tooltip states the same.</p>
+<p>Scripts are saved in the project's <code>scripts</code> folder and listed in the script box; a script with
+a file is saved before each run. <strong>Examples</strong> inserts ready scripts (section 13). Variables are
+kept between runs, as in an interactive console, until <strong>⋯ ▸ Reset variables</strong>.</p>
+<p>Scripts run on a worker thread, so the window stays responsive. Their simulations go through
+the same queue as the app's own runs: a script waits behind a running simulation instead of
+competing for the GPU, and the Simulate page shows its live view. <strong>Stop</strong> first stops the
+running simulation (it keeps its partial result) and ends the script; plain Python that never
+calls Aerolume (a long loop) is interrupted a moment later. An error marks the failing line in
+the editor; the traceback shows the script's own lines (click "line N" to jump there) and
+counts the frames inside Aerolume instead of listing them.</p>
+<h2 id="12-command-line">12. Command line<a class="anchor" href="#12-command-line" aria-label="Link to this section">#</a></h2>
+<pre><code>aerolume-cli script FILE [--project P [--create]] [--figures DIR] [-v] [-- ARGS...]</code></pre>
+<p><code>project</code> is bound to <code>--project</code> (<code>--create</code> makes it when missing), <code>args</code> (and
+<code>sys.argv[1:]</code>) to what follows <code>--</code>, <code>show()</code> saves <code>&lt;script&gt;-figure-&lt;n&gt;.png</code> in <code>--figures</code>
+(default: the current folder), <code>log()</code> prints. The first Ctrl+C stops the running simulation,
+which keeps its partial result, and ends the script; a second one aborts. Exit code 0 on
+success, 1 for an error or a stop (the script's lines of the traceback are printed), 2 when the
+file is missing; <code>sys.exit(n)</code> returns <code>n</code>.</p>
+<pre><code>aerolume-cli script examples/scripts/wing_taper.py --project "Wing study" --create</code></pre>
+<h2 id="13-examples">13. Examples<a class="anchor" href="#13-examples" aria-label="Link to this section">#</a></h2>
+<p><code>examples/scripts/</code> holds the scripts the Examples menu inserts. Each runs in the app, with
+<code>aerolume-cli script</code> and on its own (then in a temporary project):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">file</th><th scope="col">what it does</th><th scope="col">time (RTX 4060 Ti, measured)</th></tr></thead>
+<tbody>
+<tr><td><code>polar_sweep.py</code></td><td>NACA 2412 polars at Re 2×10⁵, 5×10⁵, 10⁶; lift curves and drag polars overlaid</td><td>~65 s</td></tr>
+<tr><td><code>alpha_sweep.py</code></td><td>2D CFD of a NACA 0012 at four angles, lift and drag with error bars</td><td>~50 s</td></tr>
+<tr><td><code>compare_designs.py</code></td><td>sedan against fastback, 2D CFD on a moving road, Compare table and bars</td><td>~3.5 min</td></tr>
+<tr><td><code>mesh_3d.py</code></td><td>import a mesh (without one, a sphere at Re 100: CD 1.16 on the Draft grid, 1.09 measured), plan, Draft 3D run, surface Cp, 3D streamlines, smoke</td><td>~35 s (GPU to itself)</td></tr>
+<tr><td><code>wing_taper.py</code></td><td>equal-area wings with taper 0.3–1.0: span efficiency and lift slope</td><td>~5 s</td></tr>
+<tr><td><code>flow_pictures.py</code></td><td>streamlines, smoke and vortices of the newest 3D result, surface .vtp for ParaView</td><td>~5 s</td></tr>
+<tr><td><code>report.py</code></td><td>a PDF report of the newest results</td><td>~20 s</td></tr>
+<tr><td><code>heated_cavity.py</code></td><td>the de Vahl Davis cavity at Ra 10⁴: plan, Draft run, hot-wall mean Nu against 2.238, temperature field</td><td>needs heat transfer and closed domains in the 2D solver</td></tr>
+<tr><td><code>heated_cylinder.py</code></td><td>a cylinder 10 K above the stream at Re 40: Nu against the Lange et al. correlation (3.28); <code>GRID_STUDY = True</code> adds two grids and the GCI</td><td>needs heat transfer in the 2D solver</td></tr>
+<tr><td><code>fan_room.py</code></td><td>a 0.5 m fan in a closed 4 m × 3 m room with a smoke rake: delivered thrust against the set 1 N/m (a consistency check: the thrust is imposed), the circulation</td><td>needs fans, emitters and closed domains in the 2D solver</td></tr>
+<tr><td><code>smoke_3d.py</code></td><td>a sphere at Re 300 (its wake sheds) with two coloured smoke rakes: smoke, streamlines, vortex cores, the smoke volume as .vti. Draft read CD 0.751 ± 0.009 (not converged at 40 L/U) against 0.656 (Johnson &amp; Patel 1999): a picture grid</td><td>116 s (GPU shared with other work)</td></tr>
+</tbody>
+</table></div>
+<p>The physics examples check nothing in advance: when this build's solver does not implement
+what they need (<code>al.supported_physics(2)</code>), the run is refused with that reason and nothing is
+recorded. <code>smoke_3d.py</code> falls back to the solver's default smoke rake when placed emitters are
+not available in 3D, and says so.</p>
+<p>Times are for a first run; running a script again takes seconds, since every unchanged
+simulation returns its stored result (<code>compare_designs.py</code>: 5.5 s the second time). A GPU shared
+with another program can take twice as long (the 3D example took 6.5 min on a busy GPU).</p>
+<h2 id="14-for-integrators-hosts">14. For integrators: hosts<a class="anchor" href="#14-for-integrators-hosts" aria-label="Link to this section">#</a></h2>
+<p>A <code>Project</code> makes every change through a small <code>al.Host</code> object. The default host edits the
+project store on the calling thread and runs simulations there. Inside the app,
+<code>aerolume.app.scripting.AppHost(state, jobs)</code> performs each change on the GUI thread through
+<code>AppState</code> and runs simulations through the job queue; the Script dock and the AI assistant
+bind it with <code>al.Project(state.project, host=AppHost(state, jobs))</code>.
+<code>aerolume.app.scripting.ScriptEngine(state, jobs)</code> runs source code on a worker thread with
+the console's names bound, captures its output and figures and reports a <code>ScriptOutcome</code>
+(status, error, script line, traceback, output, figures, simulations touched); the assistant's
+<code>run_python</code> tool uses it. A custom host (a remote runner, a test double) overrides
+<code>add_design</code>, <code>update_design</code>, <code>add_simulation</code>, <code>update_simulation</code>, <code>result_saved</code>,
+<code>run_simulation</code> (return <code>(result, "done" | "cancelled")</code>, or None to let the API run it) and
+friends; see the <code>Host</code> docstring.</p>
+<h2 id="15-reference">15. Reference<a class="anchor" href="#15-reference" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python"># module (aerolume, aerolume.api)
+open_project(path, *, create=False) -&gt; Project
+new_project(path=None, name=None, *, exist_ok=False) -&gt; Project
+plan(design, analysis=None, **settings) -&gt; Plan
+context(*, cancel=None, progress=None, verbose=None, show=None, project=None)   # with-block
+set_verbose(on=True); show(obj); plain(obj); version()
+AerolumeError, InputError, NotFoundError, RunError, ProjectFileError, Cancelled(result)
+Host; script_traceback(exc, filename) -&gt; (line, lineno, text)
+
+supported_physics(dimension=None) -&gt; frozenset; physics_features(model_simulation) -&gt; list
+cavity_case(ra=1e4, pr=0.71, *, size=0.1, dimension=2, t_ambient=15) -&gt; Case
+heated_cylinder_case(re=40, *, d=0.01, delta_t=10, pr=0.7, t_ambient=15) -&gt; Case
+fan_room_case(thrust=1.0, *, room=None, diameter=0.5, dimension=2, position=None) -&gt; Case
+reference_case(design, simulation, *, re=None) -&gt; (Case | None, why_not)
+file_source(path, fmt=None) -&gt; dict    # {type, file, path, format, bytes, sha256}
+grid_convergence(h, phi, *, stderr=None, quantity="", formal_order=2, method="celik", safety=None)
+    -&gt; analysis.gci.GCIResult
+Emitter, Fan, Port, HeatSource, ThermalSettings, WallThermal        # aerolume.model types
+
+# Project(store_or_path, *, host=None)
+path, name, raw, host, designs, simulations
+design(ref) -&gt; Design; simulation(ref); result(ref) -&gt; Result | None; results(design=None); summary()
+add_naca(code, chord=1.0, *, name=None, sharp_te=True, reuse=True) -&gt; Design
+add_airfoil(path_or_coords, chord=1.0, *, name=None) -&gt; Design
+add_template(template, *, name=None, **params) -&gt; Design
+import_geometry(path, *, kind=None, length=None, name=None) -&gt; Design
+import_mesh(path, *, units="auto", kind="vehicle", on_road=None, length=None, clearance=None, name=None) -&gt; Design
+add_primitive(shape, *, name=None, **size); add_sphere(d=0.2) -&gt; Design
+add_wing(span, root_chord, tip_chord=None, *, sweep_deg=0, dihedral_deg=0, twist_deg=0, airfoil="2412",
+         tip_airfoil=None, sections=None, name=None) -&gt; Design
+add_design(model_design) -&gt; Design; remove_design(ref); remove_simulation(ref)
+add_simulation(design, analysis=None, *, name=None, **settings) -&gt; model.Simulation   # not run
+plan(design, analysis=None, **settings) -&gt; Plan
+run_cfd(design, *, speed=None, alpha=0, yaw=0, quality=None, ground=None, name=None, rerun=False,
+        progress=None, cancel=None, verbose=None, **settings) -&gt; Result
+run_polar(design, *, re=None, alpha=(-4, 14, 1), ...) -&gt; Result
+run_wing(design, *, speed=None, alpha=(-4, 12, 1), method="vlm", viscous=True, yaw=0, ...) -&gt; Result
+run(simulation, *, rerun=False, ...) -&gt; Result
+add_case(case) -&gt; Design; run_case(case, *, rerun=False, ..., **overrides) -&gt; Result
+grid_study(design_or_case, *, cells_per_ref=None, refinement=1.5, levels=3, quantity=None, ...,
+           **settings) -&gt; GridStudy
+grid_study_of(simulation, *, cells_per_ref=None, refinement=1.5, quantity=None, rerun=False, ...) -&gt; GridStudy
+edit_simulation(simulation, **settings) -&gt; model.Simulation      # checked; a run with a result is copied
+add_emitter(simulation, emitter=None, *, copy=None, **fields) -&gt; model.Simulation
+add_fan(...); add_heat_source(...); add_port(...)    # same signature; checked like run_cfd's keywords
+sweep(design_or_factory, *, analysis=None, name=None, rerun=False, ..., **params) -&gt; Sweep
+compare(results_or_sweep, *, baseline=0) -&gt; Comparison
+report(results, path=None, *, sections=None, title=None, author=None, fmt=None) -&gt; Path
+save()
+
+# Design: id, name, kind, dimension, is_3d, analyses, references, raw
+summary(); simulations(); results(); check(); plot(path=None, *, style, alpha); export(path, *, units)
+rename(name); copy(name=None); transform(*, scale, length, rotate_deg, clearance)
+set_thermal(mode, value=0, *, body=None)      # "temperature" °C | "heat_flux" W/m² | "adiabatic"
+
+# Result: sim_id, name, kind, analysis, dimension, design, simulation, status, cancelled, reused,
+#   cd, cl, cm, cs, c_roll, cn, ld, lifting, alpha, stats, forces, units, re_sim, re_real, converged,
+#   n_converged, metrics, warnings, notes, conditions, wall_seconds, raw
+#   physics, nusselt, nusselt_stat, heat_rate, fans, diagnostics
+stderr(key); best(); at(alpha); summary(); table(); plot_kinds(); plot(kind=None, path=None, *, style, **o)
+diagnostics_history()
+export(path, what=None); report(path, **o); show()
+
+# Sweep: params, values, results, analysis; len / iter / [i]
+table(); best(key=None, *, minimize=None); plot(x=None, y=None, *, by=None, path=None, style, errorbars,
+title); export(path)
+
+# Comparison: results, baseline, rows, warnings, names
+table(); plot(metric="cd", path=None, *, style)
+
+# Plan: analysis, est_seconds, estimate, cells, grid, quality, device, re_real, re_sim, notes, warnings, raw
+summary()
+
+# Case: name, design, settings, reference, notes, kind ("validation" | "consistency"); check(result) -&gt; dict
+# Result.reference_check() -&gt; dict | None   (the stored result against the reference its set-up reproduces)
+# GridStudy: results, cells_per_ref, h, quantities, gci {quantity: GCIResult}, study, notes
+table(); summary(); plot(quantity=None, path=None, *, style); export(path.csv)</code></pre>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="simulation-guide.html"><span>Previous</span><b>Simulation guide</b></a><a class="next" href="assistant.html"><span>Next</span><b>Experiment assistant</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-five-lines">1. Five lines</a></li><li class="l2"><a href="#2-projects">2. Projects</a></li><li class="l2"><a href="#3-designs">3. Designs</a></li><li class="l2"><a href="#4-running">4. Running</a></li><li class="l2"><a href="#5-results">5. Results</a></li><li class="l3"><a href="#figures">Figures</a></li><li class="l3"><a href="#exports">Exports</a></li><li class="l2"><a href="#6-sweeps">6. Sweeps</a></li><li class="l2"><a href="#7-heat-fans-jets-and-smoke">7. Heat, fans, jets and smoke</a></li><li class="l2"><a href="#8-reference-cases-and-grid-studies">8. Reference cases and grid studies</a></li><li class="l2"><a href="#9-comparisons-reports-plans">9. Comparisons, reports, plans</a></li><li class="l2"><a href="#10-progress-cancel-verbose-errors">10. Progress, cancel, verbose, errors</a></li><li class="l2"><a href="#11-the-script-dock">11. The Script dock</a></li><li class="l2"><a href="#12-command-line">12. Command line</a></li><li class="l2"><a href="#13-examples">13. Examples</a></li><li class="l2"><a href="#14-for-integrators-hosts">14. For integrators: hosts</a></li><li class="l2"><a href="#15-reference">15. Reference</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

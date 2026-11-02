@@ -1,0 +1,230 @@
+{
+ "product": "VTK",
+ "version": "9.7.1",
+ "source": "https://github.com/Kitware/VTK/tree/v9.7.1",
+ "components": [
+  {
+   "dll": "vtkDICOMParser",
+   "name": "DICOMParser",
+   "license": "BSD-3-Clause",
+   "description": "DICOM file parser (Matt Turek)",
+   "upstream": "Utilities/DICOMParser/Copyright.txt",
+   "upstream_tag": "",
+   "files": [
+    "DICOMParser/Copyright.txt"
+   ]
+  },
+  {
+   "dll": "vtkexpat",
+   "name": "Expat",
+   "license": "MIT",
+   "description": "XML parser",
+   "upstream": "ThirdParty/expat/vtkexpat/COPYING",
+   "upstream_tag": "for/vtk-20260214-2.7.0",
+   "files": [
+    "expat/COPYING"
+   ]
+  },
+  {
+   "dll": "vtkfmt",
+   "name": "{fmt}",
+   "license": "MIT",
+   "description": "formatting library",
+   "upstream": "ThirdParty/fmt/vtkfmt/LICENSE",
+   "upstream_tag": "for/vtk-20260130-12.1.0",
+   "files": [
+    "fmt/LICENSE"
+   ]
+  },
+  {
+   "dll": "vtkfreetype",
+   "name": "FreeType 2",
+   "license": "FTL",
+   "description": "font engine; used under the FreeType License (FTL), one of its two licences",
+   "upstream": "ThirdParty/freetype/vtkfreetype/LICENSE.TXT and docs/FTL.TXT",
+   "upstream_tag": "for/vtk-20260608-2.14.3",
+   "files": [
+    "freetype/LICENSE.TXT",
+    "freetype/docs-FTL.TXT"
+   ]
+  },
+  {
+   "dll": "vtkglad",
+   "name": "glad",
+   "license": "MIT AND Apache-2.0",
+   "description": "OpenGL loader (generated from the Khronos specifications)",
+   "upstream": "ThirdParty/glad/vtkglad/LICENSE",
+   "upstream_tag": "",
+   "files": [
+    "glad/LICENSE"
+   ]
+  },
+  {
+   "dll": "vtkjpeg",
+   "name": "libjpeg-turbo",
+   "license": "IJG AND BSD-3-Clause AND Zlib",
+   "description": "JPEG codec. This software is based in part on the work of the Independent JPEG Group.",
+   "upstream": "ThirdParty/jpeg/vtkjpeg/LICENSE.md and README.ijg",
+   "upstream_tag": "for/vtk-20260625-2.1.0",
+   "files": [
+    "jpeg/LICENSE.md",
+    "jpeg/README.ijg"
+   ]
+  },
+  {
+   "dll": "vtkjsoncpp",
+   "name": "JsonCpp",
+   "license": "MIT",
+   "description": "JSON parser",
+   "upstream": "ThirdParty/jsoncpp/vtkjsoncpp/LICENSE",
+   "upstream_tag": "for/vtk-20260125-1.9.6",
+   "files": [
+    "jsoncpp/LICENSE"
+   ]
+  },
+  {
+   "dll": "vtkkissfft",
+   "name": "KISS FFT",
+   "license": "BSD-3-Clause",
+   "description": "FFT library",
+   "upstream": "ThirdParty/kissfft/vtkkissfft/COPYING",
+   "upstream_tag": "for/vtk-20260125-master-g6f09c27",
+   "files": [
+    "kissfft/COPYING"
+   ]
+  },
+  {
+   "dll": "vtkloguru",
+   "name": "Loguru",
+   "license": "Unlicense",
+   "description": "logging library (public domain)",
+   "upstream": "ThirdParty/loguru/vtkloguru/LICENSE",
+   "upstream_tag": "for/vtk-20260125-2.1.0",
+   "files": [
+    "loguru/LICENSE"
+   ]
+  },
+  {
+   "dll": "vtklz4",
+   "name": "LZ4",
+   "license": "BSD-2-Clause",
+   "description": "compression library",
+   "upstream": "ThirdParty/lz4/vtklz4/lib/LICENSE",
+   "upstream_tag": "for/vtk-20260125-1.10.0",
+   "files": [
+    "lz4/lib-LICENSE"
+   ]
+  },
+  {
+   "dll": "vtklzma",
+   "name": "XZ Utils (liblzma)",
+   "license": "0BSD",
+   "description": "compression library",
+   "upstream": "ThirdParty/lzma/vtklzma/COPYING",
+   "upstream_tag": "for/vtk-20260127-5.6.4",
+   "files": [
+    "lzma/COPYING"
+   ]
+  },
+  {
+   "dll": "vtkmetaio",
+   "name": "MetaIO",
+   "license": "Apache-2.0",
+   "description": "MetaImage file format library",
+   "upstream": "Utilities/MetaIO/vtkmetaio/License.txt",
+   "upstream_tag": "",
+   "files": [
+    "metaio/License.txt"
+   ]
+  },
+  {
+   "dll": "vtkpng",
+   "name": "libpng",
+   "license": "libpng-2.0",
+   "description": "PNG codec",
+   "upstream": "ThirdParty/png/vtkpng/LICENSE",
+   "upstream_tag": "for/vtk-20260902-1.6.58",
+   "files": [
+    "png/LICENSE"
+   ]
+  },
+  {
+   "dll": "vtkpugixml",
+   "name": "pugixml",
+   "license": "MIT",
+   "description": "XML parser",
+   "upstream": "ThirdParty/pugixml/vtkpugixml/LICENSE.md",
+   "upstream_tag": "for/vtk-20260125-master-1.15-ge86ffc5",
+   "files": [
+    "pugixml/LICENSE.md"
+   ]
+  },
+  {
+   "dll": "vtkscn",
+   "name": "scnlib",
+   "license": "Apache-2.0 AND BSL-1.0",
+   "description": "scanning library (with NanoRange)",
+   "upstream": "ThirdParty/scn/vtkscn/LICENSE and LICENSE.nanorange",
+   "upstream_tag": "for/vtk-20260125-4.0.1",
+   "files": [
+    "scn/LICENSE",
+    "scn/LICENSE.nanorange"
+   ]
+  },
+  {
+   "dll": "vtksys",
+   "name": "KWSys",
+   "license": "BSD-3-Clause",
+   "description": "Kitware system utilities",
+   "upstream": "Utilities/KWSys/vtksys/Copyright.txt",
+   "upstream_tag": "",
+   "files": [
+    "sys/Copyright.txt"
+   ]
+  },
+  {
+   "dll": "vtktiff",
+   "name": "libtiff",
+   "license": "libtiff",
+   "description": "TIFF codec",
+   "upstream": "ThirdParty/tiff/vtktiff/LICENSE.md",
+   "upstream_tag": "for/vtk-20260604-4.7.0",
+   "files": [
+    "tiff/LICENSE.md"
+   ]
+  },
+  {
+   "dll": "vtktoken",
+   "name": "token",
+   "license": "BSD-3-Clause",
+   "description": "string tokens (Kitware)",
+   "upstream": "ThirdParty/token/vtktoken/license.md",
+   "upstream_tag": "for/vtk",
+   "files": [
+    "token/license.md"
+   ]
+  },
+  {
+   "dll": "vtkverdict",
+   "name": "Verdict",
+   "license": "BSD-3-Clause",
+   "description": "mesh quality metrics (Sandia)",
+   "upstream": "ThirdParty/verdict/vtkverdict/LICENSE",
+   "upstream_tag": "for/vtk-20260604-1.4.5",
+   "files": [
+    "verdict/LICENSE"
+   ]
+  },
+  {
+   "dll": "vtkzlib",
+   "name": "zlib",
+   "license": "Zlib",
+   "description": "compression library",
+   "upstream": "ThirdParty/zlib/vtkzlib/LICENSE",
+   "upstream_tag": "for/vtk-20260125-1.3.1",
+   "files": [
+    "zlib/LICENSE"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Third-party notices</title>
+<meta name="description" content="Software Aerolume includes and the licences it is used under.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Third-party notices">
+<meta property="og:description" content="Software Aerolume includes and the licences it is used under.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html" aria-current="page">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html" aria-current="page">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#mfoil">mfoil</a></li><li class="l2"><a href="#atkinson-hyperlegible-next-and-atkinson-hyperlegible-mono">Atkinson Hyperlegible Next and Atkinson Hyperlegible Mono</a></li><li class="l2"><a href="#packages-of-the-windows-build">Packages of the Windows build</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Project</p>
+<h1 id="third-party-notices">Third-party notices</h1>
+<h2 id="mfoil">mfoil<a class="anchor" href="#mfoil" aria-label="Link to this section">#</a></h2>
+<p><code>third_<wbr>party/<wbr>mfoil/<wbr>mfoil.py</code> is mfoil v2023-06-28 by Krzysztof J. Fidkowski
+(University of Michigan), an XFOIL-class viscous–inviscid airfoil solver,
+distributed under the MIT licence (full text in <code>third_<wbr>party/<wbr>mfoil/<wbr>LICENSE</code>
+and in the file header). Obtained from https://github.com/S-Lykles/mfoil
+(<code>mfoil_original.py</code>), a verbatim copy of the original release.
+Reference: K. J. Fidkowski, "A coupled inviscid–viscous airfoil analysis solver,
+revisited", AIAA Journal, 2022.</p>
+<p>The copy the package imports, with Aerolume's robustness patches, is
+<code>src/<wbr>aerolume/<wbr>solvers/<wbr>airfoil/<wbr>_<wbr>mfoil.py</code>; it carries the same copyright notice and
+MIT licence text in its header, and its local modifications are listed there.</p>
+<h2 id="atkinson-hyperlegible-next-and-atkinson-hyperlegible-mono">Atkinson Hyperlegible Next and Atkinson Hyperlegible Mono<a class="anchor" href="#atkinson-hyperlegible-next-and-atkinson-hyperlegible-mono" aria-label="Link to this section">#</a></h2>
+<p>The interface fonts in <code>src/<wbr>aerolume/<wbr>app/<wbr>resources/<wbr>fonts/</code> are Atkinson Hyperlegible Next
+(regular, medium, semibold, bold) and Atkinson Hyperlegible Mono (regular, semibold),
+Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors and The Atkinson
+Hyperlegible Mono Project Authors (https://github.com/googlefonts/atkinson-hyperlegible-next,
+https://github.com/googlefonts/atkinson-hyperlegible-next-mono), licensed under the SIL Open
+Font License 1.1 (full texts next to the fonts: <code>OFL-AtkinsonHyperlegibleNext.txt</code>,
+<code>OFL-AtkinsonHyperlegibleMono.txt</code>). No Reserved Font Name is declared. They were converted
+from the Fontsource 5.3.0 WOFF2 packages to static TrueType faces with unchanged glyph
+outlines by <code>build_fonts.py</code> in the same folder; its README records the steps and checksums.
+The application registers them at start-up (<code>aerolume.app.theme.ensure_<wbr>fonts</code>, through
+<code>QFontDatabase</code>) and falls back to Segoe UI / Consolas, glyph by glyph or entirely, when a
+face is missing. The website sets the same two families from the original WOFF2 files, with
+their licences beside them in <code>website/assets/fonts/</code>.</p>
+<h2 id="packages-of-the-windows-build">Packages of the Windows build<a class="anchor" href="#packages-of-the-windows-build" aria-label="Link to this section">#</a></h2>
+<p>The installer and the portable folder also contain Python and the packages Aerolume runs on
+(PyTorch with the NVIDIA CUDA libraries, NumPy, SciPy, PySide6 / Qt, VTK, pyqtgraph,
+Matplotlib and their dependencies). <code>packaging/build.py</code> (<code>buildlib.collect_<wbr>licenses</code>) fills
+the build's <code>licenses</code> folder, and <code>licenses/README.txt</code> lists every component with its
+version and licence:</p>
+<ul>
+<li><strong>Python packages</strong>: the licence files each distribution ships, in <code>licenses/&lt;name&gt;/</code>.
+Nested files keep their folders, so the licences of the open-source projects compiled into
+PyTorch are in <code>licenses/<wbr>torch/<wbr>third_<wbr>party/</code> (95 files for torch 2.14.1).</li>
+<li><strong>Qt for Python (PySide6, shiboken6)</strong>: used under the GNU LGPL v3. The wheels carry only
+<code>LicenseRef-Qt-Commercial.txt</code>, so the build adds the LGPL-3.0 and GPL-3.0 texts from
+<code>packaging/licenses/</code>. Each folder also gets a README that says how to replace the Qt
+libraries in <code>_internal/PySide6</code> and where The Qt Company publishes the source of the
+bundled versions.</li>
+<li><strong>VTK's vendored libraries</strong>: VTK's wheel ships only VTK's own licence, but <code>_internal/vtk.libs</code>
+also holds VTK's builds of 20 other libraries: zlib, libpng, libjpeg-turbo, libtiff, FreeType,
+expat, liblzma (XZ Utils), lz4, pugixml, JsonCpp, KISS FFT, Verdict, scnlib (with NanoRange),
+MetaIO, DICOMParser, KWSys, token, Loguru, glad and {fmt}. <code>licenses/<wbr>vtk/<wbr>third_<wbr>party/</code> holds
+each one's licence text, copied verbatim from the VTK 9.7.1 source tree, and a README that
+names the DLL, the licence and the upstream version of each. Portions of this software are
+copyright © The FreeType Project (www.freetype.org). All rights reserved. This software is
+based in part on the work of the Independent JPEG Group.</li>
+<li><strong>Third-party code inside Qt</strong>: Qt's DLLs and plugins contain HarfBuzz, FreeType, libpng,
+libjpeg-turbo, libtiff, libwebp, md4c, PCRE2, zlib, double-conversion, TinyCBOR, the Unicode
+data and more; <code>opengl32sw.dll</code> is Mesa's llvmpipe software renderer (Mesa 11.2.2 with
+LLVM 3.6.2). <code>licenses/<wbr>PySide6_<wbr>Essentials/<wbr>third_<wbr>party/<wbr>README.txt</code> lists each with its version,
+use, licence and copyright holders, as Qt's own attribution data (<code>qt_attribution.json</code> of
+qtbase, qtimageformats and qtsvg 6.11.2) records them, and the folder holds the licence texts
+from Qt's sources and Mesa's and LLVM's licences. The entries for platforms and Qt modules
+that are not bundled (Wayland, X11, macOS, Android, Qt SQL, Qt D-Bus) are named, not copied.</li>
+<li><strong>CPython</strong>: <code>licenses/python/</code> holds the <code>LICENSE.txt</code> and the documentation's
+<code>license.html</code> of the Python installation the build was made from. They cover the PSF
+licence and the libraries the interpreter contains: OpenSSL (Apache-2.0), libffi, expat,
+bzip2, zlib and libmpdec. SQLite and liblzma are in the public domain.</li>
+<li><strong>NVIDIA CUDA and cuDNN runtime libraries</strong> (cuBLAS, cuDNN 9, cuFFT, cuRAND, cuSOLVER,
+cuSPARSE, NVRTC, nvJitLink, CUPTI, NVTX and others in <code>_internal/torch/lib</code>): proprietary
+NVIDIA software, redistributed under the NVIDIA CUDA Toolkit EULA and the cuDNN Software
+License Agreement. <code>licenses/<wbr>nvidia-cuda/<wbr>NOTICE.txt</code> lists each file with the version and
+copyright recorded in it and gives the agreements' addresses. Neither agreement requires
+its text to be shipped, and the texts are not included.</li>
+<li><strong>Intel OpenMP runtime</strong> (<code>libiomp5md.dll</code>, <code>libiompstubs5md.dll</code> in <code>_internal/torch/lib</code>):
+proprietary Intel software that comes with PyTorch. <code>licenses/<wbr>intel-openmp/<wbr>NOTICE.txt</code>
+names Intel's End User License Agreement for Developer Tools and its address. The
+agreement's text is not included.</li>
+</ul>
+<p><code>packaging/<wbr>licenses/<wbr>README.md</code> records where each vendored text comes from.</p>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="contributing.html"><span>Previous</span><b>Contributing</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#mfoil">mfoil</a></li><li class="l2"><a href="#atkinson-hyperlegible-next-and-atkinson-hyperlegible-mono">Atkinson Hyperlegible Next and Atkinson Hyperlegible Mono</a></li><li class="l2"><a href="#packages-of-the-windows-build">Packages of the Windows build</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

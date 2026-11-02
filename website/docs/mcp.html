@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · MCP server</title>
+<meta name="description" content="Driving Aerolume from Claude Desktop or Claude Code through aerolume-mcp.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · MCP server">
+<meta property="og:description" content="Driving Aerolume from Claude Desktop or Claude Code through aerolume-mcp.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html" aria-current="page">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html" aria-current="page">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#starting-it">Starting it</a></li><li class="l2"><a href="#claude-desktop">Claude Desktop</a></li><li class="l2"><a href="#claude-code">Claude Code</a></li><li class="l2"><a href="#tools">Tools</a></li><li class="l3"><a href="#confirmation">Confirmation</a></li><li class="l3"><a href="#checking-an-answer-check_claims">Checking an answer: check_claims</a></li><li class="l2"><a href="#progress-cancellation-records">Progress, cancellation, records</a></li><li class="l2"><a href="#protocol-details">Protocol details</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Guide</p>
+<h1 id="driving-aerolume-from-claude-mcp">Driving Aerolume from Claude (MCP)</h1>
+<p><code>aerolume-mcp</code> is a <a href="https://modelcontextprotocol.io">Model Context Protocol</a> server. It lets Claude
+Desktop, Claude Code or any other MCP client plan, run and analyse experiments on an Aerolume
+project through the same tools the in-app assistant uses (<a href="assistant.html">Experiment assistant</a>).</p>
+<p>No API key goes into Aerolume: the client's own model does the thinking, Aerolume does the physics
+on this computer. The server speaks MCP over stdio (one JSON-RPC 2.0 message per line), uses only
+the Python standard library, and never opens a network connection.</p>
+<pre class="diagram"><code>Claude Desktop / Claude Code ──stdio (MCP)──<span class="g">▶</span> aerolume-mcp ──<span class="g">▶</span> aerolume.api ──<span class="g">▶</span> polar, wing, CFD solvers
+                                                   │
+                                                   └──<span class="g">▶</span> &lt;project&gt;/experiments/&lt;session&gt;/  (the log)</code></pre>
+<h2 id="starting-it">Starting it<a class="anchor" href="#starting-it" aria-label="Link to this section">#</a></h2>
+<pre><code>aerolume-mcp [--project P [--create]] [--confirm-above SECONDS] [--read-only]
+python -m aerolume.mcp_server ...        # the same, without the console script</code></pre>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">option</th><th scope="col">meaning</th></tr></thead>
+<tbody>
+<tr><td><code>--project P</code></td><td>the project folder (<code>Name.aerolume</code>) to open at start; without it the client calls <code>open_project</code> first</td></tr>
+<tr><td><code>--create</code></td><td>create the project when it does not exist</td></tr>
+<tr><td><code>--confirm-above S</code></td><td>runs estimated longer than S seconds need <code>confirm: true</code> (default: the assistant's approval threshold, 120 s; <code>0</code> asks for every run)</td></tr>
+<tr><td><code>--read-only</code></td><td>offer only the tools that change nothing (reading, estimating, comparing, checking claims); <code>open_project</code> opens existing projects only, and nothing is written into the project (the session log, which the claims check reads, lives in a temporary folder)</td></tr>
+</tbody>
+</table></div>
+<p>The server writes nothing but protocol messages to stdout. Everything else (its start-up line,
+solver output, warnings) goes to stderr, which Claude Desktop keeps in its MCP log
+(<code>%APPDATA%\Claude\logs\mcp-server-aerolume.log</code> on Windows).</p>
+<h2 id="claude-desktop">Claude Desktop<a class="anchor" href="#claude-desktop" aria-label="Link to this section">#</a></h2>
+<p>Add the server to <code>claude_<wbr>desktop_<wbr>config.json</code> (<strong>Settings ▸ Developer ▸ Edit Config</strong>; on Windows
+<code>%APPDATA%\Claude\claude_<wbr>desktop_<wbr>config.json</code>) and restart Claude Desktop:</p>
+<pre><code class="language-json">{
+  "mcpServers": {
+    "aerolume": {
+      "command": "C:/Users/you/venvs/aerolume/Scripts/python.exe",
+      "args": ["-m", "aerolume.mcp_server", "--project", "C:/Studies/Wing study.aerolume"]
+    }
+  }
+}</code></pre>
+<p><code>command</code> is the Python of the environment Aerolume is installed in (a bare <code>python</code> only works when
+that is the one on <code>PATH</code>). Once <code>aerolume-mcp</code> is installed as a console script you can use it
+directly: <code>"command": "aerolume-mcp", "args": ["--project", "..."]</code>. Leave <code>--project</code> out to let
+Claude choose a project with <code>list_projects</code> and <code>open_project</code>.</p>
+<h2 id="claude-code">Claude Code<a class="anchor" href="#claude-code" aria-label="Link to this section">#</a></h2>
+<pre><code>claude mcp add aerolume -- "C:/Users/you/venvs/aerolume/Scripts/python.exe" -m aerolume.mcp_server --project "C:/Studies/Wing study.aerolume"</code></pre>
+<p>or, to share it with a repository, a <code>.mcp.json</code> in its root:</p>
+<pre><code class="language-json">{
+  "mcpServers": {
+    "aerolume": {
+      "command": "C:/Users/you/venvs/aerolume/Scripts/python.exe",
+      "args": ["-m", "aerolume.mcp_server", "--create", "--project", "studies/Wing study.aerolume"]
+    }
+  }
+}</code></pre>
+<p><code>claude mcp list</code> shows whether it connected; in a session, <code>/mcp</code> lists its tools.</p>
+<h2 id="tools">Tools<a class="anchor" href="#tools" aria-label="Link to this section">#</a></h2>
+<p>The assistant's tools with the same input schemas, the same validation and the same honesty data
+in every result (Reynolds numbers simulated and real, convergence, standard errors with what they
+mean, <code>validated_quantities</code> / <code>not_validated</code>), plus three for MCP clients:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">tool</th><th scope="col">changes the project</th><th scope="col">needs <code>confirm</code></th></tr></thead>
+<tbody>
+<tr><td><code>open_project</code>, <code>list_projects</code></td><td>opens (or creates) a project</td><td>—</td></tr>
+<tr><td><code>project_overview</code>, <code>describe_design</code>, <code>describe_simulation</code></td><td>no</td><td>—</td></tr>
+<tr><td><code>create_naca_airfoil</code>, <code>create_template</code>, <code>create_wing</code>, <code>derive_design</code>, <code>create_case</code></td><td>adds designs (and a case's simulation)</td><td>—</td></tr>
+<tr><td><code>estimate_cost</code></td><td>no (the planner's estimate)</td><td>—</td></tr>
+<tr><td><code>run_polar</code>, <code>run_wing</code>, <code>run_cfd</code>, <code>run_sweep</code>, <code>run_simulation</code>, <code>run_grid_study</code></td><td>adds simulations and results</td><td>above the threshold, or when the estimate fails</td></tr>
+<tr><td><code>get_results</code>, <code>compare_results</code>, <code>compare_reference</code></td><td>no (<code>compare_reference</code> compares results with the published reference their set-up reproduces; the fan room is a consistency check only)</td><td>—</td></tr>
+<tr><td><code>make_plot</code></td><td>a PNG in the session's folder (returned as an image too)</td><td>—</td></tr>
+<tr><td><code>write_report</code></td><td>a PDF or HTML report in the project</td><td>—</td></tr>
+<tr><td><code>delete_item</code></td><td>deletes a design or simulation</td><td>always</td></tr>
+<tr><td><code>record_plan</code>, <code>record_conclusion</code></td><td>the session log</td><td>—</td></tr>
+<tr><td><code>check_claims</code></td><td>no</td><td>—</td></tr>
+</tbody>
+</table></div>
+<p>Not offered: <code>run_python</code> (an MCP client runs code itself) and <code>suggest_settings</code> (its card needs the
+app's window).</p>
+<p><code>run_cfd</code> takes a <code>physics</code> object for heat transfer, walls, heaters, fans, jets, smoke emitters and
+closed domains. A run that asks for physics this build's solver does not implement is refused,
+naming what is missing, before anything is recorded.</p>
+<h3 id="confirmation">Confirmation<a class="anchor" href="#confirmation" aria-label="Link to this section">#</a></h3>
+<p>A call that needs confirmation and does not carry <code>confirm: true</code> runs nothing. It returns an error
+result that lists exactly what would run, so the client can ask its user. <code>confirm: true</code> counts only
+for a call (the same tool with the same input) that the server has answered this way earlier in the
+session, and only once: a client that sends <code>confirm: true</code> on its first call gets the list back, so
+the user always sees what would happen before it does.</p>
+<pre><code class="language-json">{
+ "error": "Not done: this call needs confirm=true after the user agrees.",
+ "needs_confirmation": true,
+ "title": "Wing analysis of Wing · span 2 m, taper 0.6: about 25 s",
+ "reason": "The estimated time (25 s; rough for polars and wings) is above the approval threshold (0.0 s, aerolume-mcp --confirm-above).",
+ "would_do": [
+  {"item": "Design", "value": "Wing · span 2 m, taper 0.6 · wing (3D planform)"},
+  {"item": "Analysis", "value": "Finite-wing analysis"},
+  {"item": "Speed", "value": "15 m/s"},
+  {"item": "Angles", "value": "α −4° to 14°, step 1° (19 angles)"},
+  {"item": "Method", "value": "vortex lattice, viscous strips"},
+  {"item": "Estimated time", "value": "about 25 s (rough)"}
+ ],
+ "estimated_seconds": 24.95
+}</code></pre>
+<p>(This reply was produced by the server started with <code>--confirm-above 0</code>.) The rules fail closed: a
+run whose estimate fails is listed as "cost unknown" and also needs <code>confirm</code>; deleting always does.
+A call whose own input is wrong is answered with the error and runs nothing. The tools'
+<code>destructiveHint</code> and <code>readOnlyHint</code> annotations say the same to clients that show them.</p>
+<h3 id="checking-an-answer-check_claims">Checking an answer: <code>check_claims</code><a class="anchor" href="#checking-an-answer-check_claims" aria-label="Link to this section">#</a></h3>
+<p><code>check_claims(text)</code> runs the assistant's claims checker on a draft answer against this session's
+tool calls and results. Each statement with a number or a claimed action comes back <strong>verified</strong>
+(with where the number came from), <strong>derived</strong> (the formula: a difference, a % change or a ratio of
+two results), <strong>unsupported</strong> or <strong>contradicted</strong> (an action no call performed, or a number that
+belongs to another simulation, with the value it should have been), plus <code>ok</code> and, when something
+is wrong, <code>correct_before_answering</code>. A statement that calls a result validated or verified needs a
+reference check of the session inside its stated band, exactly as in the app (see the assistant
+guide, "Validated needs a reference check inside its band"): the server keeps the session's tool
+results (the newest 400) and the checker reads the validity lists, the steady quantities and the
+reference checks from them. The server's instructions ask the client's model to call it before it
+answers.</p>
+<p><code>record_conclusion</code> applies the same rules to what it writes into the session log: each finding
+must be a value of the simulation it cites (the error lists that run's actual values), and a summary
+or limitation that claims a deletion, run or creation no call of the session performed is refused.</p>
+<h2 id="progress-cancellation-records">Progress, cancellation, records<a class="anchor" href="#progress-cancellation-records" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Calls that send a <code>progressToken</code> get <code>notifications/progress</code> while a solver runs (at most two a
+second, with the solver's message). The value only ever rises, as the spec requires: a fraction
+that does not exceed the last one sent (a solver whose estimate of the remaining work grew) is
+held back until the run passes it.</li>
+<li><code>notifications/cancelled</code> for a running call sets the solver's cancel event: the run stops, keeps
+its partial result in the project marked "cancelled", and no response is sent for that request.</li>
+<li>Calls run one at a time on a worker thread, in arrival order (one GPU queue, one project store);
+pings are answered while a solver runs.</li>
+<li>Every call of a session is recorded in the project like an assistant experiment
+(<code>experiments/&lt;date&gt;-mcp-session-from-&lt;client&gt;/</code>, provider "mcp"), with the input, outcome and
+duration of each call, so what an outside agent did to a project can be read afterwards. The
+Project tree lists these logs under <strong>Experiments</strong>.</li>
+</ul>
+<h2 id="protocol-details">Protocol details<a class="anchor" href="#protocol-details" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Protocol versions 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05: the client's when it asks for
+one of these, otherwise the newest. From 2025-06-18 on, results also carry <code>structuredContent</code>
+(the same JSON as the text block).</li>
+<li>Methods: <code>initialize</code>, <code>notifications/<wbr>initialized</code>, <code>ping</code>, <code>tools/list</code>, <code>tools/call</code>,
+<code>notifications/cancelled</code>. Anything else is answered <code>-32601</code> (method not found); an unknown tool
+<code>-32602</code>; a line that is not JSON <code>-32700</code>. A tool that fails returns a result with
+<code>isError: true</code>, so the model can read the reason and correct its call.</li>
+<li>On Windows the server never leaves a read waiting on its stdin pipe: it polls the pipe and reads
+only the bytes already there, and moves file descriptor 0 to NUL. A pending synchronous read
+makes other threads' queries of that pipe wait (measured: <code>GetFileInformationByHandle</code>,
+<code>PeekNamedPipe</code> and the old C runtime's <code>fstat</code> do), and scipy's mingw-built BLAS makes such a
+query while it loads, which froze the first wing run of every session before this was fixed.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">symptom</th><th scope="col">cause and fix</th></tr></thead>
+<tbody>
+<tr><td>the client says the server disconnected at start</td><td>the <code>command</code> path is wrong, or <code>--project</code> points to a folder that is not a project (add <code>--create</code>, or fix the path); the reason is the last line of the server's stderr log</td></tr>
+<tr><td>every run comes back "needs confirmation"</td><td>that is <code>--confirm-above</code> (or the assistant's threshold) doing its job: confirm, or raise it</td></tr>
+<tr><td>"This version's 2D solver does not implement ..."</td><td>the physics asked for is not in this build (<code>al.supported_physics</code>); nothing was run</td></tr>
+<tr><td>a run takes much longer than its estimate</td><td>the GPU is shared with another program; the estimate assumes it is free</td></tr>
+</tbody>
+</table></div>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="assistant.html"><span>Previous</span><b>Experiment assistant</b></a><a class="next" href="accounts.html"><span>Next</span><b>Accounts (optional)</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#starting-it">Starting it</a></li><li class="l2"><a href="#claude-desktop">Claude Desktop</a></li><li class="l2"><a href="#claude-code">Claude Code</a></li><li class="l2"><a href="#tools">Tools</a></li><li class="l3"><a href="#confirmation">Confirmation</a></li><li class="l3"><a href="#checking-an-answer-check_claims">Checking an answer: check_claims</a></li><li class="l2"><a href="#progress-cancellation-records">Progress, cancellation, records</a></li><li class="l2"><a href="#protocol-details">Protocol details</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

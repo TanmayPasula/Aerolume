@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{HEAD}}
+</head>
+<body class="home">
+<a class="skip" href="#main">Skip to content</a>
+{{TOPBAR}}
+<main id="main">
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <canvas class="field" data-hero-field aria-hidden="true"></canvas>
+  <div class="hero-copy wrap" data-hero-copy>
+    <h1 id="hero-title">Aerolume</h1>
+    <p class="lede">An open-source aerodynamics and heat-transfer studio, built for independent student researchers who need numbers they can trust.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#validation">See the validation</a>
+      <a class="btn btn-secondary" href="#download">Get Aerolume</a>{{SOURCE_BUTTON}}
+    </div>
+  </div>
+</section>
+
+<section class="sec trust wrap" id="validation" aria-labelledby="trust-h">
+  <div class="trust-head" data-reveal>
+  <h2 class="statement" id="trust-h">No black-box results.</h2>
+  <div class="trust-lede">
+    <p class="lede">Every solver is checked against published benchmarks. Each check has a tolerance band written in <code>validation/run_all.py</code> before the case runs. {{REVISED_NOTE}} Every number on this page comes from a script in <code>validation/</code>, and the <a href="docs/validation.html">validation report</a> names which.</p>
+    {{TRUST_TALLY}}
+  </div>
+  </div>
+  <div class="table-scroll ledger-wrap" data-reveal>
+    <table class="ledger">
+      <caption>The check that came closest to its band edge in each solver area, and every failing check. {{RUN_FACTS}} All the others are in <a href="{{REPORT_RUN}}">section 9 of the report</a>; <code>python validation/run_all.py --all</code> reruns them.</caption>
+      <thead><tr><th scope="col">Check</th><th scope="col" class="num">Aerolume</th><th scope="col" class="num">Published</th><th scope="col" class="num">Difference</th><th scope="col" class="num">Band</th><th scope="col">Result</th></tr></thead>
+      <tbody>
+        {{LEDGER_ROWS}}
+      </tbody>
+    </table>
+  </div>
+  {{CAVITY_PLOT}}
+  <p class="more">How each solver works and how it was verified: <a href="docs/theory-ns2d.html">2D</a> and <a href="docs/theory-ns3d.html">3D Navier&ndash;Stokes</a>, <a href="docs/theory-airfoil.html">airfoil polars</a>, <a href="docs/theory-wing.html">finite wings</a>.</p>
+</section>
+
+<section class="sec wrap" id="limits" aria-labelledby="limits-h">
+  <div class="limits" data-reveal>
+    <div class="sec-head">
+      <h2 id="limits-h">Before you quote a number</h2>
+      <p class="lede">The checks above hold where they were run. These limits apply to every run; the <a href="docs/overview.html#limits">overview</a> carries the same list, and the report says <a href="{{REPORT_NOT_VALIDATED}}">what has not been validated</a>.</p>
+    </div>
+    <div class="limit-list">
+{{LIMITS}}
+    </div>
+  </div>
+</section>
+
+<figure class="plate-fig wrap" data-reveal>
+  <div class="plate" style="--ar: {{FIG_A_W}} / {{FIG_A_H}}; --ar-m: {{FIG_A_MW}} / {{FIG_A_MH}}">
+    <picture>
+      <source media="(max-width: 640px)" srcset="assets/{{FIG_A_SMOKE_M}}">
+      <img src="assets/{{FIG_A_SMOKE}}" width="{{FIG_A_W}}" height="{{FIG_A_H}}" alt="Computed smoke streaks flowing left to right past a NACA {{FIG_A_NACA}} airfoil at {{FIG_A_ALPHA}} degrees; a staggered street of vortices forms behind the trailing edge." loading="lazy">
+    </picture>
+  </div>
+  <figcaption><b>Smoke streaks computed by Aerolume.</b> NACA {{FIG_A_NACA}} at &alpha; = {{FIG_A_ALPHA}}&deg;, Re = {{FIG_A_RE}}, t = {{FIG_A_T}} c/U after an impulsive start; {{FIG_A_NX}} &times; {{FIG_A_NY}} cells ({{FIG_A_CPR}} per chord), float32, {{FIG_A_STEPS}} steps on an {{FIG_A_GPU}}. Made by <code>website/tools/make_figures.py</code>.</figcaption>
+</figure>
+
+<div class="streak wrap" data-reveal aria-hidden="true">{{STREAKLINES}}</div>
+
+<section class="sec wrap" id="workflow" aria-labelledby="workflow-h">
+  <div class="sec-head" data-reveal>
+    <h2 id="workflow-h">From a shape to a report, in one program</h2>
+    <p class="lede">Geometry, setup, simulation, results, comparison and report, in that order. Every result carries its units, the Reynolds number actually simulated, the grid, the convergence state and the solver&rsquo;s own diagnostics.</p>
+  </div>
+
+  <div class="feature" id="flow3d">
+    <div class="feature-text">
+      <h3>Flow around any shape, in 2D and 3D</h3>
+      <p>Unsteady incompressible Navier&ndash;Stokes written in PyTorch, on an NVIDIA GPU or the CPU. In 2D around any number of sections or vehicle profiles; in 3D around imported STL, OBJ or PLY meshes, with a symmetry plane, a moving road and rolling wheels. The 3D views show smoke, streamlines from a movable rake, slices and vortex iso-surfaces.</p>
+      <ul class="facts">
+        <li><b>{{PERF_GPU_DEFAULT}}</b> steps/s on 1024&nbsp;&times;&nbsp;512 cells in 2D, {{PERF_GPU_NAME}}</li>
+        <li><b>{{NS3D_RATE}}</b> steps/s on 4.2&nbsp;M cells in 3D{{NS3D_NOTE}}</li>
+        <li>{{PERF_CPU}}</li>
+      </ul>
+      <p class="small">Measured with <code>validation/bench_ns2d.py</code> and <code>bench_ns3d.py</code>; <a href="{{PERF_LINK}}">every configuration</a>.</p>
+    </div>
+    <div class="feature-media" data-reveal="wipe">{{SHOT_RESULTS3D}}</div>
+  </div>
+
+  <div class="feature" id="physics">
+    <div class="feature-text">
+      <h3>Smoke, heat, fans and jets</h3>
+      <p>Place emitters that release smoke in up to four colours or tracer particles. Hold bodies and walls at a temperature or a heat flux, with buoyancy; add heaters, fans set by thrust or a target speed, jets and vents, in a wind tunnel or a closed room.</p>
+      <p>Results give heat rates and Nusselt numbers with their standard errors, the heat balance of the domain and what each fan delivers.</p>
+    </div>
+    <div class="feature-media" data-reveal="wipe"><div class="feature-pair">{{SHOT_HEAT}}{{SHOT_PHYSICS}}</div></div>
+  </div>
+
+  <div class="feature" id="explore">
+    <div class="feature-text">
+      <h3>Draw into a running flow</h3>
+      <p>Explore mode keeps the flow running while you change the angle or the speed, draw and erase obstacles, and drag emitters, fans and heaters to new places.</p>
+      <p>The diagnostics show what decides whether a run can be trusted: the divergence left after the projection, the change of each field per step, the CFL number and the pressure residual.</p>
+    </div>
+    <div class="feature-media" data-reveal="wipe">{{SHOT_EXPLORE}}</div>
+  </div>
+
+  <div class="feature" id="scripting">
+    <div class="feature-text">
+      <h3>Script it, or ask the assistant</h3>
+      <p><code>import aerolume as al</code> is the API the program itself uses: designs, runs, sweeps, results with their standard errors, plots and exports.</p>
+      <p>The experiment assistant plans and analyses runs with Claude or a local model through Ollama. Every change it suggests does nothing until you click Apply, and nothing leaves your computer until you agree.</p>
+      <p><a href="docs/scripting.html">Scripting guide</a>, <a href="docs/assistant.html">the assistant</a>, <a href="docs/mcp.html">MCP server</a></p>
+    </div>
+    <div class="feature-media" data-reveal="wipe">{{SHOT_SCRIPT}}</div>
+  </div>
+</section>
+
+<section class="sec wrap" id="download" aria-labelledby="download-h">
+  <div class="sec-head" data-reveal>
+    <h2 id="download-h">Get Aerolume</h2>
+    <p class="lede">Version <span class="ver">{{VERSION}}</span>{{RELEASE_NOTE}}, for Windows 10 and 11, 64-bit. Free and open source under the Apache License 2.0.</p>
+  </div>
+  <div class="two-col code-right">
+    <div class="prose">
+      <p><strong>There is no public download yet.</strong> {{REPO_STATUS}}</p>
+      <p>The build makes <code>Aerolume-{{VERSION}}-cuda-setup.exe</code>, which installs for the current user without administrator rights, with Python, PyTorch and its CUDA libraries, VTK, Qt, the documentation and the validation scripts inside. GPU runs need only an NVIDIA driver; without one, every analysis runs on the CPU.{{INSTALLER_FACTS}}</p>
+      <p>The installer is not code-signed, so Windows SmartScreen asks once. The <a href="docs/install.html">installation guide</a> covers installing from source with pip, the portable folder and troubleshooting.</p>
+    </div>
+    <div class="codeblock">
+      <p class="label">{{BUILD_LABEL}}<button class="copy" type="button" data-copy="cmd-build" hidden>Copy</button></p>
+<pre class="cmd" id="cmd-build"><code>{{CMD_BUILD}}</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="sec wrap" id="accounts" aria-labelledby="accounts-h">
+  <div class="two-col" data-reveal>
+    <div>
+      <h2 id="accounts-h">No account needed</h2>
+      <div class="prose">
+        <p>Aerolume works fully offline and sends nothing anywhere by default. Accounts exist only once you connect a Supabase project of your own: sign-in by email, a magic link or a code, or GitHub and Google through the system browser; cloud copies of projects; expiring read-only links to share a result. There is no Aerolume-run server.</p>
+        <p><a href="docs/accounts.html">What leaves your computer, and how to connect a project</a></p>
+      </div>
+    </div>
+    <div id="open-source">
+      <h2>Open source</h2>
+      <div class="prose">
+        <p>Released under the <a href="LICENSE.txt">Apache License 2.0</a>: use it commercially, modify it and redistribute it. The airfoil solver builds on <strong>mfoil</strong> by Krzysztof J. Fidkowski (MIT licence); the <a href="docs/third-party-notices.html">third-party notices</a> list the rest. {{OSS_LINKS}}</p>
+        <p>A change that moves a coefficient has to say by how much, on which validation case, and why the new value is closer to the reference: the <a href="docs/contributing.html">contributing guide</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+{{FOOTER}}
+<script src="assets/site.js" defer></script>
+<script src="assets/hero/hero.js" defer></script>
+</body>
+</html>

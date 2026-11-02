@@ -1,0 +1,37 @@
+# Supabase CLI settings for running Aerolume's account backend locally
+# (`supabase start`, needs Docker). Only the settings Aerolume depends on are
+# listed; everything else keeps the CLI's defaults. For a hosted project the
+# same values are set in the dashboard (see supabase/README.md).
+
+project_id = "aerolume"
+
+[auth]
+site_url = "http://127.0.0.1:47821/callback"
+# The desktop app receives browser sign-ins on these loopback URLs
+# (aerolume.accounts.config.DEFAULT_REDIRECT_PORTS).
+additional_redirect_urls = [
+  "http://127.0.0.1:47821/callback",
+  "http://127.0.0.1:47822/callback",
+  "http://127.0.0.1:47823/callback",
+  "http://127.0.0.1:47824/callback",
+]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+
+[auth.external.github]
+enabled = false
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
+
+[auth.external.google]
+enabled = false
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+
+[storage]
+file_size_limit = "50MiB"

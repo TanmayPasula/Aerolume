@@ -1,0 +1,62 @@
+name: Website
+
+# Builds the static site from the repository (website/build.py: home page facts and the
+# validation table read from the docs, docs from README/docs/*.md/CONTRIBUTING, link check)
+# and deploys it to GitHub Pages.
+# The build uses only the Python standard library, so nothing is installed except pytest
+# for the converter's tests.
+#
+# Addresses: build.py takes the repository URL from GITHUB_REPOSITORY (set by Actions for
+# the repository being built) unless pyproject.toml [project.urls] names one, and the
+# site's own URL from configure-pages, which makes og:image/og:url absolute.
+
+# The public site is deployed from its own repository (Aerolume-Website), so this workflow
+# only runs on demand, e.g. to build the site on GitHub Actions for a check.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test the site builder
+        run: |
+          pip install pytest
+          python -m pytest website/tests -q -p no:cacheprovider
+      - id: pages
+        uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request'
+      - name: Build the site
+        # --dist assembles index.html, LICENSE.txt, docs/ and assets/ only (no tests, tools or templates)
+        env:
+          AEROLUME_SITE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python website/build.py --strict --dist _site
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

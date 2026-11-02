@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aerolume"
+version = "0.1.0"
+description = "Open-source aerodynamics studio: GPU Navier-Stokes in 2D and 3D with heat transfer, fans and smoke, airfoil polars, finite wings, scripting and an AI experiment assistant."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+requires-python = ">=3.11"
+authors = [{ name = "Aerolume contributors" }]
+keywords = ["CFD", "aerodynamics", "airfoil", "navier-stokes", "pytorch", "immersed boundary", "vehicle aerodynamics",
+            "heat transfer", "natural convection", "actuator disc", "vortex lattice", "flow visualization"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Environment :: X11 Applications :: Qt",
+    "Environment :: Win32 (MS Windows)",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "torch>=2.4",
+    "matplotlib>=3.8",
+    "PySide6-Essentials>=6.6",
+    "pyqtgraph>=0.13.7",
+    "ezdxf>=1.1",
+    "pillow>=10",
+    "contourpy>=1.2",
+    "vtk>=9.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+# the Claude provider of the AI experiment assistant (local Ollama models need nothing extra)
+ai = ["anthropic>=1.0"]
+# packaging/build.py: the Windows app folder and installer (Inno Setup 6 is a separate program)
+build = ["pyinstaller>=6.0"]
+all = ["anthropic>=1.0"]
+
+[project.scripts]
+aerolume-cli = "aerolume.cli:main"
+# the scripting API as a Model Context Protocol server on stdio (docs/mcp.md)
+aerolume-mcp = "aerolume.mcp_server:main"
+
+[project.gui-scripts]
+aerolume = "aerolume.app.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+aerolume = ["examples/**/*", "app/resources/**/*", "geometry/data/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "gpu: needs a CUDA device",
+    "slow: takes more than ~20 s",
+    "gui: needs a Qt platform (offscreen is fine)",
+]
+addopts = "-m 'not slow'"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"

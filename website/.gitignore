@@ -1,0 +1,5 @@
+# Build outputs that must never be committed or deployed from here.
+# _artifact/: older builds wrote the claude.ai Artifact copy inside website/; build.py
+# now refuses that and deletes a stale copy. _site/: the Pages deploy folder (--dist).
+_artifact/
+_site/

@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Sensitivity maps</title>
+<meta name="description" content="Shape sensitivities by reverse-mode differentiation through the solver, in 2D and 3D.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Sensitivity maps">
+<meta property="og:description" content="Shape sensitivities by reverse-mode differentiation through the solver, in 2D and 3D.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html" aria-current="page">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html" aria-current="page">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#1-reading-the-map">1. Reading the map</a></li><li class="l2"><a href="#2-what-exactly-is-differentiated">2. What exactly is differentiated</a></li><li class="l2"><a href="#3-the-reverse-sweep">3. The reverse sweep</a></li><li class="l2"><a href="#4-verification-against-finite-differences">4. Verification against finite differences</a></li><li class="l2"><a href="#5-how-close-is-the-map-to-the-physical-derivative">5. How close is the map to the physical derivative?</a></li><li class="l2"><a href="#6-unsteady-flows-what-the-map-means-there">6. Unsteady flows: what the map means there</a></li><li class="l2"><a href="#7-shape-optimisation">7. Shape optimisation</a></li><li class="l3"><a href="#71-airfoils-at-flight-reynolds-numbers-optimize_airfoil">7.1 Airfoils at flight Reynolds numbers: optimize_airfoil</a></li><li class="l3"><a href="#72-any-shape-with-the-cfd-gradient-experimental-optimize_shape_cfd">7.2 Any shape with the CFD gradient (experimental): optimize_shape_cfd</a></li><li class="l2"><a href="#8-limits-in-one-place">8. Limits, in one place</a></li><li class="l2"><a href="#9-three-dimensions-maps-on-any-imported-mesh">9. Three dimensions: maps on any imported mesh</a></li><li class="l3"><a href="#91-what-is-differentiated">9.1 What is differentiated</a></li><li class="l3"><a href="#92-from-vertices-to-a-map">9.2 From vertices to a map</a></li><li class="l3"><a href="#93-the-reverse-sweep-memory-and-cost">9.3 The reverse sweep, memory and cost</a></li><li class="l3"><a href="#94-verification-against-finite-differences">9.4 Verification against finite differences</a></li><li class="l3"><a href="#95-how-close-is-the-3d-map-to-the-physical-derivative">9.5 How close is the 3D map to the physical derivative?</a></li><li class="l3"><a href="#96-limits-3d">9.6 Limits (3D)</a></li><li class="l2"><a href="#10-api">10. API</a></li><li class="l2"><a href="#11-references">11. References</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Theory</p>
+<h1 id="shape-sensitivity-maps-and-shape-optimisation">Shape sensitivity maps and shape optimisation</h1>
+<p>Aerolume's CFD solver is differentiable (<a href="theory-ns2d.html#13-differentiability">Navier–Stokes solver (2D), §13</a>), so a single reverse sweep
+through the simulation tells you, for every point of the outline at once, <strong>how much the drag
+(or lift, L/D, moment) changes if the surface moves outward there</strong>. That is the <em>sensitivity
+map</em> shown on the Results page and in reports, and it is the gradient that the CFD shape
+optimiser follows (the airfoil optimiser of section 7.1 uses the polar solver instead). This page explains what the map is, how it is computed, how it was verified, and where
+it stops being trustworthy. Sections 1–8 describe the 2D maps; section 9 the 3D maps of any
+imported mesh, which use the same method on the 3D solver. Code: <code>src/aerolume/optimize/</code>
+(<code>sensitivity.py</code>, <code>sensitivity3d.py</code>, <code>airfoil.py</code>, <code>shape.py</code>); tests: <code>tests/test_optimize_*.py</code>,
+<code>tests/<wbr>test_<wbr>optimize3d*.py</code>.</p>
+<h2 id="1-reading-the-map">1. Reading the map<a class="anchor" href="#1-reading-the-map" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><p><strong>Colour = dJ/dn</strong>, J being the chosen objective (Cd, Cl, L/D or Cm; Setup → <em>Sensitivity map</em>).
+<strong>Positive (red): pushing the surface outward here — adding material — increases J.</strong> Negative
+(blue): adding material here decreases J. So to <em>reduce drag</em>, push blue regions out and pull
+red regions in; to <em>raise lift or L/D</em>, do the opposite. The arrows in the figure point the
+improving way.</p></li>
+<li><p><strong>Units: 1/m.</strong> The value is <span class="math"><i>L</i><sub>ref</sub> · <i>g</i>(<i>s</i>)</span>, where <code>g</code> is the shape-derivative density defined
+by <span class="math">dJ = ∮ <i>g</i>(<i>s</i>) δ<i>n</i>(<i>s</i>) ds</span>. In words: the change of J per metre of outward displacement applied
+over a stretch of outline one reference length (chord, vehicle length) long. For a small change
+<span class="math">δ<i>n</i><sub><i>i</i></sub></span> [m] at map points spaced <span class="math">ds<sub><i>i</i></sub></span> [m]:</p>
+<div class="eq" role="math" aria-label="ΔJ ≈ (1 / L_ref) · Σ_i sens_i · δn_i · ds_i"><table role="presentation"><tr><td class="l">Δ<i>J</i></td><td class="rel">≈</td><td class="r">(1 / <i>L</i><sub>ref</sub>) · Σ<sub><i>i</i></sub> sens<sub><i>i</i></sub> · δ<i>n</i><sub><i>i</i></sub> · ds<sub><i>i</i></sub></td></tr></table></div>
+<p>Example: NACA 0012, Re 1000, 5°, L/D map, trailing-edge region peak ≈ 300 1/m: a 1 mm bump
+over 2 cm of the lower surface there changes L/D by about 300 × 0.001 × 0.02 / 1 = +0.006
+(out of 1.35) — as an upper estimate, see the next point.</p></li>
+<li><p><strong>Read the pattern, not the size.</strong> Signs, peaks and the places that matter most are right;
+the magnitude can be about <strong>twice</strong> the physical derivative (§5: the finite window adds about
+20 % at the default window, the immersed boundary's response to sub-cell shape changes about
+1.5×). The Results page and the report therefore show the map relative to its 98th-percentile
+magnitude; the values in 1/m stay in the exports and in <code>SensitivityMaps</code>.</p></li>
+<li><p><strong>It is local and linear.</strong> It predicts the effect of <em>small</em> changes (a few per cent of the
+local thickness, a fraction of a grid cell to a few cells). Large changes move separation
+points and shedding, and the map of the new shape is different. Re-simulate any modified design.</p></li>
+<li><p><strong>It belongs to the simulated flow</strong>, with the same validity as the forces (Re_sim, grid,
+2D; <a href="theory-ns2d.html#12-limitations-what-to-trust">Navier–Stokes solver (2D), §12</a>). For high-Re airfoils the CFD map is qualitative; the airfoil
+optimiser (§6) uses the viscous panel solver instead.</p></li>
+</ul>
+<h2 id="2-what-exactly-is-differentiated">2. What exactly is differentiated<a class="anchor" href="#2-what-exactly-is-differentiated" aria-label="Link to this section">#</a></h2>
+<p>The developed flow <span class="math">(<i>u</i>₀, <i>v</i>₀)</span> (the state at the end of the run) is held fixed. From it the solver
+runs <span class="math"><i>N</i> = <i>N</i><sub>lead</sub> + <i>N</i><sub>avg</sub></span> steps at a fixed time step with the shape displaced by <span class="math"><i>d</i><sub><i>i</i></sub></span> along the
+outward normal of every outline vertex, and</p>
+<pre><code>J(d) = F( mean over the last N_avg steps of [Cd, Cl, Cm] )          F = Cd, Cl, Cl/Cd or Cm</code></pre>
+<p>The map is <span class="math">∂<i>J</i>/∂<i>d</i></span> at <code>d = 0</code>. Three choices define it:</p>
+<ul>
+<li><strong>Fixed starting state.</strong> The flow does not "know" the new shape until it is simulated with
+it. The <em>lead</em> time lets it respond before forces are counted: right after a shape change the
+penalisation removes the momentum of fluid that suddenly finds itself inside the body, an
+impulsive transient that is not part of any steady sensitivity.</li>
+<li><strong>Fixed time step.</strong> With the CFL rule choosing <code>dt</code> inside the window, <code>dt</code> would be a
+non-smooth function of the shape through <code>max |u|</code> (theory_ns2d §13). The window uses 0.9 × the
+CFL step of the starting state.</li>
+<li><strong>Fixed mask window.</strong> Masks live on a fixed cell window around the bodies (with 4 spare cells),
+so displaced shapes are evaluated on exactly the same discrete function. That is also what
+makes finite differences a valid check (§4).</li>
+</ul>
+<p><strong>Parametrisation.</strong> Each outline is refined so that vertices are at most half a cell apart. The
+inserted points lie on the original edges, so the shape — and every mask — is unchanged; only the
+displacement description gets finer. Vertex <code>i</code> moves along its normal (the central-difference
+tangent rotated outward), which displaces the outline by a hat function of the arc length.</p>
+<p><strong>From vertices to a density.</strong> <span class="math">∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub> ≈ <i>g</i>(<i>s</i><sub><i>i</i></sub>) · Δ<i>s</i><sub><i>i</i></sub></span> with <span class="math">Δ<i>s</i><sub><i>i</i></sub></span> the vertex's dual length
+(half its two edges), so the density is the ratio of the two, smoothed along the outline with a
+Gaussian of σ = 1.5 cells:</p>
+<div class="eq" role="math" aria-label="g(s) = Σ_i K(s − s_i) ∂J/∂d_i / Σ_i K(s − s_i) Δs_i"><table role="presentation"><tr><td class="l"><i>g</i>(<i>s</i>)</td><td class="rel">=</td><td class="r">Σ<sub><i>i</i></sub> <i>K</i>(<i>s</i> − <i>s</i><sub><i>i</i></sub>) ∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub>  /  Σ<sub><i>i</i></sub> <i>K</i>(<i>s</i> − <i>s</i><sub><i>i</i></sub>) Δ<i>s</i><sub><i>i</i></sub></td></tr></table></div>
+<p>The smoothing is necessary. The mask is a one-cell-wide band, so each sub-cell-spaced vertex is
+felt by only the one or two staggered faces in its part of the band: per-vertex values alias with
+the grid (spikes of several times the local mean next to near-zeros). Their <em>integral</em> against any
+smooth displacement is accurate (§4); the smoothed density is the readable version of the same
+information. The kernel-ratio form stays well defined where vertices cluster (an airfoil nose with
+cosine spacing) and reduces to <span class="math">∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub> / Δ<i>s</i><sub><i>i</i></sub></span> as σ → 0. The density is evaluated at the points
+<code>FlowSolver.surface()</code> returns, so it lines up with the cp and cf distributions.</p>
+<h2 id="3-the-reverse-sweep">3. The reverse sweep<a class="anchor" href="#3-the-reverse-sweep" aria-label="Link to this section">#</a></h2>
+<p>The gradient flows <span class="math"><i>d</i> → polygon → signed distance → <i>C</i>¹ masks χ<sub><i>u</i></sub>, χ<sub><i>v</i></sub> (+ solid velocity, force weights) → implicit penalisation → projection → force impulse</span>. Everything in that chain is pure
+torch (theory_ns2d §13); upwind <code>|V|</code> and the van Leer dye limiter are the only kinks, and the dye
+is switched off in the window.</p>
+<ul>
+<li><strong>Memory.</strong> The forward pass keeps the velocity every ⌈√N⌉ steps; the reverse pass recomputes
+one segment at a time and pulls the adjoint <span class="math">(λ<sub><i>u</i></sub>, λ<sub><i>v</i></sub>)</span> back one step at a time with a
+vector-Jacobian product of a single solver step. Memory is about <span class="math">2√<i>N</i></span> velocity fields plus one
+step's intermediates. The mask tensors are leaves of this sweep; their gradients are summed over
+all steps and pushed through the geometry build (SDF) once at the end.</li>
+<li><strong>Speed.</strong> A step launches a few hundred small kernels, so eager autograd on a GPU is launch
+bound (~24 ms forward + ~50 ms backward per step on a 50 k-cell grid). The step — forward <em>and</em>
+backward — is therefore captured as a CUDA graph (<code>torch.cuda.make_<wbr>graphed_<wbr>callables</code>): 3.4 ms
+per reverse step and 0.8 ms per forward step on the same grid, results bit-identical to eager.
+On a CPU the sweep runs eagerly.</li>
+<li><strong>LES.</strong> The cell-centre solid fraction <span class="math">χ<sub><i>c</i></sub></span> only switches the eddy viscosity off <em>inside</em>
+the body, so the map holds it fixed; everything that places the wall is differentiated. With
+WALE (the planner's model) the gradients are finite (checked on NACA 0012 at Re 10⁵). When
+this module was written, two details of the solver made other choices impossible: the
+switch-off was an in-place update that autograd could not differentiate with respect to
+<span class="math">χ<sub><i>c</i></sub></span>, and Vreman (and Smagorinsky wherever the strain is exactly zero) took a square root at
+zero, whose derivative is infinite — measured NaN for Vreman. The released solver
+forms the switched-off viscosity before the in-place write and adds 10⁻³⁰ under both square
+roots (forward values change by about 10⁻¹⁵ relative), so both are now differentiable; the
+maps of Smagorinsky and Vreman runs have not yet been checked against finite differences,
+and the driver still stops with an explanation if a gradient comes out non-finite.</li>
+</ul>
+<p>Measured cost (RTX 4060 Ti, float32, CUDA graphs):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th scope="col">grid</th><th class="r" scope="col">steps (lead + avg)</th><th class="r" scope="col">time</th><th class="r" scope="col">peak GPU memory</th></tr></thead>
+<tbody>
+<tr><td>cylinder Re 30, 16 cells/D, float64</td><td>320 × 160</td><td class="r">264</td><td class="r">4.3 s (including graph capture)</td><td class="r">72 MB (process)</td></tr>
+<tr><td>cylinder Re 30, 48 cells/D</td><td>960 × 480</td><td class="r">2732</td><td class="r">30 s</td><td class="r">—</td></tr>
+<tr><td>NACA 0012 Re 1000 5°, Draft plan, L/D</td><td>512 × 256</td><td class="r">2019 (6 + 2 c/U)</td><td class="r">27 s</td><td class="r">154–176 MB (process), +111 MB for the sweep</td></tr>
+</tbody>
+</table></div>
+<p>On a CPU (4 threads, float64) a reverse step costs ~120 ms on a 51 k-cell grid; the CPU default
+window is therefore shorter (§5). NACA 0012 Draft on the CPU (320 × 160), developing the flow
+included: 67 s for the 3 + 1 c/U window (602 steps).</p>
+<h2 id="4-verification-against-finite-differences">4. Verification against finite differences<a class="anchor" href="#4-verification-against-finite-differences" aria-label="Link to this section">#</a></h2>
+<p><code>finite_difference_check</code> compares <span class="math">Σ<sub><i>i</i></sub> ∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub> φ<sub><i>i</i></sub></span> from the reverse sweep with the central
+difference <span class="math">(<i>J</i>(+εφ) − <i>J</i>(−εφ)) / 2ε</span> of <em>the same</em> windowed objective, along smooth displacement
+modes φ (periodic Gaussian bumps, <code>normal_basis</code>, 8 per outline, mode 0 centred on vertex 0).
+float64, ε = 10⁻⁴ L.</p>
+<p><strong>Cylinder, Re 30, 16 cells/D, steady</strong> (domain −5…15 × −5…5 D, window 2 + 2 D/U, 264 steps):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">mode (centre)</th><th scope="col">0 (rear)</th><th scope="col">1</th><th scope="col">2 (top)</th><th scope="col">3</th><th scope="col">4 (front)</th><th scope="col">5</th><th scope="col">6 (bottom)</th><th scope="col">7</th></tr></thead>
+<tbody>
+<tr><td>autograd</td><td>0.98936</td><td>2.26776</td><td>3.73012</td><td>2.31388</td><td>0.91026</td><td>2.31388</td><td>3.73012</td><td>2.26776</td></tr>
+<tr><td>central FD</td><td>0.98936</td><td>2.26773</td><td>3.73002</td><td>2.31386</td><td>0.91026</td><td>2.31386</td><td>3.73002</td><td>2.26773</td></tr>
+<tr><td>rel. error</td><td>4e-6</td><td>1.3e-5</td><td>2.7e-5</td><td>9e-6</td><td>5e-6</td><td>9e-6</td><td>2.7e-5</td><td>1.3e-5</td></tr>
+</tbody>
+</table></div>
+<p>Signs agree on every mode and the map is symmetric top/bottom (modes 1/7, 2/6, 3/5 identical to
+round-off). float32 autograd reproduces the float64 values to 1e-6.</p>
+<p><strong>NACA 0012, Re 500, 4°, Draft plan</strong> (512 × 256, 64 cells/c, window 2 + 2 c/U, 972 steps):
+Cd sensitivity within 1 % on all eight modes (largest error 0.98 % on the mode centred on the
+trailing edge, others 0.01–0.4 %); Cl sensitivity within 0.1 % except the three modes touching the
+trailing edge (3.2, 4.6, 5.4 %). Signs agree everywhere. The trailing-edge discrepancy is a
+property of the discrete function, not of the gradient: inside the thin trailing edge some grid
+points switch between the upper and the lower surface as their nearest one, so the signed
+distance has a kink along the camber line and a central difference straddling it averages two
+one-sided slopes. The same mechanism makes per-vertex values on a symmetric body symmetric only to
+~10⁻³ of the peak (points exactly on the symmetry line are equidistant from two mirrored segments),
+while smooth modes are symmetric to 3·10⁻⁵.</p>
+<p>The fast test suite repeats these checks on a 48 × 32 grid (Cd, Cl and L/D, agreement 10⁻⁴),
+checks the mirror symmetry, CUDA graph vs eager, determinism and cancellation; the slow suite runs
+the two cases above.</p>
+<h2 id="5-how-close-is-the-map-to-the-physical-derivative">5. How close is the map to the physical derivative?<a class="anchor" href="#5-how-close-is-the-map-to-the-physical-derivative" aria-label="Link to this section">#</a></h2>
+<p>Two things separate the map from the derivative a designer wants — the change of the
+<em>converged</em> force when the real shape changes: the averaging <strong>window</strong> (this section's first
+part) and the <strong>immersed boundary</strong> (its second part). The first is a few to twenty per cent at
+the defaults; the second about 1.5×. Together the map's magnitude can be about twice the
+physical slope, which is why it is presented as a pattern (§1).</p>
+<p><strong>Window length.</strong> The windowed derivative approaches the relaxed one as the lead grows: the
+state at the end of the lead has partially relaxed to the new shape's steady flow. Measured on
+the steady cylinder (Re 30, 16 cells/D) against central differences of fully re-converged steady
+drag (120 D/U per evaluation, drift &lt; 10⁻¹¹), with sub-cell steps (ε = 10⁻⁴ L, as in §4) — so this
+table measures the window's convergence, not the error against the physical slope:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">window (lead + average, D/U)</th><th scope="col">0.5 + 0.5</th><th scope="col">1 + 1</th><th scope="col">2 + 2</th><th scope="col">3 + 1</th><th scope="col">4 + 4</th><th scope="col">6 + 2</th><th scope="col">7 + 1</th><th scope="col">8 + 4</th><th scope="col">8 + 8</th><th scope="col">10 + 2</th><th scope="col">16 + 4</th></tr></thead>
+<tbody>
+<tr><td>windowed / steady (rear, top, front modes)</td><td>1.27–1.72</td><td>1.22–1.26</td><td>1.15–1.17</td><td>1.13–1.15</td><td>1.07–1.08</td><td>1.05–1.06</td><td>1.04–1.06</td><td>1.02–1.04</td><td>1.02–1.03</td><td>1.02–1.03</td><td>1.00–1.02</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li>The windowed value over-estimates the steady one by a factor that is <strong>nearly the same all
+around the outline</strong> once the lead is ≥ 2 body time units, so the <em>pattern</em> of the map is right
+early; the magnitude converges with the lead.</li>
+<li>For the same cost, a long lead and a short average is better (6 + 2 beats 4 + 4).</li>
+<li>The relaxation time grows with the Reynolds number and the resolution. On the steady cylinder
+at Re 40 and 40 cells/D (domain 10 D up, 20 D down, 20 D tall; 1250 × 800 cells) the window's
+share is about <strong>+23 % at 6 + 2</strong> and +9 % at 16 + 4 (fit through 6 + 2, 16 + 4 and a 60 + 4
+window: relaxation time ≈ 12 D/U).</li>
+<li><strong>Defaults:</strong> steady flows 6 + 2 body time units on a GPU, 3 + 1 on a CPU, where the body time
+unit is chord / U (airfoils) or frontal height / U (vehicles, bluff bodies); <code>window=</code>
+overrides. The magnitude they give is indicative only (next paragraph).</li>
+</ul>
+<p><strong>The immersed boundary.</strong> The masks place the wall to a fraction of a cell, but the discrete
+objective J(R) is not smooth on the cell scale: it has a ripple with the cell size, so its
+<em>local</em> derivative — the one the adjoint returns, and the one a sub-cell finite difference
+measures — is larger than its slope over whole cells, which is what a real (resolved) shape
+change produces. Measured on the same Re 40 cylinder, uniform dilation dCd/dR:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">quantity</th><th scope="col">dCd/dR</th></tr></thead>
+<tbody>
+<tr><td>three <code>run_cfd</code> runs, R = 0.475 / 0.5 / 0.525 (whole-cell steps)</td><td>2.33</td></tr>
+<tr><td>relaxed windowed J (60 + 4), central difference over 1 cell</td><td>2.23</td></tr>
+<tr><td>same, over 0.5 cell</td><td>2.24</td></tr>
+<tr><td>same, over 0.25 cell</td><td>2.75</td></tr>
+<tr><td>same, over 0.08 cell</td><td>3.53</td></tr>
+<tr><td>adjoint, window 16 + 4</td><td>3.82</td></tr>
+<tr><td>adjoint, window 6 + 2 (the default)</td><td>4.32</td></tr>
+</tbody>
+</table></div>
+<p>The adjoint agrees with a finite difference of its own objective (4.14 at 6 + 2, ε = 0.08 cell),
+so the reverse sweep is right; 4.32 / 2.33 ≈ 1.85 splits into ≈ 1.23 from the window and
+≈ 1.5–1.6 from the sub-cell response. The map's pattern (sharp peaks at the top and bottom,
+slightly negative at the front stagnation point) is unaffected. Whether the ripple factor is the
+same for localised modes as for uniform dilation, and at other Reynolds numbers and grids, has
+not been measured; smoothing the mask's sub-cell response is the open fix.</p>
+<p>Grid dependence (cylinder, window 4 + 4 D/U, density averaged over 10°-wide bumps): at 16, 32 and
+48 cells/D the map has the same shape — sharp peaks at the top and bottom of the cylinder, slightly
+negative at the front stagnation point, ~0 in the rear — and its peak value falls by ~8–13 % per
+refinement (16.7, 15.5, 13.5 in non-dimensional units) while Cd changes by 0.6 %. The shape is
+settled on Draft grids; the magnitude is good to about ten per cent there.</p>
+<h2 id="6-unsteady-flows-what-the-map-means-there">6. Unsteady flows: what the map means there<a class="anchor" href="#6-unsteady-flows-what-the-map-means-there" aria-label="Link to this section">#</a></h2>
+<p>For a shedding flow there is no steady state; the derivative of a short time average also
+contains how the shape shifts the phase of the shedding, and for chaotic flows the adjoint of a
+long window grows exponentially (Lea, Allen &amp; Haine 2000). Aerolume therefore:</p>
+<ul>
+<li>detects shedding from the lift history (dominant frequency of the run);</li>
+<li>uses a short lead (2 body time units, at most one period: it only has to let the start-up
+impulse of the shape change pass) and <strong>whole periods</strong> of averaging covering ≥ 4 body time
+units (2 on a CPU), so the average does not depend on where in the cycle it ends;</li>
+<li>averages the maps of <strong>3 windows started at evenly spaced phases</strong> of one period (an
+"ensemble adjoint"), costing 3×;</li>
+<li>attaches a warning to the result saying the map is indicative.</li>
+</ul>
+<p>Measured on NACA 0012 at Re 10⁵, 4°, Draft (WALE LES, shedding at St ≈ 1.23 based on the chord):
+with single windows of arbitrary length the dominant mode values changed sign between windows;
+with whole-period windows started at six phases, the scatter over phases is 50–80 % of the mean
+on the dominant modes for 3 periods and 20–30 % for 6 periods, and the mean pattern (largest drag
+sensitivity on the nose and the forward upper surface) is the same for both. Read such maps as
+"where the shape matters", not as numbers.</p>
+<h2 id="7-shape-optimisation">7. Shape optimisation<a class="anchor" href="#7-shape-optimisation" aria-label="Link to this section">#</a></h2>
+<h3 id="71-airfoils-at-flight-reynolds-numbers-optimize_airfoil">7.1 Airfoils at flight Reynolds numbers: <code>optimize_airfoil</code><a class="anchor" href="#71-airfoils-at-flight-reynolds-numbers-optimize_airfoil" aria-label="Link to this section">#</a></h3>
+<p>CST (Kulfan 2008) perturbations of order 4 per surface (10 variables) are <em>added to the original
+coordinates</em>, <span class="math"><i>y</i> += sqrt(<i>x</i>)(1 − <i>x</i>) Σ Δ<i>a</i><sub><i>i</i></sub> <i>B</i><sub><i>i</i></sub>(<i>x</i>)</span>, so the baseline is reproduced exactly and the
+leading edge, trailing edge and chord line (the angle-of-attack reference) never move. Aerodynamics
+from the viscous panel solver (mfoil, <a href="theory-airfoil.html">Airfoil analysis</a>); gradients by forward differences
+(Δa = 10⁻³, a few 10⁻⁴ c of surface movement, where measured Cd is smooth); optimiser SLSQP with
+the objective scaled so that its first step is 0.01 in a coefficient. Constraints, all linear in
+the variables: max thickness ≥ <code>min_thickness</code> (default: the original's), local thickness ≥ 50 %
+of the original between 2 and 95 % chord, area ≥ original (<code>keep_area</code>), each coefficient change
+within ±0.06. <code>target_cl</code> makes the angle a variable with Cl = target as an equality constraint and
+minimises drag. Analyses that do not converge are infeasible: the objective returns a penalty bowl
+centred on the best shape so far, SLSQP is restarted from the best shape if it stalls there, and
+only converged, feasible shapes are ever returned.</p>
+<p>Measured (NACA 0012, Re 10⁶, 4°, maximise L/D, default constraints): L/D 57.9 → 60.7 → 75.1 →
+86.8 after 1, 2, 3 iterations (44 analyses, 154 s on the development machine), Cl 0.419 → 0.553,
+Cd 0.00723 → 0.00637, max thickness 12.0 → 12.8 %, 1.0 % camber; the upper-surface transition
+moved from 26 % to 42 % chord. The test suite runs the optimiser against an analytic stand-in
+(constraints, failure handling, <code>target_cl</code>, cancellation, determinism) and the real solver in the
+slow suite.</p>
+<h3 id="72-any-shape-with-the-cfd-gradient-experimental-optimize_shape_cfd">7.2 Any shape with the CFD gradient (experimental): <code>optimize_shape_cfd</code><a class="anchor" href="#72-any-shape-with-the-cfd-gradient-experimental-optimize_shape_cfd" aria-label="Link to this section">#</a></h3>
+<p>Design variables are amplitudes of 12 smooth normal-displacement modes per body (wheels excluded);
+corners sharper than 30° (an airfoil's trailing edge, a car's sharp edges) are held fixed, because
+the normal is undefined there and moving a sharp trailing edge along its bisector splits it into a
+fishtail. Each iteration: one reverse sweep (§2–3) gives the gradient of the windowed objective
+with respect to all amplitudes; with <code>keep_area</code> the step is projected so that the area does not
+change to first order and a uniform offset then restores the exact area; the step moves the
+surface by at most 0.75 cells, is accepted if the windowed objective of the displaced shape is
+better (halved up to twice otherwise), and the flow is then advanced on the new shape for one lead
+time so the next gradient starts from an adapted flow. Total movement is capped at 4 cells.</p>
+<p>Measured (NACA 0012, Re 500, 4°, Draft, maximise L/D, area held): three steps in 43 s on the GPU;
+windowed L/D 1.049 → 1.540; an independent full <code>run_cfd</code> of both shapes gives <strong>1.035 → 1.518
+(+47 %)</strong>, area change 3·10⁻⁶. The optimiser added aft camber and thickened the region just ahead
+of the (pinned) trailing edge — at Re 500 a blunt, cambered tail is worth more lift than it costs
+in drag. There are no thickness or curvature constraints beyond the area and the pinned corners,
+so results can be unconventional: always confirm with a normal run (<code>result.extra["design"]</code> is a
+ready-to-simulate design).</p>
+<h2 id="8-limits-in-one-place">8. Limits, in one place<a class="anchor" href="#8-limits-in-one-place" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>The map is the derivative of a short-window time average from a fixed developed flow, taken
+through a diffuse wall: its pattern is reliable, its size can be about twice the physical
+derivative for steady flows (§5) and it is indicative only for shedding flows (§6).</li>
+<li>Shape changes act through a diffuse one-cell interface: sub-cell features and gaps under ~2
+cells cannot be resolved; per-vertex values alias with the grid (hence the 1.5-cell smoothing).</li>
+<li>Near sharp trailing edges thinner than ~2 cells the discrete objective has kinks (§4): the map
+there is a one-sided derivative, verified to ~5 %.</li>
+<li>LES: the sub-grid model is differentiated except for its switch-off inside solids; only WALE
+(the planner's choice) gives finite gradients everywhere.</li>
+<li>Everything in <a href="theory-ns2d.html#12-limitations-what-to-trust">Navier–Stokes solver (2D), §12</a> (2D, Re, grid, blockage) applies unchanged.</li>
+</ul>
+<h2 id="9-three-dimensions-maps-on-any-imported-mesh">9. Three dimensions: maps on any imported mesh<a class="anchor" href="#9-three-dimensions-maps-on-any-imported-mesh" aria-label="Link to this section">#</a></h2>
+<p><code>optimize.sensitivity3d</code> applies sections 2–6 to the 3D solver (<a href="theory-ns3d.html#11-differentiability">Navier–Stokes solver (3D), §11</a>): the
+AirShaper-style adjoint map of a car, a drone, a rider or a wing, one value per vertex of the
+user's mesh. Reading it is as in §1: <strong>red (positive) means pushing the surface outward there
+increases the objective</strong> (CD, CL, L/D or Cm of the full body), blue means it decreases it.</p>
+<h3 id="91-what-is-differentiated">9.1 What is differentiated<a class="anchor" href="#91-what-is-differentiated" aria-label="Link to this section">#</a></h3>
+<p>The developed flow <span class="math">(<i>u</i>₀, <i>v</i>₀, <i>w</i>₀)</span> of the run is held fixed; from it the solver runs
+<span class="math"><i>N</i> = <i>N</i><sub>lead</sub> + <i>N</i><sub>avg</sub></span> steps at a fixed time step (0.9 × the CFL step of that state) with the
+masks on a fixed window (the bodies, their mask band and 2 spare cells), and J is the objective of the window-mean
+full-body coefficients — the same windowed objective and default windows as in 2D (§2, §5, §6):
+6 + 2 body time units on a GPU, 3 + 1 on a CPU, whole periods from 3 phases for shedding flows.</p>
+<p><strong>Parametrisation.</strong> Imported meshes come at any resolution — a box of 12 triangles, a scan of a
+million. Each body mesh is refined by <em>conforming edge bisection</em> until no edge is longer than
+half a cell: every edge that is too long gets its midpoint, shared by the faces on both sides
+(a welded, closed mesh stays welded and closed), each face is split into 2, 3 or 4 children with
+its winding kept, and this repeats until all edges are short. Every new vertex lies on an
+original edge, so the shape — and every mask — is exactly unchanged, and the user's vertices keep
+their indices. Each refined vertex moves along its outward normal, the area-weighted mean of
+its faces' normals. The faces are first turned towards the fluid one by one (the solid fraction is
+compared one cell outside and one cell inside each face), because imported meshes are often
+wound inconsistently and averaging opposite face normals would give meaningless vertex normals
+(test: a sphere with 40 % of its faces flipped gets the same normals as the clean one).</p>
+<p>The chain <code>vertex displacements → sdf_band (the shared voxeliser: nearest triangle searched without autograd, its distance recomputed with autograd) → C¹ masks at the u, v, w faces → implicit penalisation → projection → force impulse</code> is pure torch. The fused CUDA kernels of the
+production solver have no autograd, so the window runs the reference core (<code>step3d_full</code>).</p>
+<h3 id="92-from-vertices-to-a-map">9.2 From vertices to a map<a class="anchor" href="#92-from-vertices-to-a-map" aria-label="Link to this section">#</a></h3>
+<p><span class="math">∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub> = ∫ <i>g</i> φ<sub><i>i</i></sub> dA</span> for the hat function <span class="math">φ<sub><i>i</i></sub></span> of vertex <code>i</code>, so the shape-derivative
+density <code>g</code> (<span class="math">dJ = ∬ <i>g</i> δ<i>n</i> dA</span>) is the derivative divided by the vertex's area. As in 2D the
+per-vertex values alias with the grid, so derivatives and areas are both smoothed and their
+ratio taken:</p>
+<div class="eq" role="math" aria-label="g_i = (S^k ∂J/∂d)_i / (S^k A)_i , S = (1 − λ) I + λ D⁻¹ W"><table role="presentation"><tr><td class="l"><i>g</i><sub><i>i</i></sub></td><td class="rel">=</td><td class="r">(<i>S</i><sup><i>k</i></sup> ∂<i>J</i>/∂<i>d</i>)<sub><i>i</i></sub> / (<i>S</i><sup><i>k</i></sup> <i>A</i>)<sub><i>i</i></sub> ,</td><td class="cond"><i>S</i> = (1 − λ) <i>I</i> + λ <i>D</i>⁻¹ <i>W</i></td></tr></table></div>
+<p><code>S</code> is a lazy random walk on the refined mesh (<code>W</code>: shared edges, plus vertices at the same
+position, so meshes that repeat vertices along hard edges stay connected), i.e. <code>k</code> explicit
+steps of the surface Laplacian. After <code>k</code> steps the walk has spread by <span class="math">σ² = <i>k</i>λ⟨ℓ²⟩/2</span> per
+surface direction, so <code>k</code> is chosen for σ = 1.5 cells (the 2D smoothing; 44–99 steps at λ = ½ in
+the cases below, a fraction of a second). The
+operator is row-stochastic, so the ratio is a kernel-weighted average of <span class="math">∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub> / <i>A</i><sub><i>i</i></sub></span>, which
+reproduces a constant density exactly (test) — the 3D form of the 2D kernel ratio. It follows the
+surface: it never mixes the two sides of a thin plate or two bodies across a gap.</p>
+<p><strong>Units:</strong> <span class="math">sens = <i>L</i><sub>ref</sub>² · <i>g</i></span> in 1/m (2D: <span class="math"><i>L</i><sub>ref</sub> · <i>g</i></span>; both are the non-dimensional density
+divided by <span class="math"><i>L</i><sub>ref</sub></span>). For a displacement <span class="math">δ<i>n</i><sub><i>i</i></sub></span> [m] of vertices with areas <span class="math">dA<sub><i>i</i></sub></span> [m²]:</p>
+<div class="eq" role="math" aria-label="ΔJ ≈ (1 / L_ref²) · Σ_i sens_i · δn_i · dA_i"><table role="presentation"><tr><td class="l">Δ<i>J</i></td><td class="rel">≈</td><td class="r">(1 / <i>L</i><sub>ref</sub>²) · Σ<sub><i>i</i></sub> sens<sub><i>i</i></sub> · δ<i>n</i><sub><i>i</i></sub> · dA<sub><i>i</i></sub></td></tr></table></div>
+<p><strong>Symmetry plane.</strong> A half-domain run sees only <span class="math"><i>y</i> ≥ 0</span>, and its J is the full body's: moving a
+visible vertex moves its mirror image too, so the half-domain derivative is that of a
+mirror-symmetric pair — twice the one-sided value — and is halved. Three details make the
+half-domain map equal to the full-domain one: the area <span class="math"><i>A</i><sub><i>i</i></sub></span> is the <em>visible</em> part of the hat
+function (faces crossing the plane are clipped exactly — the cells feel only their visible part,
+but its gradient reaches all three corners); before smoothing, every vertex receives its mirror
+partner's derivative and visible area, so the smoothing kernel straddles the plane as in a full
+run instead of being cut off by it; and vertices on the missing half take their mirror image's
+value. Measured (tiny sphere, float64): J equal to 10⁻¹⁰, the derivatives along mirror-symmetric
+modes equal to 10⁻⁹, the maps equal to 1.4 × 10⁻⁵.</p>
+<h3 id="93-the-reverse-sweep-memory-and-cost">9.3 The reverse sweep, memory and cost<a class="anchor" href="#93-the-reverse-sweep-memory-and-cost" aria-label="Link to this section">#</a></h3>
+<p>The sweep is §3 in 3D: the velocity every ⌈√N⌉ steps (moved to host memory when the GPU is
+short), one recomputed segment, and a vector-Jacobian product of one step at a time. It is not
+<code>ns3d.rollout3d</code>: that one's <code>torch.utils.checkpoint</code> chunks run eagerly and re-record a whole
+chunk's activations at once. One step — forward and backward — is captured as a CUDA graph:
+8.3 ms per VJP at 194 k cells against 120 ms eager, identical results (float32).</p>
+<p>Measured (RTX 4060 Ti, float32 unless stated; "extra" is the peak above the memory in use before
+the sweep, the flow solver included in "before"):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th class="r" scope="col">cells</th><th class="r" scope="col">steps (window)</th><th class="r" scope="col">wall time</th><th class="r" scope="col">extra GPU memory</th></tr></thead>
+<tbody>
+<tr><td>sphere 12 cells/D, float64</td><td class="r">194 k</td><td class="r">102 (1 + 1)</td><td class="r">5.4 s</td><td class="r">250 MB</td></tr>
+<tr><td>sphere 12 cells/D</td><td class="r">194 k</td><td class="r">102 (1 + 1)</td><td class="r">4.0 s</td><td class="r">143 MB</td></tr>
+<tr><td>sphere 24 cells/D</td><td class="r">1.56 M</td><td class="r">258 (1 + 1)</td><td class="r">25.8 s</td><td class="r">886 MB</td></tr>
+<tr><td>sphere 24 cells/D, default window, GPU shared with another job</td><td class="r">1.56 M</td><td class="r">1026 (6 + 2)</td><td class="r">183 s</td><td class="r">1276 MB</td></tr>
+<tr><td>the same in the slow test, GPU less loaded (flow development included)</td><td class="r">1.56 M</td><td class="r">1026 (6 + 2)</td><td class="r">≤ 104 s</td><td class="r">—</td></tr>
+</tbody>
+</table></div>
+<p>That is about 130 bytes per cell for the differentiated step plus 12 bytes per cell for each
+velocity state held (<code>estimate_memory_bytes</code> uses 200 + 12 per state, plus the mask window and a
+fixed 256 MB, so it over-estimates by ~1.5–2×). A sweep step costs ~55 ns per cell on an idle GPU
+(60–115 ns while another job shared it). On the CPU (4 threads, eager) it costs 5.2 µs per cell:
+34 steps of a 58 k-cell sphere took 10 s, so a 0.4 M-cell Draft map with the CPU window takes
+several minutes.</p>
+<p><strong>Budget.</strong> DESIGN 7.1 plans sensitivity runs of up to ~1.5 M cells. <code>compute_sensitivity3d</code>
+refuses — before any costly work, with <code>SensitivityBudgetError</code> (a <code>ValueError</code> whose message says
+what to change), which the 3D runner turns into a warning on an otherwise complete result — when
+the grid has more than 2.1 M cells on a GPU (0.4 M on a CPU; <code>max_cells=</code> overrides) or when the
+estimated memory exceeds 85 % of the free GPU memory even with the checkpoints on the host. Every
+Draft grid passes; at 2.1 M cells and a 1200-step window the estimate is 2.4 GB.</p>
+<h3 id="94-verification-against-finite-differences">9.4 Verification against finite differences<a class="anchor" href="#94-verification-against-finite-differences" aria-label="Link to this section">#</a></h3>
+<p><code>finite_<wbr>difference_<wbr>check3d</code> compares <span class="math">Σ ∂<i>J</i>/∂<i>d</i><sub><i>i</i></sub> φ<sub><i>i</i></sub></span> with central differences of the same
+windowed J along smooth modes φ: Gaussian bumps (<code>normal_modes3d</code>, width 0.15 D, mirror-symmetric
+about the plane) and a uniform dilation.</p>
+<p><strong>Sphere, Re 30, 12 cells/D, half domain</strong> (box −3…6 × 0…2.5 × −2.5…2.5 D, icosphere of 1280
+faces refined to 5120, window 1 + 1 D/U, float64, ε = 10⁻⁴ D):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">mode</th><th scope="col">front</th><th scope="col">rear</th><th scope="col">top</th><th scope="col">bottom</th><th scope="col">side</th><th scope="col">front shoulder (top)</th><th scope="col">front shoulder (side)</th><th scope="col">aft shoulder</th><th scope="col">dilation</th></tr></thead>
+<tbody>
+<tr><td>autograd</td><td>−0.057526</td><td>0.0089821</td><td>0.80046</td><td>0.80046</td><td>1.51113</td><td>0.20951</td><td>0.41436</td><td>0.18623</td><td>8.9365</td></tr>
+<tr><td>central FD</td><td>−0.057526</td><td>0.0089821</td><td>0.80045</td><td>0.80045</td><td>1.51111</td><td>0.20950</td><td>0.41436</td><td>0.18623</td><td>8.9364</td></tr>
+<tr><td>rel. error</td><td>7e-7</td><td>9e-8</td><td>1.3e-5</td><td>1.3e-5</td><td>1.3e-5</td><td>1.2e-5</td><td>4e-7</td><td>1.2e-5</td><td>1.2e-5</td></tr>
+</tbody>
+</table></div>
+<p>(The side mode is a mirror pair of bumps, hence about twice the top one.) float32 autograd gives
+the float64 values to 10⁻⁶; float32 finite differences are noisy (up to 3 % on the tiny rear
+mode). At 24 cells/D (1.56 M cells, float32, ε = 10⁻³ D) the dominant modes agree to 0.3–0.9 %,
+the rear mode (1.5 % of the largest) to 24 % — float32 differences, not the gradient.</p>
+<p><strong>The drag map looks axisymmetric</strong>, as the flow is: mean density in 15° bands of the polar
+angle θ from the front stagnation point, at the top (+z) and the side (+y) of the sphere
+(12 cells/D):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">θ</th><th scope="col">0–15°</th><th scope="col">15–30°</th><th scope="col">45–60°</th><th scope="col">60–75°</th><th scope="col">75–90°</th><th scope="col">90–105°</th><th scope="col">105–120°</th><th scope="col">120–135°</th><th scope="col">165–180°</th></tr></thead>
+<tbody>
+<tr><td>top</td><td>−0.466</td><td>−0.275</td><td>2.205</td><td>4.314</td><td>5.693</td><td>5.519</td><td>3.707</td><td>1.804</td><td>0.032</td></tr>
+<tr><td>side</td><td>−0.462</td><td>−0.245</td><td>2.198</td><td>4.051</td><td>5.486</td><td>5.263</td><td>3.447</td><td>1.784</td><td>0.029</td></tr>
+</tbody>
+</table></div>
+<p>Where the map is large the top and side bands differ by up to 7 %: the faceted icosphere meets
+the flow differently there (its edges run streamwise at ±y and spanwise at ±z), and a derivative
+feels that more than the drag does. A full-domain run gives exactly the same bands as the
+half-domain run (to the three printed decimals); −y equals +y exactly, and the bottom equals the
+top where the map is large (1.3 % apart in the small front band, where mirrored faces were split
+along different diagonals during the refinement).
+The pattern is the 2D cylinder's: slightly negative at the front stagnation point (a fuller
+nose lowers the drag), the largest values around the equator (a wider sphere has more drag),
+almost nothing at the rear.</p>
+<p><strong>Short box with sharp edges</strong> (0.5 × 1 × 1 D, pitched 8° nose-up, Re 30, 12 cells/D, same domain
+and window, float64, ε = 10⁻⁴ D; CD and CL, bumps centred on faces, edges and a corner). The side
+faces lie <em>exactly</em> on a plane of v-faces of the grid (y = ±0.5 D at 12 cells/D), the hard case for
+an immersed-boundary derivative:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">mode</th><th scope="col">front</th><th scope="col">rear</th><th scope="col">top</th><th scope="col">bottom</th><th scope="col">side</th><th scope="col">front-top edge</th><th scope="col">front-bottom edge</th><th scope="col">front-side edge</th><th scope="col">corner</th><th scope="col">rear-top edge</th><th scope="col">dilation</th></tr></thead>
+<tbody>
+<tr><td>CD rel. error</td><td>1.5e-6</td><td>4.3e-6</td><td>5.8e-6</td><td>6.0e-6</td><td>3.4e-6</td><td>9.7e-7</td><td>2.1e-5</td><td>1.9e-7</td><td>2.1e-5</td><td>6.5e-6</td><td>3.4e-6</td></tr>
+<tr><td>CL rel. error</td><td>7.8e-6</td><td>8.0e-6</td><td>3.3e-6</td><td>3.6e-6</td><td>2.4e-5</td><td>9.9e-7</td><td>1.2e-5</td><td>4.9e-4</td><td>3.2e-4</td><td>3.5e-5</td><td>6.2e-4</td></tr>
+</tbody>
+</table></div>
+<p>Signs agree on every mode (e.g. CL front-side edge −0.067798 vs −0.067831, corner 0.61912 vs
+0.61892; 101 s for both objectives on the GPU). Before the voxeliser was changed the same case read
+up to 1.5 % (CD) and 14 % (CL, front-side edge; 7.5 % dilation, 3.2 % corner), all on modes touching
+the side faces: the shared signed distance was <span class="math">±√(<i>d</i>²)</span> with the sign from the voxeliser's
+ray-parity test, so a grid point exactly on a face lost its derivative (<span class="math">√</span> of a clamped zero) and a
+point within the parity test's ray jitter (0.002 cells) could take the other side's sign. Moving
+the box 0.014 cells off the grid planes removed the effect (≤ 7 × 10⁻⁵ on every mode), which located
+it. The voxeliser now makes the distance differentiable <em>through</em> the surface
+(<code>geometry3d.voxel</code>, DESIGN.md 7.4): a cell whose nearest feature is a face interior within
+0.02 cells of its plane gets the face's <strong>signed plane distance</strong> <span class="math"><i>s</i> <i>n</i>̂·(<i>p</i> − <i>a</i>)</span>, with the
+side <code>s</code> voted by the band cells clearly off that face (parity sign times plane side), and a cell
+exactly as far from several faces (a medial plane, an edge) takes the mean of their derivatives,
+which is what a central difference across the kink measures. The remaining 3–6 × 10⁻⁴ (CL: the
+front-side edge, the corner and the dilation) all involve the corners, where three faces meet and
+no single derivative matches a difference in every direction; that is the likely cause, not a
+measured one. The slow test checks every mode of this case at 3 × 10⁻³, and
+<code>tests/<wbr>test_<wbr>geometry3d_<wbr>voxel.py</code> checks the distance's derivative for centres on and within the ray
+jitter of a face; the fast sensitivity tests keep their bodies off the grid lattice.</p>
+<p>The fast test suite repeats the checks on a 5-cells-per-diameter sphere on the CPU (CD on full
+and half domains, CL, Cm and L/D on a pitched box, two bodies with a spinning wheel; required
+agreement 10⁻⁵, measured ~10⁻⁸ on the sphere), and checks the mesh refinement, the smoothing, the symmetry plane, the winding
+independence, the driver, the budget guard and CUDA graphs against eager; the slow suite
+(<code>tests/<wbr>test_<wbr>optimize3d_<wbr>validation.py</code>) runs the sphere and box cases above and the driver at
+1.56 M cells.</p>
+<h3 id="95-how-close-is-the-3d-map-to-the-physical-derivative">9.5 How close is the 3D map to the physical derivative?<a class="anchor" href="#95-how-close-is-the-3d-map-to-the-physical-derivative" aria-label="Link to this section">#</a></h3>
+<p>The §5 study on the sphere (half domain, 16 cells/D, 0.46 M cells, float32): uniform dilation
+dCD/dR (fixed reference area) from the adjoint at three windows, from central differences of the
+same windowed J over sub-cell to whole-cell steps, and from separate steady runs (40 D/U each,
+mean of the last 5) with R ± ½ cell and ± 1 cell:</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th scope="col">adjoint 6 + 2</th><th scope="col">adjoint 16 + 4</th><th scope="col">adjoint 30 + 4</th><th scope="col">windowed J, central difference over 0.08 / 0.25 / 0.5 / 1 cell</th><th scope="col">steady runs, R ± ½ / ± 1 cell</th><th scope="col">map ÷ physical</th></tr></thead>
+<tbody>
+<tr><td>Re 30, 16 cells/D</td><td>7.403</td><td>7.385</td><td>7.385</td><td>7.28 / 7.00 / 7.01 / 7.01</td><td>6.99 / 6.99</td><td>1.06</td></tr>
+<tr><td>Re 30, 24 cells/D (1.56 M cells)</td><td>6.942</td><td>6.925</td><td>—</td><td>— / 6.92 / — / 6.96</td><td>7.00 / 6.94</td><td>0.99–1.00</td></tr>
+<tr><td>Re 100, 16 cells/D</td><td>4.825</td><td>4.697</td><td>4.694</td><td>4.65 / 4.11 / 3.88 / 3.90</td><td>3.77 / 3.79</td><td>1.28</td></tr>
+</tbody>
+</table></div>
+<p>"map ÷ physical" is the default (6 + 2) adjoint over the steady runs' whole-cell slope. A rough
+check of the steady slopes: with a fixed reference area <code>dCD/dR = CD (2 + d ln CD / d ln Re)/R</code>;
+the slope of the standard drag curve (Clift et al.) and the runs' own CD give 6.4 at Re 30 and
+3.7 at Re 100, against 6.99 and 3.78 measured (the confined box may account for the
+difference; not checked).</p>
+<ul>
+<li><strong>The window</strong> matters much less than on the 2D cylinder: the 3D sphere flow relaxes within a
+few D/U (6 + 2 is within 0.3 % of 30 + 4 at Re 30 and 2.8 % at Re 100; 2D: +23 % at Re 40).</li>
+<li><strong>The immersed boundary's sub-cell response</strong> is the larger share, as in 2D, and it grows with
+the Reynolds number and shrinks with the resolution: none at Re 30 and 24 cells/D, 6 % at
+16 cells/D, 24 % at Re 100 and 16 cells/D (sub-cell central differences of the windowed J rise
+from 3.9 to 4.65 as the step shrinks from 1 to 0.08 cells — the cell-scale ripple of §5).</li>
+<li>So the 3D map's size is closer to the physical derivative than the 2D one (1.0–1.3× here, 2D
+up to ~2×), but it was measured on one shape, one mode and two Reynolds numbers; every map keeps
+the warning, and the GUI and the report show it relative to its 98th-percentile magnitude.</li>
+</ul>
+<p><strong>Grid dependence</strong> of the same windowed derivative (sphere, Re 30, 1 + 1 window): from 12 to
+24 cells/D the dilation value falls from 8.94 to 7.84 and the top-bump mode from 0.80 to 0.69
+(−12 %), with the same pattern; at the default window the dilation value falls 6 % from 16 to
+24 cells/D (7.40 → 6.94) while the steady slope stays at 6.99 → 6.94–7.00 — the map's size
+converges to the physical slope as the grid is refined.</p>
+<h3 id="96-limits-3d">9.6 Limits (3D)<a class="anchor" href="#96-limits-3d" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Everything in §8 and <a href="theory-ns3d.html#12-limitations-what-to-trust">Navier–Stokes solver (3D), §12</a> applies: the grid resolves only bodies ≥ ~24
+cells across well, the Re of vehicles needs wall-unresolved LES, and the map belongs to the
+simulated flow.</li>
+<li>Faces lying exactly on grid planes (§9.4) are handled since the voxeliser's distance became
+differentiable through the surface (box case ≤ 6 × 10⁻⁴); where three faces meet at a corner on
+the grid lattice a few 10⁻⁴ remain.</li>
+<li>Open sheets are thickened to one cell by the voxeliser: their map is that of the thickened
+sheet, and both sides of a sheet are one surface.</li>
+<li>Not verified in 3D: maps of shedding or LES flows (the 2D findings of §6 are the guide), maps
+on car-sized meshes, wheels on a moving road (the rotating solid velocity is differentiated and
+passes the fast finite-difference test, nothing more), and the CPU cost above 58 k cells.</li>
+</ul>
+<h2 id="10-api">10. API<a class="anchor" href="#10-api" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-python">from aerolume.optimize import compute_sensitivity, attach_sensitivity, optimize_airfoil, optimize_shape_cfd
+maps = compute_sensitivity(design, sim, objective="cd", plan=plan, state=solver)   # list[np.ndarray] + metadata
+attach_sensitivity(result, maps)                     # fills SurfaceData.sensitivity, adds notes / warnings
+r = optimize_airfoil(coords, 1e6, alpha=4.0, objective="ld", n_iter=8)          # OptimizationResult
+r = optimize_shape_cfd(design, sim, n_iter=4)                                    # experimental
+
+# 3D (section 9)
+from aerolume.optimize import compute_sensitivity3d, attach_sensitivity3d, SensitivityBudgetError
+maps = compute_sensitivity3d(design, sim, objective="cd", plan=plan3d, solver=solver3d)
+                                                     # one array per mesh, per vertex, 1/m (L_ref^2 g)
+attach_sensitivity3d(result3d, maps)                 # fills SurfaceData3D.sensitivity (by name,
+                                                     # nearest vertex / mirror image if counts differ)</code></pre>
+<p><code>run_cfd</code> calls <code>compute_sensitivity</code> with its own finished solver when
+<code>sim.cfd.compute_<wbr>sensitivity</code> is set (no second flow development). Lower-level pieces:
+<code>WindowedObjective</code> (J(d), its gradient, <code>advance</code>, <code>rebase</code>), <code>finite_difference_check</code>,
+<code>normal_modes</code>, <code>density_on_outline</code>, <code>choose_window</code>. In 3D: <code>WindowedObjective3D</code> (J(d),
+<code>gradient</code>, <code>evaluate</code>, <code>advance</code>, <code>density</code>), <code>finite_<wbr>difference_<wbr>check3d</code>, <code>normal_modes3d</code>,
+<code>refine_mesh</code>, <code>surface_smoother</code>, <code>visible_dual_area</code>, <code>estimate_memory_bytes</code>,
+<code>estimate_seconds</code> (for the planner's run-time estimate) and <code>SensitivityBudgetError</code> (a
+<code>ValueError</code>: the grid or the free GPU memory is over budget; raised before any costly work).</p>
+<h2 id="11-references">11. References<a class="anchor" href="#11-references" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Christianson (1994), Reverse accumulation and attractive fixed points, Optim. Methods Softw. 3.</li>
+<li>Drela (1989), XFOIL: an analysis and design system for low Reynolds number airfoils, Springer LNE 54.</li>
+<li>Griewank &amp; Walther (2000), Algorithm 799: revolve — an implementation of checkpointing for the
+reverse or adjoint mode of computational differentiation, ACM TOMS 26.</li>
+<li>Jameson (1988), Aerodynamic design via control theory, J. Sci. Comput. 3.</li>
+<li>Kochkov et al. (2021), Machine learning–accelerated computational fluid dynamics, PNAS 118.</li>
+<li>Kraft (1988), A software package for sequential quadratic programming, DFVLR-FB 88-28 (SLSQP).</li>
+<li>Kulfan (2008), Universal parametric geometry representation method, J. Aircraft 45 (CST).</li>
+<li>Lea, Allen &amp; Haine (2000), Sensitivity analysis of the climate of a chaotic system, Tellus 52A.</li>
+<li>Othmer (2008), A continuous adjoint formulation for the computation of topological and surface
+sensitivities of ducted flows, Int. J. Numer. Meth. Fluids 58.</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-wing.html"><span>Previous</span><b>Finite wings</b></a><a class="next" href="validation.html"><span>Next</span><b>Validation report</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-reading-the-map">1. Reading the map</a></li><li class="l2"><a href="#2-what-exactly-is-differentiated">2. What exactly is differentiated</a></li><li class="l2"><a href="#3-the-reverse-sweep">3. The reverse sweep</a></li><li class="l2"><a href="#4-verification-against-finite-differences">4. Verification against finite differences</a></li><li class="l2"><a href="#5-how-close-is-the-map-to-the-physical-derivative">5. How close is the map to the physical derivative?</a></li><li class="l2"><a href="#6-unsteady-flows-what-the-map-means-there">6. Unsteady flows: what the map means there</a></li><li class="l2"><a href="#7-shape-optimisation">7. Shape optimisation</a></li><li class="l3"><a href="#71-airfoils-at-flight-reynolds-numbers-optimize_airfoil">7.1 Airfoils at flight Reynolds numbers: optimize_airfoil</a></li><li class="l3"><a href="#72-any-shape-with-the-cfd-gradient-experimental-optimize_shape_cfd">7.2 Any shape with the CFD gradient (experimental): optimize_shape_cfd</a></li><li class="l2"><a href="#8-limits-in-one-place">8. Limits, in one place</a></li><li class="l2"><a href="#9-three-dimensions-maps-on-any-imported-mesh">9. Three dimensions: maps on any imported mesh</a></li><li class="l3"><a href="#91-what-is-differentiated">9.1 What is differentiated</a></li><li class="l3"><a href="#92-from-vertices-to-a-map">9.2 From vertices to a map</a></li><li class="l3"><a href="#93-the-reverse-sweep-memory-and-cost">9.3 The reverse sweep, memory and cost</a></li><li class="l3"><a href="#94-verification-against-finite-differences">9.4 Verification against finite differences</a></li><li class="l3"><a href="#95-how-close-is-the-3d-map-to-the-physical-derivative">9.5 How close is the 3D map to the physical derivative?</a></li><li class="l3"><a href="#96-limits-3d">9.6 Limits (3D)</a></li><li class="l2"><a href="#10-api">10. API</a></li><li class="l2"><a href="#11-references">11. References</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Contributing</title>
+<meta name="description" content="Development setup and the rules every change follows.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Contributing">
+<meta property="og:description" content="Development setup and the rules every change follows.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html" aria-current="page">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html" aria-current="page">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#getting-set-up">Getting set up</a></li><li class="l2"><a href="#ground-rules">Ground rules</a></li><li class="l2"><a href="#generated-material">Generated material</a></li><li class="l2"><a href="#release-checklist">Release checklist</a></li><li class="l2"><a href="#licensing">Licensing</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Project</p>
+<h1 id="contributing-to-aerolume">Contributing to Aerolume</h1>
+<p>Thanks for helping. Aerolume aims to be the open-source aerodynamics tool that an
+engineer trusts and a newcomer can use on day one, so contributions are judged on
+both: is it correct, and is it easy?</p>
+<h2 id="getting-set-up">Getting set up<a class="anchor" href="#getting-set-up" aria-label="Link to this section">#</a></h2>
+<pre><code class="language-bash">git clone &lt;your fork&gt;
+cd Aerolume
+python -m venv .venv            # keep it outside cloud-synced folders if you can
+# GPU (NVIDIA): pick the CUDA build matching your driver from https://pytorch.org
+pip install torch --index-url https://download.pytorch.org/whl/cu130
+# or CPU only:
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -e ".[dev]"
+pytest -q                       # fast suite, CPU
+pytest -q -m slow               # validation-grade runs (minutes, GPU recommended)
+aerolume                        # launch the desktop app</code></pre>
+<h2 id="ground-rules">Ground rules<a class="anchor" href="#ground-rules" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Read <code>DESIGN.md</code> first.</strong> It is the contract between modules (data model, units,
+sign conventions, public signatures). A change to a public signature updates
+<code>DESIGN.md</code> in the same pull request.</li>
+<li><strong>Numbers need evidence.</strong> A change to the solver, the airfoil analysis or any
+post-processing that moves a coefficient must say by how much, on which validation
+case, and why the new value is closer to the reference. <code>validation/</code> holds the
+benchmark scripts; <code>docs/validation*.md</code> holds the results.</li>
+<li><strong>SI everywhere inside.</strong> Unit conversion happens at the edges (<code>aerolume.core.units</code>).</li>
+<li><strong>The UI never blocks.</strong> Anything slower than ~50 ms runs on a worker thread.</li>
+<li><strong>Import boundaries.</strong> <code>model</code>, <code>core</code> and <code>analysis</code> depend only on numpy;
+torch stays in the solver/geometry-SDF/optimise/viz-render layers; Qt stays under
+<code>app/</code>; matplotlib is used through <code>matplotlib.figure.Figure</code>, never <code>pyplot</code>.</li>
+<li>Tests: <code>@pytest.mark.slow</code> for anything over ~20 s, <code>@pytest.mark.gpu</code> for CUDA-only
+tests, <code>@pytest.mark.gui</code> for Qt tests (they run offscreen).</li>
+<li>Style: <code>ruff check src tests</code>. Docstrings explain <em>why</em>, not just <em>what</em>.</li>
+</ul>
+<h2 id="generated-material">Generated material<a class="anchor" href="#generated-material" aria-label="Link to this section">#</a></h2>
+<p>Several files in the repository are produced by scripts; regenerate them, do not edit them,
+when the code they depend on changes (each needs a CUDA GPU to finish in minutes):</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">what</th><th scope="col">script</th></tr></thead>
+<tbody>
+<tr><td>example projects (<code>src/<wbr>aerolume/<wbr>examples/<wbr>projects/</code>)</td><td><code>python examples/make_example_projects.py</code></td></tr>
+<tr><td>CFD validation numbers (<a href="theory-ns2d.html">Navier–Stokes solver (2D)</a>, <a href="validation.html">Validation report</a>)</td><td><code>python validation/bench_ns2d.py all</code> (or one case)</td></tr>
+<tr><td>validation figures (<code>docs/<wbr>img/<wbr>validation_*.png</code>)</td><td><code>python validation/make_validation_figures.py</code></td></tr>
+<tr><td>airfoil validation tables and figures</td><td><code>python validation/airfoil_validation.py</code></td></tr>
+<tr><td>application screenshots (website and user guide)</td><td><code>python website/tools/make_screens.py --work &lt;scratch folder&gt;</code></td></tr>
+<tr><td>the website</td><td><code>python website/build.py</code></td></tr>
+</tbody>
+</table></div>
+<p>Write scratch output (temporary projects, logs, screenshots) outside the repository.</p>
+<h2 id="release-checklist">Release checklist<a class="anchor" href="#release-checklist" aria-label="Link to this section">#</a></h2>
+<p>In this order, once nobody is editing the tree (each later step depends on the earlier ones):</p>
+<ol>
+<li><code>pytest -q</code> and <code>pytest -q -m slow</code> green; <code>ruff check src tests validation examples website packaging</code>.</li>
+<li><code>python validation/run_all.py --check-docs</code>: exit 1 means <a href="validation.html#9-automated-validation-run">Validation report, §9</a> was
+measured on other solver, geometry, model or validation code. Then run
+<code>python validation/run_all.py --all --write-docs</code> (about half an hour on a GPU) and carry any
+changed number into <a href="overview.html">Overview</a> and CHANGELOG.md.</li>
+<li><code>python examples/make_example_projects.py</code> when the solver, the planner or the result format
+changed; then <code>python website/tools/make_screens.py --work &lt;scratch folder&gt;</code> and
+<code>python website/build.py --strict</code> (tests/test_report_website_release.py fails until both ran).</li>
+<li><code>python packaging/build.py --variant cuda</code> (full build, smoke test, installer), then
+<code>python packaging/build.py --write-measurements</code> (fills <a href="install.html">Installing Aerolume</a> and the CHANGELOG's
+build summary from the measured run) and <code>python packaging/build.py --refresh-docs</code>.
+<code>python packaging/build.py --status</code> must say CURRENT before the installer is published,
+together with the <code>-release-notes.md</code> file beside it (it carries the installer's SHA-256).</li>
+</ol>
+<h2 id="licensing">Licensing<a class="anchor" href="#licensing" aria-label="Link to this section">#</a></h2>
+<p>Aerolume is Apache-2.0. By contributing you agree your contribution is licensed under
+it. Third-party code must be compatible (MIT/BSD/Apache-2.0) and listed in
+<code>THIRD_PARTY_NOTICES.md</code>. Qt is used through PySide6 (LGPL) — please do not add PyQt.</p>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="design-guidelines.html"><span>Previous</span><b>Design guidelines</b></a><a class="next" href="third-party-notices.html"><span>Next</span><b>Third-party notices</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#getting-set-up">Getting set up</a></li><li class="l2"><a href="#ground-rules">Ground rules</a></li><li class="l2"><a href="#generated-material">Generated material</a></li><li class="l2"><a href="#release-checklist">Release checklist</a></li><li class="l2"><a href="#licensing">Licensing</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

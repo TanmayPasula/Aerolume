@@ -1,0 +1,17 @@
+{
+ "format": "aerolume-project",
+ "schema": 1,
+ "app_version": "0.1.0",
+ "name": "Heated cylinder",
+ "description": "Forced convection from a 10 mm cylinder 10 K above the air stream at Re 40 (Draft CFD): Nusselt number against Lange et al. (1998), temperature field.",
+ "created": "2026-10-31T23:32:50",
+ "modified": "2026-10-31T23:33:40",
+ "designs": [
+  "40339e37ecf7"
+ ],
+ "simulations": [
+  "88cafe338720"
+ ],
+ "comparisons": [],
+ "settings": {}
+}

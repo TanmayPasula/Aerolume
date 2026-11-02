@@ -1,0 +1,35 @@
+{
+ "name": "Fan in a room · 1 N/m",
+ "kind": "generic",
+ "bodies": [],
+ "length_ref": 0.5,
+ "force_ref": 0.5,
+ "moment_ref": [
+  1.3333333333333333,
+  1.5
+ ],
+ "id": "a6cb2595510d",
+ "source": {
+  "type": "case",
+  "case": "fan_room",
+  "room": [
+   4.0,
+   3.0
+  ],
+  "diameter": 0.5,
+  "thrust": 1.0
+ },
+ "created": "2026-10-31T23:33:56",
+ "notes": "",
+ "dimension": 2,
+ "meshes": [],
+ "wing": null,
+ "ref_area": 0.0,
+ "span_ref": 0.0,
+ "moment_ref3": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "symmetric": false
+}

@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aerolume docs · Validation report</title>
+<meta name="description" content="Exact answers, flow and heat-transfer benchmarks, fans and jets, polars, wings and performance.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Aerolume docs · Validation report">
+<meta property="og:description" content="Exact answers, flow and heat-transfer benchmarks, fans and jets, polars, wings and performance.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script>try{var t=localStorage.getItem("aerolume-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body class="docs-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner wrap">
+    <a class="wordmark" href="../index.html">Aerolume<span class="ver">0.1.0</span></a>
+    <nav aria-label="Site">
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="docs-layout">
+<nav class="docs-nav" aria-label="Documentation"><div class="sticky"><ul><li><a href="index.html">All documentation</a></li></ul><h2>Guide</h2><ul><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li></ul><h2>Theory</h2><ul><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li></ul><h2>Validation</h2><ul><li><a href="validation.html" aria-current="page">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li></ul><h2>Project</h2><ul><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></div></nav>
+<main id="main" class="doc">
+<div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html" aria-current="page">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details><details class="m-toc"><summary>On this page</summary><ul><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#1-verification-exact-answers">1. Verification: exact answers</a></li><li class="l2"><a href="#2-circular-cylinder-re-40-and-re-100">2. Circular cylinder, Re 40 and Re 100</a></li><li class="l2"><a href="#3-channel-and-sharp-edged-benchmarks">3. Channel and sharp-edged benchmarks</a></li><li class="l2"><a href="#4-vehicles-and-high-reynolds-numbers">4. Vehicles and high Reynolds numbers</a></li><li class="l2"><a href="#5-performance">5. Performance</a></li><li class="l2"><a href="#6-airfoil-polar-solver">6. Airfoil polar solver</a></li><li class="l2"><a href="#7-shape-sensitivity-maps">7. Shape-sensitivity maps</a></li><li class="l2"><a href="#8-three-dimensions">8. Three dimensions</a></li><li class="l2"><a href="#9-automated-validation-run">9. Automated validation run</a></li><li class="l3"><a href="#verification-exact-answers">Verification (exact answers)</a></li><li class="l3"><a href="#2d-flow">2D flow</a></li><li class="l3"><a href="#3d-flow">3D flow</a></li><li class="l3"><a href="#heat-transfer">Heat transfer</a></li><li class="l3"><a href="#fans-and-jets">Fans and jets</a></li><li class="l3"><a href="#airfoil-polars">Airfoil polars</a></li><li class="l3"><a href="#finite-wings">Finite wings</a></li><li class="l3"><a href="#references-of-the-automated-run">References of the automated run</a></li><li class="l2"><a href="#10-what-is-not-validated">10. What is not validated</a></li></ul></details></div>
+<p class="crumb"><a href="index.html">Documentation</a> / Validation</p>
+<h1 id="validation-report">Validation report</h1>
+<p>This report collects the evidence that Aerolume's numbers are right, and says where they
+stop being right. It covers the Navier–Stokes solver (verification against exact answers,
+validation against published benchmarks, performance), the airfoil polar solver (against
+wind-tunnel data and XFOIL) and the shape-sensitivity maps (against finite differences), in
+2D (sections 1–7) and in 3D (section 8: the 3D solver, finite wings, 3D sensitivity maps).
+Section 9 is the automated run of every case, including heat transfer (natural and forced
+convection in 2D and 3D), fans and jets, smoke emitters and the grid-convergence uncertainty
+estimate itself; it is written by <code>validation/run_all.py</code> from the run it describes.
+Section 10 lists what is not validated. The detailed derivations and every intermediate table
+are in the theory documents (<a href="theory-ns2d.html">Navier–Stokes solver</a>, <a href="validation-airfoil.html">airfoil
+validation</a>, <a href="theory-sensitivity.html">sensitivity maps</a>); the methods are
+summarised, with references, in <a href="methods.html">methods</a>; this page is the summary with figures.</p>
+<p>Everything here was measured on the development machine: an NVIDIA RTX 4060 Ti (8 GB)
+and an Intel i7-13700F under Windows 11, PyTorch 2.14 with CUDA 13.0, float32 on the GPU
+unless stated. The GPU was shared with other programs during several of the runs, so wall
+times are upper bounds. The scripts that produce the numbers are in <code>validation/</code>:</p>
+<pre><code>python validation/run_all.py --all --write-docs    # every case, compared with its reference (section 9)
+python validation/run_all.py --quick               # the same checks on coarse grids, a few minutes
+python validation/bench_ns2d.py verify             # exact-answer checks
+python validation/bench_ns2d.py cylinder           # cylinder grid study (Re 40, 100)
+python validation/bench_ns2d.py channel            # Schäfer–Turek 2D-1, 2D-2
+python validation/bench_ns2d.py square             # square cylinder, Re 100
+python validation/bench_ns2d.py perf               # throughput
+python validation/airfoil_validation.py            # polars against wind-tunnel data and XFOIL
+python validation/make_validation_figures.py       # the figures on this page</code></pre>
+<p>and the same checks, with tolerances, run in the test suite (<code>pytest -m slow</code> for the
+GPU validation cases; <code>aerolume-cli validate</code> runs a quick subset on any machine). How to run
+and extend the validation: validation/README.md.</p>
+<h2 id="summary">Summary<a class="anchor" href="#summary" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">area</th><th scope="col">check</th><th scope="col">result</th></tr></thead>
+<tbody>
+<tr><td>Pressure projection</td><td>discrete Poisson residual, float64</td><td>4.1 × 10⁻¹⁴ (round-off)</td></tr>
+<tr><td>Incompressibility</td><td>max |∇·u| h/U, float32 on the GPU</td><td>1.8 × 10⁻⁷ (bar: 10⁻⁵)</td></tr>
+<tr><td>Spatial accuracy</td><td>Taylor–Green vortex, central advection</td><td>order 1.97 → 1.99 → 2.00</td></tr>
+<tr><td>Bluff body, steady</td><td>cylinder Re 40, 32 cells/D: C<sub>d</sub>, L/D, separation</td><td>1.619, 2.28, 53.5° from the rear</td></tr>
+<tr><td>Bluff body, shedding</td><td>cylinder Re 100, 32 cells/D: C<sub>d</sub>, C<sub>l</sub>′, St</td><td>1.412, 0.350, 0.170</td></tr>
+<tr><td>Confined flow</td><td>Schäfer–Turek 2D-1, 80 cells/D: C<sub>d</sub>, C<sub>l</sub>, L<sub>a</sub>, Δp</td><td>5.578, 0.0105, 0.0846 m: in the benchmark bands; Δp −0.5 %</td></tr>
+<tr><td>Confined, periodic</td><td>Schäfer–Turek 2D-2, 80 cells/D: St, C<sub>l,max</sub>, C<sub>d,max</sub></td><td>0.301, 1.004: in the bands; C<sub>d,max</sub> +0.5 %</td></tr>
+<tr><td>Sharp edges</td><td>square cylinder Re 100, 32 and 48 cells/D: C<sub>d</sub>, St</td><td>1.582 (+5.9 %, <strong>fails</strong> its ± 5 % band) and 1.549 (+3.7 %); St 0.146 and 0.147 (in range)</td></tr>
+<tr><td>Airfoil polar</td><td>NACA 0012, tripped, Re 6 × 10⁶, vs Ladson</td><td>c<sub>d</sub> within 6 %, c<sub>l</sub> within 0.05 to 8°</td></tr>
+<tr><td>Airfoil polar</td><td>vs XFOIL 6.99, identical geometry, 6 polars</td><td>c<sub>l</sub> within 0.012, c<sub>m</sub> 0.0026, c<sub>d</sub> 2.4 %</td></tr>
+<tr><td>Sensitivity map</td><td>autograd vs central finite differences, cylinder Re 30</td><td>relative error 4 × 10⁻⁶ to 2.7 × 10⁻⁵</td></tr>
+<tr><td>Performance</td><td>GPU, 1024 × 512, float32</td><td>493 steps/s (target 300)</td></tr>
+<tr><td>Natural convection</td><td>square cavity Ra 10³–10⁶ (64²–256²): hot-wall mean Nu vs de Vahl Davis</td><td>1.1184, 2.2507, 4.5314, 8.8405 against 1.117, 2.238, 4.509, 8.817 (+0.1 to +0.6 %); hot and cold walls agree to 4 × 10⁻⁷</td></tr>
+<tr><td>Natural convection, 3D</td><td>cubic cavity Ra 10⁴, 48³: hot-wall mean Nu; symmetry plane Nu, u_max, w_max</td><td>2.066 (published 2.054–2.100); 2.263, 0.1981, 0.2210 (published 2.25–2.302, 0.198–0.2013, 0.222–0.2252)</td></tr>
+<tr><td>Convection onset</td><td>Rayleigh–Bénard, rigid isothermal plates</td><td>Ra_c 1701 (exact 1707.76, −0.4 %)</td></tr>
+<tr><td>Forced convection</td><td>heated cylinder Re 20 and 40 (32 cells/D), heated sphere Re 100 (24 cells/D)</td><td>Nu 2.503 and 3.336 (published 2.433–2.448 and 3.200–3.255; +2.2 % and +2.5 % above the ranges with 5 % blockage), 7.03 (correlations 6.62–7.35)</td></tr>
+<tr><td>Natural convection, 3D body</td><td>heated sphere in a closed box, Ra 10⁴, Pr 0.71, grids of 12, 18 and 27 cells/D</td><td>Nu 6.385 at 27 cells/D against 6.545 from Churchill's (1983) correlation (−2.4 %); monotone grid study, observed order 1.61, GCI 2.9 %; heat balance 0.9915</td></tr>
+<tr><td>Fans</td><td>actuator strip (2D, C_T 0.5) and disc (3D, C_T 0.5 and 0.4), each blowing with and against the stream, vs confined momentum theory</td><td>disc velocity −0.15 % and +0.45 % (2D), −0.34 % and +0.67 % (3D); set thrust delivered to 3 × 10⁻⁸</td></tr>
+<tr><td>Discretisation uncertainty</td><td>GCI of the Ra 10³ cavity (16²–64²), tested on 128²</td><td>observed order 2.03; the 128² value lies at 0.69 of the 64² GCI half-width</td></tr>
+<tr><td>Jets</td><td>plane jet from a port, Re 25, closed box; round jet, Re 100</td><td>plane: centreline decay −4.7 % and half-width −3.9 % against Bickley, core momentum budget closes to 0.27 % of K; the momentum-flux drift check <strong>fails</strong>: 6.2 % over 8 ≤ x/b ≤ 24 (band 5 %; section 10). Round: decay slope −0.7 % against Schlichting, budget 0.12 %</td></tr>
+</tbody>
+</table></div>
+<p>The heat-transfer, fan, jet, emitter and uncertainty rows come from the automated run of
+section 9, where every check is listed with its band and source. The numbers are deterministic
+on this machine: the previous full run (30 October 2026, a development build before 0.1.0; since
+then the 2D solver gained a time-step bound for heat sources and the suite the natural-convection
+sphere) printed the same value, to the four significant figures shown, for every check the two
+runs share.</p>
+<h2 id="1-verification-exact-answers">1. Verification: exact answers<a class="anchor" href="#1-verification-exact-answers" aria-label="Link to this section">#</a></h2>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th scope="col">result</th><th scope="col">bar</th></tr></thead>
+<tbody>
+<tr><td>Poisson solve <span class="math">‖<i>L</i>ψ − <i>f</i>‖/‖<i>f</i>‖</span>, float64</td><td>4.1 × 10⁻¹⁴</td><td>round-off</td></tr>
+<tr><td>projected divergence <span class="math">max|∇·<i>u</i>| <i>h</i>/<i>U</i></span>, float64</td><td>3.9 × 10⁻¹⁶</td><td>&lt; 10⁻¹⁰</td></tr>
+<tr><td>projected divergence, float32 (GPU)</td><td>1.8 × 10⁻⁷</td><td>&lt; 10⁻⁵</td></tr>
+<tr><td>Taylor–Green, central, observed order</td><td>1.97, 1.99, 2.00</td><td>≈ 2</td></tr>
+<tr><td>Taylor–Green energy decay rate / exact (N = 64)</td><td>0.9992</td><td>1</td></tr>
+<tr><td>outlet mass balance after 30 steps</td><td>&lt; 10⁻¹⁰</td><td>exact</td></tr>
+<tr><td>CUDA graph against eager execution, 34 steps, float32</td><td>agree to 10⁻⁶</td><td>same kernels</td></tr>
+<tr><td>shape gradient d(mean C<sub>d</sub>)/d(shape), autograd vs central FD, float64</td><td>5.030 vs 5.030, relative error 2.3 × 10⁻⁷</td><td>&lt; 5 %</td></tr>
+</tbody>
+</table></div>
+<figure><img src="img/validation_taylor_green.png" alt="Taylor–Green vortex: maximum velocity error at t = 1 against resolution for central and third-order upwind advection, with a slope-2 reference line" width="572" height="396" loading="lazy"><figcaption>Taylor–Green vortex: maximum velocity error at t = 1 against resolution for central and third-order upwind advection, with a slope-2 reference line</figcaption></figure>
+<p>The pressure projection is exact (a direct DCT/FFT solve of the discrete Poisson
+equation), so every stage of every time step is divergence-free to round-off. Central
+advection converges at second order. Third-order upwind advection has a smaller error at
+every resolution tested, and its observed order rises towards 2 as its third-order
+dissipation term dies out (theory document, section 3).</p>
+<h2 id="2-circular-cylinder-re-40-and-re-100">2. Circular cylinder, Re 40 and Re 100<a class="anchor" href="#2-circular-cylinder-re-40-and-re-100" aria-label="Link to this section">#</a></h2>
+<p>Wide domain [−10, 20] × [−10, 10] diameters (5 % blockage, slip walls), uniform inflow,
+upwind3 advection, float32 on the GPU. Re 40 is averaged over t = 50–60 D/U, Re 100 over
+t = 100–200 D/U.</p>
+<figure><img src="img/validation_cylinder.png" alt="Cylinder grid study: mean drag at Re 40 and 100, lift amplitude and Strouhal number at Re 100 against cells per diameter, with the bands of published values" width="1210" height="374" loading="lazy"><figcaption>Cylinder grid study: mean drag at Re 40 and 100, lift amplitude and Strouhal number at Re 100 against cells per diameter, with the bands of published values</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th class="r" scope="col">cells/D</th><th scope="col">grid</th><th class="r" scope="col">C<sub>d</sub></th><th class="r" scope="col">C<sub>l</sub>′</th><th class="r" scope="col">St</th><th class="r" scope="col">L/D</th><th class="r" scope="col">wall time</th></tr></thead>
+<tbody>
+<tr><td>Re 40</td><td class="r">16</td><td>480 × 320</td><td class="r">1.630</td><td class="r">—</td><td class="r">—</td><td class="r">2.320</td><td class="r">3 s</td></tr>
+<tr><td>Re 40</td><td class="r">32</td><td>960 × 640</td><td class="r">1.619</td><td class="r">—</td><td class="r">—</td><td class="r">2.280</td><td class="r">16 s</td></tr>
+<tr><td>Re 40</td><td class="r">64</td><td>1920 × 1280</td><td class="r">1.614</td><td class="r">—</td><td class="r">—</td><td class="r">2.256</td><td class="r">399 s</td></tr>
+<tr><td>Re 100</td><td class="r">16</td><td>480 × 320</td><td class="r">1.480</td><td class="r">0.377</td><td class="r">0.1670</td><td class="r">—</td><td class="r">30 s</td></tr>
+<tr><td>Re 100</td><td class="r">32</td><td>960 × 640</td><td class="r">1.412</td><td class="r">0.350</td><td class="r">0.1697</td><td class="r">—</td><td class="r">59 s</td></tr>
+<tr><td>Re 100</td><td class="r">64</td><td>1920 × 1280</td><td class="r">1.395</td><td class="r">0.342</td><td class="r">0.1698</td><td class="r">—</td><td class="r">876 s</td></tr>
+</tbody>
+</table></div>
+<p>References (unconfined): Re 40 C<sub>d</sub> 1.50–1.55, recirculation length L/D 2.13–2.35;
+Re 100 C<sub>d</sub> 1.33–1.38, C<sub>l</sub>′ 0.32–0.34, St 0.164–0.167 (Dennis &amp; Chang
+1970, Fornberg 1980, Coutanceau &amp; Bouard 1977, Williamson 1989, Liu et al. 1998, Linnick &amp;
+Fasel 2005, Taira &amp; Colonius 2007).</p>
+<ul>
+<li><strong>Grid convergence</strong> is monotone: from 32 to 64 cells per diameter C<sub>d</sub> changes by
+0.3 % (Re 40) and 1.2 % (Re 100), St by 0.1 %.</li>
+<li><strong>Accuracy.</strong> Drag is about 5 % above the unconfined references and St about 2 %. That is
+the blockage of the 5 % domain: the 2D wake-blockage estimate ε ≈ (C<sub>d</sub>/4)(D/H)
+raises the effective dynamic pressure by about 4 %, and the measured slip-wall velocity
+abeam the cylinder is 1.04 U (Re 40) and 1.02 U (Re 100). The separation angle at Re 40 is
+53.5–54.0° from the rear (Dennis &amp; Chang 1970: 53.8°), and the surface-integrated drag
+agrees with the solver's momentum balance to 0.1 % (Re 40) and 0.7–2.1 % (Re 100).</li>
+<li>At 16 cells per diameter (below the Draft preset for bluff bodies) drag is 6 % and the lift
+amplitude 10 % above the converged values; St is within 2 %.</li>
+</ul>
+<h2 id="3-channel-and-sharp-edged-benchmarks">3. Channel and sharp-edged benchmarks<a class="anchor" href="#3-channel-and-sharp-edged-benchmarks" aria-label="Link to this section">#</a></h2>
+<p><strong>Schäfer–Turek 2D-1 and 2D-2</strong> (Schäfer &amp; Turek 1996): a cylinder of diameter D = 0.1 m in
+a 2.2 m × 0.41 m channel with no-slip walls, centred 0.2 m from the inlet and 0.2 m above the
+lower wall (slightly off the centre line), parabolic inflow. Re = Ū D/ν = 20 (steady, 2D-1)
+and 100 (periodic, 2D-2), with Ū the mean inflow velocity, which is also the reference speed of
+the coefficients. The pressure difference Δp is between the front and rear points of the
+cylinder, in the benchmark's units (ρ = 1 kg/m³, Ū = 0.2 m/s); L<sub>a</sub> is the
+recirculation length behind the cylinder in metres. The benchmark's own grids resolve the
+cylinder with body-fitted meshes; here the cylinder is an immersed body on a uniform grid.</p>
+<p><strong>Square cylinder, Re 100</strong>: side D, faces normal to the flow, in the same 5 % domain as the
+circular cylinder. Published values for about 5 % blockage: C<sub>d</sub> 1.477 and St
+0.146 (Sohankar, Norberg &amp; Davidson 1998), 1.488 and 0.145 (Darekar &amp; Sherwin 2001), 1.494
+and 0.149 (Sharma &amp; Eswaran 2004).</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">benchmark</th><th scope="col">quantity</th><th scope="col">reference</th><th class="r" scope="col">cells/D</th><th scope="col">grid</th><th class="r" scope="col">Aerolume</th><th class="r" scope="col">difference</th><th class="r" scope="col">wall time</th></tr></thead>
+<tbody>
+<tr><td>2D-1, Re 20</td><td>Cd</td><td>5.57–5.59</td><td class="r">40</td><td>880 × 164</td><td class="r">5.5848</td><td class="r">in range</td><td class="r">15 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>Cd</td><td>5.57–5.59</td><td class="r">80</td><td>1760 × 328</td><td class="r">5.5781</td><td class="r">in range</td><td class="r">156 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>Cl</td><td>0.0104–0.0110</td><td class="r">40</td><td>880 × 164</td><td class="r">0.01032</td><td class="r">−0.8 %</td><td class="r">15 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>Cl</td><td>0.0104–0.0110</td><td class="r">80</td><td>1760 × 328</td><td class="r">0.01052</td><td class="r">in range</td><td class="r">156 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>La</td><td>0.0842–0.0852</td><td class="r">40</td><td>880 × 164</td><td class="r">0.08491</td><td class="r">in range</td><td class="r">15 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>La</td><td>0.0842–0.0852</td><td class="r">80</td><td>1760 × 328</td><td class="r">0.08460</td><td class="r">in range</td><td class="r">156 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>Δp</td><td>0.1172–0.1176</td><td class="r">40</td><td>880 × 164</td><td class="r">0.11543</td><td class="r">−1.5 %</td><td class="r">15 s</td></tr>
+<tr><td>2D-1, Re 20</td><td>Δp</td><td>0.1172–0.1176</td><td class="r">80</td><td>1760 × 328</td><td class="r">0.11664</td><td class="r">−0.5 %</td><td class="r">156 s</td></tr>
+<tr><td>2D-2, Re 100</td><td>Cd,max</td><td>3.22–3.24</td><td class="r">40</td><td>880 × 164</td><td class="r">3.3064</td><td class="r">+2.0 %</td><td class="r">18 s</td></tr>
+<tr><td>2D-2, Re 100</td><td>Cd,max</td><td>3.22–3.24</td><td class="r">80</td><td>1760 × 328</td><td class="r">3.2556</td><td class="r">+0.5 %</td><td class="r">99 s</td></tr>
+<tr><td>2D-2, Re 100</td><td>Cl,max</td><td>0.99–1.01</td><td class="r">40</td><td>880 × 164</td><td class="r">1.0341</td><td class="r">+2.4 %</td><td class="r">18 s</td></tr>
+<tr><td>2D-2, Re 100</td><td>Cl,max</td><td>0.99–1.01</td><td class="r">80</td><td>1760 × 328</td><td class="r">1.0044</td><td class="r">in range</td><td class="r">99 s</td></tr>
+<tr><td>2D-2, Re 100</td><td>St</td><td>0.295–0.305</td><td class="r">40</td><td>880 × 164</td><td class="r">0.2999</td><td class="r">in range</td><td class="r">18 s</td></tr>
+<tr><td>2D-2, Re 100</td><td>St</td><td>0.295–0.305</td><td class="r">80</td><td>1760 × 328</td><td class="r">0.3013</td><td class="r">in range</td><td class="r">99 s</td></tr>
+<tr><td>Square cylinder, Re 100</td><td>Cd</td><td>1.477–1.494</td><td class="r">32</td><td>960 × 640</td><td class="r">1.5818</td><td class="r">+5.9 %</td><td class="r">81 s</td></tr>
+<tr><td>Square cylinder, Re 100</td><td>Cd</td><td>1.477–1.494</td><td class="r">48</td><td>1440 × 960</td><td class="r">1.5489</td><td class="r">+3.7 %</td><td class="r">362 s</td></tr>
+<tr><td>Square cylinder, Re 100</td><td>St</td><td>0.145–0.149</td><td class="r">32</td><td>960 × 640</td><td class="r">0.1461</td><td class="r">in range</td><td class="r">81 s</td></tr>
+<tr><td>Square cylinder, Re 100</td><td>St</td><td>0.145–0.149</td><td class="r">48</td><td>1440 × 960</td><td class="r">0.1470</td><td class="r">in range</td><td class="r">362 s</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Schäfer–Turek 2D-1.</strong> At 80 cells per diameter C<sub>d</sub>, C<sub>l</sub> and the
+recirculation length are inside the benchmark bands and the pressure difference is 0.5 %
+below its band; at 40 cells per diameter C<sub>d</sub> and L<sub>a</sub> are already
+inside, C<sub>l</sub> 0.8 % and Δp 1.5 % low. The small lift (C<sub>l</sub> ≈ 0.01 from the
+0.05 D offset of the cylinder) is a sensitive test of the wall placement and is reproduced.</li>
+<li><strong>Schäfer–Turek 2D-2.</strong> The Strouhal number is inside its band at both resolutions; the
+peak drag is 2.0 % (40 cells/D) and 0.5 % (80 cells/D) above the band, the peak lift 2.4 %
+above at 40 and inside at 80. The run averages t = 40–60 D/Ū after a perturbed start.</li>
+<li><strong>Square cylinder.</strong> The Strouhal number is inside the published range at both
+resolutions. The drag is high: +5.9 % above the published range at 32 cells per diameter
+and +3.7 % at 48, converging towards it from above (−2.1 % between the two grids). This is
+the largest deviation in the CFD validation set. Sharp corners are where a one-cell diffuse
+interface converges most slowly: the separation point is fixed at the corner, but the
+shear layer leaving it is smeared over the interface width. Bluff bodies with sharp edges
+(the square, the trucks' box fronts, sharp-edged car tails) therefore read a few per cent
+high in drag at Draft and Standard resolution. Compare such designs at the same quality, so
+that they share the offset.</li>
+<li><strong>The square cylinder's band in section 9, and how it changed.</strong> In early development the automated run
+checked the 32 cells/D drag against the published range +8 % above (1.477 … 1.614). That
+band was written after the +5.9 % above was known from this section, so it contained a known
+result and tested nothing, while the section 9 header said bands were set before the runs.
+Before the first release the drag moved to the rule of the other 2D bands: the published range widened by a
+stated resolution allowance, ± 5 % (1.403 … 1.569), the widest allowance those bands already
+used (Schäfer–Turek 2D-1 lift at 40 cells/D). The run now measures 32 and 48 cells/D: the
+32 cells/D drag fails that band and stays in the table as a failure, and 48 cells/D is the
+grid that passes. The rule was not tuned to this case, but it was chosen with the 48 cells/D
+value (+3.7 %) already known, so read the 48 cells/D pass as consistent with the earlier
+study rather than as a blind test.</li>
+</ul>
+<h2 id="4-vehicles-and-high-reynolds-numbers">4. Vehicles and high Reynolds numbers<a class="anchor" href="#4-vehicles-and-high-reynolds-numbers" aria-label="Link to this section">#</a></h2>
+<p>There is no reference solution for a 2D car at Re 10⁷, so the checks here are robustness
+and consistency, not accuracy:</p>
+<ul>
+<li><strong>Moving ground with rolling wheels, Re 10⁶, WALE LES</strong> (<code>bench_ns2d.py ground</code>, slow test
+<code>test_<wbr>moving_<wbr>ground_<wbr>les_<wbr>re1e6_<wbr>stable</code>): 1024 × 307 cells, 19 000 steps, no instability,
+divergence at float32 round-off, eddy viscosity active only at the grid scale.</li>
+<li><strong>Sedan template, Draft, 30 m/s, moving road</strong> (720 × 450 cells, 7.7 % blockage): mean
+C<sub>d</sub> 0.63 ± 0.05 and C<sub>l</sub> 2.5 ± 0.3 per frontal height in 92–125 s on the
+shared GPU; repeated on the same machine it reproduced to the last digit. Development runs
+with other run lengths and planner versions gave C<sub>d</sub> 0.57–0.63. At Standard
+quality (972 × 1080)
+C<sub>d</sub> is 0.72 ± 0.02 and C<sub>l</sub> 2.2 ± 0.1. The Draft-to-Standard change
+(+20 % drag, −25 % lift) is larger than many design changes, which is why the program
+tells users to compare designs at the same quality.</li>
+<li>These coefficients are those of an infinitely wide side profile and are far above
+wind-tunnel values for a real car (about 0.3 and 0.1–0.4); see
+<a href="simulation-guide.html#6-reading-results-honestly">Running simulations, section 6</a>.</li>
+</ul>
+<h2 id="5-performance">5. Performance<a class="anchor" href="#5-performance" aria-label="Link to this section">#</a></h2>
+<figure><img src="img/validation_performance.png" alt="Throughput of the Navier–Stokes solver in time steps per second on the GPU and the CPU for several grids and options" width="880" height="418" loading="lazy"><figcaption>Throughput of the Navier–Stokes solver in time steps per second on the GPU and the CPU for several grids and options</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">device</th><th scope="col">grid</th><th scope="col">options</th><th class="r" scope="col">steps/s</th><th class="r" scope="col">target</th></tr></thead>
+<tbody>
+<tr><td>RTX 4060 Ti</td><td>1024 × 512</td><td>default (upwind3, laminar, CUDA graphs)</td><td class="r">493</td><td class="r">≥ 300</td></tr>
+<tr><td>RTX 4060 Ti</td><td>1024 × 512</td><td>eager execution, no CUDA graphs</td><td class="r">59</td><td class="r"></td></tr>
+<tr><td>RTX 4060 Ti</td><td>1024 × 512</td><td>upwind3 + WALE LES</td><td class="r">317</td><td class="r"></td></tr>
+<tr><td>RTX 4060 Ti</td><td>2048 × 1024</td><td>default</td><td class="r">75</td><td class="r"></td></tr>
+<tr><td>i7-13700F</td><td>512 × 256</td><td>4 threads</td><td class="r">61</td><td class="r">≥ 15</td></tr>
+</tbody>
+</table></div>
+<p>CUDA graphs give the GPU an eight-fold speed-up: a time step launches a few hundred small
+kernels, and under the Windows display driver each launch costs about 27 µs. In the
+application, the Draft airfoil runs (245 760 cells) take about 7–20 s including set-up, output
+and the live view (6.5–13 s without the live view, October 2026); the Draft sedan (324 000 cells, about 30 000 steps) 1.5–2 minutes (3 minutes
+when another program loads the GPU).
+A 19-angle polar of NACA 2412 at Re 10⁶ takes about 30 s on one CPU core in the application,
+about 9 s of it for the first, cold-started angle.</p>
+<h2 id="6-airfoil-polar-solver">6. Airfoil polar solver<a class="anchor" href="#6-airfoil-polar-solver" aria-label="Link to this section">#</a></h2>
+<p>The polar solver is validated against wind-tunnel data for NACA 0012, 2412 and 4412 at
+Re 3–6 × 10⁶ and against XFOIL 6.99 on identical coordinates; the full tables and figures
+are in <a href="validation-airfoil.html">Airfoil polar solver: validation</a>.</p>
+<figure class="doc-fig n2"><div class="panels"><a class="panel" href="img/airfoil_0012.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_0012-lift-light.png" width="360" height="390" alt="NACA 0012 lift coefficient against angle of attack: Aerolume at Re 6 and 3 million, tripped, with Ladson&#x27;s and Gregory and O&#x27;Reilly&#x27;s measurements." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_0012-lift-dark.png" width="360" height="390" alt="NACA 0012 lift coefficient against angle of attack: Aerolume at Re 6 and 3 million, tripped, with Ladson&#x27;s and Gregory and O&#x27;Reilly&#x27;s measurements." loading="lazy"></a><a class="panel" href="img/airfoil_0012.png" title="Open the full-resolution figure"><img class="only-light" src="../assets/docfig/airfoil_0012-polar-light.png" width="360" height="390" alt="NACA 0012 drag polar at Re 6 million: Aerolume tripped and free-transition curves with Ladson&#x27;s tripped data and Abbott and von Doenhoff&#x27;s smooth-model data." loading="lazy"><img class="only-dark" src="../assets/docfig/airfoil_0012-polar-dark.png" width="360" height="390" alt="NACA 0012 drag polar at Re 6 million: Aerolume tripped and free-transition curves with Ladson&#x27;s tripped data and Abbott and von Doenhoff&#x27;s smooth-model data." loading="lazy"></a></div><figcaption>NACA 0012 lift and drag against Ladson, Gregory &amp; O'Reilly and Abbott &amp; von Doenhoff. <a href="img/airfoil_0012.png">Full-resolution figure</a> (PNG, as in the repository).</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th scope="col">target</th><th scope="col">result</th></tr></thead>
+<tbody>
+<tr><td>c<sub>l</sub>, NACA 0012, 0–8°, vs Ladson / Gregory / Abbott &amp; von Doenhoff</td><td>within 0.05</td><td>max 0.044 / 0.012 / 0.026</td></tr>
+<tr><td>c<sub>d</sub>, NACA 0012 tripped, −4…10°, vs Ladson</td><td>within 15–20 %</td><td>max 6 %</td></tr>
+<tr><td>c<sub>d</sub>, NACA 0012 free transition vs Abbott &amp; von Doenhoff</td><td>within 20 %</td><td>10–17 % low</td></tr>
+<tr><td>NACA 2412 zero-lift angle / c<sub>l</sub>(0) / c<sub>m</sub></td><td>reference −2.0° / 0.25 / −0.05</td><td>−2.24° / 0.241 / −0.049</td></tr>
+<tr><td>NACA 4412 zero-lift angle / c<sub>l</sub>(0) / c<sub>m</sub></td><td>reference −4.0° / 0.40 / −0.10</td><td>−4.39° / 0.477 / −0.100: lift 0.077 high</td></tr>
+<tr><td>c<sub>l,max</sub> and stall</td><td>—</td><td>over-predicted by 0.1–0.25, stall late (a known limit of the method)</td></tr>
+<tr><td>c<sub>l</sub> / c<sub>m</sub> / c<sub>d</sub> vs XFOIL 6.99, 6 polars</td><td>—</td><td>max difference 0.012 / 0.0026 / 2.4 %</td></tr>
+</tbody>
+</table></div>
+<p>All 117 wind-tunnel validation points and all 198 XFOIL cross-check points converged.</p>
+<h2 id="7-shape-sensitivity-maps">7. Shape-sensitivity maps<a class="anchor" href="#7-shape-sensitivity-maps" aria-label="Link to this section">#</a></h2>
+<p>The sensitivity map is the derivative of a time-averaged force with respect to an outward
+displacement of the surface, computed by reverse-mode differentiation through the solver.
+It is checked against central finite differences of the same discrete objective, along
+smooth bump modes on the outline, in float64 (<a href="theory-sensitivity.html">sensitivity maps, section 4</a>).</p>
+<figure><img src="img/validation_sensitivity.png" alt="Cylinder at Re 30: drag sensitivity of eight bump modes from the reverse sweep and from central finite differences" width="770" height="374" loading="lazy"><figcaption>Cylinder at Re 30: drag sensitivity of eight bump modes from the reverse sweep and from central finite differences</figcaption></figure>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">case</th><th scope="col">quantity</th><th scope="col">agreement</th></tr></thead>
+<tbody>
+<tr><td>cylinder, Re 30, 16 cells/D, 8 modes</td><td>C<sub>d</sub></td><td>4 × 10⁻⁶ to 2.7 × 10⁻⁵ relative; top/bottom symmetric to round-off</td></tr>
+<tr><td>NACA 0012, Re 500, 4°, Draft grid, 8 modes</td><td>C<sub>d</sub></td><td>within 1 % on every mode</td></tr>
+<tr><td>same</td><td>C<sub>l</sub></td><td>within 0.1 %, except the three modes touching the sharp trailing edge (3.2–5.4 %)</td></tr>
+</tbody>
+</table></div>
+<p>Signs agree on every mode of every case. The trailing-edge discrepancy belongs to the
+discrete function (grid points inside the thin trailing edge switch between the upper and
+lower surface as their nearest one), not to the gradient. For steady flows the windowed map
+is within 5 % (GPU default window) or 14 % (CPU default) of the derivative of the fully
+converged drag; for shedding flows the map is indicative and the application says so.</p>
+<h2 id="8-three-dimensions">8. Three dimensions<a class="anchor" href="#8-three-dimensions" aria-label="Link to this section">#</a></h2>
+<p>The 3D solver, the finite-wing solvers and the 3D sensitivity maps have their own theory
+and validation documents; this section is their summary. Details, tables and every run:
+<a href="theory-ns3d.html">3D Navier–Stokes solver</a> (section 9 performance, section 10 verification
+and validation), <a href="validation-wing.html">finite-wing validation</a>, and
+<a href="theory-sensitivity.html#9-three-dimensions-maps-on-any-imported-mesh">sensitivity maps, section 9</a>.
+The scripts: <code>validation/bench_ns3d.py</code> (verify, sphere, domain, symmetry, unsteady, ground,
+perf) and <code>validation/<wbr>wing_<wbr>validation.py</code>; the slow tests <code>tests/<wbr>test_<wbr>ns3d_<wbr>validation.py</code>,
+<code>tests/<wbr>test_<wbr>simulation3d_<wbr>run.py</code>, <code>tests/<wbr>test_<wbr>wing_<wbr>validation.py</code> and
+<code>tests/<wbr>test_<wbr>optimize3d_<wbr>validation.py</code>.</p>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">area</th><th scope="col">check</th><th scope="col">result</th></tr></thead>
+<tbody>
+<tr><td>Pressure projection</td><td>3D Poisson residual, float64 (Neumann, periodic, mixed)</td><td>4.9 × 10⁻¹⁴</td></tr>
+<tr><td>Incompressibility</td><td>max |∇·u| h/U, float32 on the GPU</td><td>4.0 × 10⁻⁷ (bar 10⁻⁵)</td></tr>
+<tr><td>Spatial accuracy</td><td>3D Taylor–Green, central advection, three planes</td><td>order 1.97 / 1.99 / 2.00</td></tr>
+<tr><td>Fast path</td><td>fused CUDA kernels vs the reference core, float64, 20 steps</td><td>3 × 10⁻¹⁴</td></tr>
+<tr><td>Sphere, steady</td><td>Re 100, 24 cells/D, 2.85 % blockage: C<sub>d</sub>, wake L/D</td><td><strong>1.148</strong> (band 1.05–1.15), <strong>0.894</strong> (band 0.80–0.95)</td></tr>
+<tr><td>Sphere, steady</td><td>Re 20 and 50: C<sub>d</sub> vs Clift et al., separation vs Taneda</td><td>grid-converged; within 6 % (the confinement, see below); separation within 3°</td></tr>
+<tr><td>Sphere, shedding</td><td>Re 300, 32 cells/D: mean C<sub>d</sub>, mean lift, St vs Johnson &amp; Patel</td><td>0.710 (+8.2 %), 0.072 (0.069), 0.135 (−1.5 %)</td></tr>
+<tr><td>Symmetry plane</td><td>half domain vs full domain, sphere Re 100</td><td>identical to the printed digits (bar 1 %); 6.5 s vs 14.3 s</td></tr>
+<tr><td>Moving road, rolling wheels, WALE</td><td>box car at Re 10⁶, 3000 steps</td><td>stable; divergence at round-off</td></tr>
+<tr><td>Wing, lifting line</td><td>elliptic wing C<sub>Lα</sub> vs 2πAR/(AR+2), span efficiency</td><td>0.05 %, e = 1.000</td></tr>
+<tr><td>Wing, vortex lattice</td><td>lifting-surface references (Multhopp, Falkner)</td><td>−0.3 % circular; −0.4 to −2.0 % rectangular; swept within 0.7 %</td></tr>
+<tr><td>Wing, swept</td><td>Weber &amp; Brebner 45° wing (wind tunnel)</td><td>lift −3.2 to +3.9 %, span loading ±0.011</td></tr>
+<tr><td>Wing, viscous</td><td>NACA TN 1270 wind-tunnel wings</td><td>lift slope +2.3 to +7.4 %, zero-lift angle 0.52°, C<sub>D,min</sub> 13–22 % low, C<sub>m0</sub> within 0.018</td></tr>
+<tr><td>Sensitivity map</td><td>autograd vs central differences, sphere Re 30, 12 cells/D, 9 modes</td><td>1.3 × 10⁻⁵ or better</td></tr>
+<tr><td>Sensitivity map, sharp edges</td><td>pitched box with faces on grid planes, CD and CL, 11 modes each</td><td>CD ≤ 2.1 × 10⁻⁵, CL ≤ 6.2 × 10⁻⁴</td></tr>
+<tr><td>Sensitivity size</td><td>map ÷ slope of separate steady runs, sphere</td><td>0.99–1.06 (Re 30), 1.28 (Re 100)</td></tr>
+<tr><td>Performance</td><td>GPU, 256 × 128 × 128, float32, CUDA graphs</td><td>44.9–49.2 steps/s (target 40); 12.1 M cells in 2.37 GB (bar 6.5)</td></tr>
+<tr><td>Draft runs through the planner</td><td>sphere Re 100 (1.73 M cells, half domain)</td><td>C<sub>d</sub> 1.156 in 16 s; half = full to 9 × 10⁻⁷</td></tr>
+</tbody>
+</table></div>
+<p>Reading the 3D results:</p>
+<ul>
+<li><strong>The sphere is the 3D solver's validation case</strong>, at Re 20, 50, 100 (steady) and 300
+(shedding), on grids of 16 to 32 cells per diameter. Drag converges with the grid (Re 100:
+1.172 → 1.148 → 1.138 from 16 to 32 cells/D) and the control-volume momentum balance equals
+the penalisation impulse to 0.01–0.03 % in every run. The remaining excess over the
+unconfined references (~5 %) is <strong>confinement</strong>: slip walls 2.6 D from the axis raise the drag
+by 3.4 % at Re 100 and 4.6 % at Re 20; widening the box extrapolates Re 20 to 2.737 against
+2.735 (Clift). Low-Re cases need wider domains than high-Re blockage rules suggest.</li>
+<li><strong>The symmetry plane</strong> changes nothing but the cost: the half-domain run solves the same
+discrete problem as the full one (mirror-symmetric perturbation), and a fast float64 test
+checks all six coefficients to 10⁻⁹ on a pitched box. The voxeliser gives a grid that is
+cut by the symmetry plane (or the road, or a solver window) exactly the distances of a grid
+holding the whole body, so the masks of the two runs agree too.</li>
+<li><strong>Finite wings</strong>: the lifting line reproduces lifting-line theory and the vortex lattice
+lifting-surface theory (it sits 2.7–10.9 % below 2πAR/(AR+2) at AR 12–4, as a lifting
+surface must). Against wind-tunnel wings the lift is good; profile drag is 13–22 % low and
+maximum L/D 6–18 % high because the 2D polars' free-transition drag is low; <strong>maximum lift is
+not validated</strong> (the critical-section stall estimate is 0.17–0.31 high: the 2D polars stall
+late).</li>
+<li><strong>3D sensitivity maps</strong> are exact derivatives of the windowed objective (central differences
+agree to 10⁻⁵ on the sphere); their size is close to the physical derivative on the sphere
+(within 6 % at Re 30, +28 % at Re 100), but that is one shape — every map keeps its warning.
+Faces lying exactly on grid planes (axis-aligned boxes at round coordinates) used to lose
+their derivative (1.5 % on CD, 14 % on a CL mode of a pitched box); the signed distance is now
+differentiable through the surface, and the same box agrees to 2 × 10⁻⁵ (CD) and 6 × 10⁻⁴ (CL)
+on all 11 modes (theory §9.4).</li>
+<li><strong>Vehicles are not validated.</strong> The wall-unresolved LES reads an Ahmed-type body (25° slant,
+moving road) at C<sub>d</sub> 0.64 (Draft) and 0.61 (Standard) against about 0.29 in the wind
+tunnel — about 2.2× — and differences between designs are not validated either. Absolute 3D
+vehicle drag cannot be quoted until a wall treatment for high-Re immersed walls, or a
+validated vehicle case, exists; the planner and the user guide say so with every vehicle run.</li>
+</ul>
+<h2 id="9-automated-validation-run">9. Automated validation run<a class="anchor" href="#9-automated-validation-run" aria-label="Link to this section">#</a></h2>
+<p>This section is written by <code>python validation/run_all.py --write-docs</code>; do not edit it by hand. Every number below was measured in the run described here; each check compares Aerolume with the cited reference and the tolerance band stated beside it. A band is the reference's own spread widened by a stated allowance for the resolution or the confinement, written in <code>run_all.py</code> before the case runs; the one band rule revised after a deviation was known (the square cylinder's drag) says so in section 3 and in its note. A failing check stays in the table. <em>Unavailable</em> cases need a solver feature this installation does not have; they are listed, never counted as passed.</p>
+<ul>
+<li>Run: 2026-11-01 22:53, mode <strong>all</strong>, 25 cases, 126 of 128 checks passed (<strong>2 failed</strong>), 30.2 min of case time in total.</li>
+<li>Machine: NVIDIA GeForce RTX 4060 Ti; Windows 11; Python 3.11.9, PyTorch 2.14.1+cu130 (CUDA 13.0), Aerolume 0.1.0.</li>
+<li>Code measured: source digest (SHA-256) <code>b686bfb6644c8abf</code> over 75 files (the solvers, geometry, GCI analysis, data model and validation cases; <code>python validation/run_all.py --check-docs</code> says whether the code still matches).</li>
+<li>GPU wall times are upper bounds: the development GPU is shared with other programs.</li>
+<li>Reproduce: <code>python validation/run_all.py --all</code> (or <code>--quick</code>, <code>--cases &lt;keys&gt;</code>). Each run writes its JSON record to <code>validation/out/</code> (not kept in the repository); the record this section was written from is kept as <code>validation/<wbr>records/<wbr>validation-record.json</code>.</li>
+</ul>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">area</th><th scope="col">case</th><th class="r" scope="col">checks passed</th><th scope="col">status</th><th class="r" scope="col">time</th></tr></thead>
+<tbody>
+<tr><td>Verification (exact answers)</td><td>Taylor–Green vortex, 2D</td><td class="r">2 / 2</td><td>pass</td><td class="r">4 s</td></tr>
+<tr><td>Verification (exact answers)</td><td>Taylor–Green vortex, 3D</td><td class="r">2 / 2</td><td>pass</td><td class="r">0 s</td></tr>
+<tr><td>Verification (exact answers)</td><td>Discrete incompressibility</td><td class="r">1 / 1</td><td>pass</td><td class="r">1 s</td></tr>
+<tr><td>Verification (exact answers)</td><td>Smoke emitters and heat: symmetry plane vs full domain</td><td class="r">5 / 5</td><td>pass</td><td class="r">1 s</td></tr>
+<tr><td>2D flow</td><td>Circular cylinder, Re 40 (steady)</td><td class="r">2 / 2</td><td>pass</td><td class="r">15 s</td></tr>
+<tr><td>2D flow</td><td>Circular cylinder, Re 100 (shedding)</td><td class="r">3 / 3</td><td>pass</td><td class="r">16 s</td></tr>
+<tr><td>2D flow</td><td>Schäfer–Turek 2D-1 and 2D-2</td><td class="r">7 / 7</td><td>pass</td><td class="r">25 s</td></tr>
+<tr><td>2D flow</td><td>Square cylinder, Re 100</td><td class="r">3 / 4</td><td><strong>FAIL</strong></td><td class="r">335 s</td></tr>
+<tr><td>3D flow</td><td>Sphere, Re 100</td><td class="r">2 / 2</td><td>pass</td><td class="r">54 s</td></tr>
+<tr><td>3D flow</td><td>Sphere: symmetry plane vs full domain</td><td class="r">1 / 1</td><td>pass</td><td class="r">26 s</td></tr>
+<tr><td>Heat transfer</td><td>Differentially heated square cavity</td><td class="r">24 / 24</td><td>pass</td><td class="r">93 s</td></tr>
+<tr><td>Heat transfer</td><td>Forced convection from a heated cylinder</td><td class="r">2 / 2</td><td>pass</td><td class="r">167 s</td></tr>
+<tr><td>Heat transfer</td><td>Rayleigh–Bénard onset</td><td class="r">1 / 1</td><td>pass</td><td class="r">16 s</td></tr>
+<tr><td>Heat transfer</td><td>Differentially heated cubic cavity</td><td class="r">5 / 5</td><td>pass</td><td class="r">8 s</td></tr>
+<tr><td>Heat transfer</td><td>Forced convection from a heated sphere</td><td class="r">3 / 3</td><td>pass</td><td class="r">86 s</td></tr>
+<tr><td>Heat transfer</td><td>Natural convection from a heated sphere</td><td class="r">3 / 3</td><td>pass</td><td class="r">766 s</td></tr>
+<tr><td>Heat transfer</td><td>Grid-convergence uncertainty (GCI), square cavity</td><td class="r">3 / 3</td><td>pass</td><td class="r">41 s</td></tr>
+<tr><td>Fans and jets</td><td>Actuator strip in a 2D channel</td><td class="r">4 / 4</td><td>pass</td><td class="r">19 s</td></tr>
+<tr><td>Fans and jets</td><td>Actuator disc in a 3D tunnel</td><td class="r">4 / 4</td><td>pass</td><td class="r">7 s</td></tr>
+<tr><td>Fans and jets</td><td>Plane laminar jet from a port</td><td class="r">3 / 4</td><td><strong>FAIL</strong></td><td class="r">14 s</td></tr>
+<tr><td>Fans and jets</td><td>Round laminar jet from a port</td><td class="r">3 / 3</td><td>pass</td><td class="r">38 s</td></tr>
+<tr><td>Airfoil polars</td><td>NACA 0012, Re 6×10⁶, tripped</td><td class="r">5 / 5</td><td>pass</td><td class="r">4 s</td></tr>
+<tr><td>Airfoil polars</td><td>Cross-check against XFOIL 6.99</td><td class="r">18 / 18</td><td>pass</td><td class="r">71 s</td></tr>
+<tr><td>Finite wings</td><td>Lifting-line and lifting-surface theory</td><td class="r">15 / 15</td><td>pass</td><td class="r">2 s</td></tr>
+<tr><td>Finite wings</td><td>Weber &amp; Brebner 45° swept wing</td><td class="r">5 / 5</td><td>pass</td><td class="r">0 s</td></tr>
+</tbody>
+</table></div>
+<figure><img src="img/validation_run_all.png" alt="Deviation of every check with a single reference value from that value, drawn on its tolerance band" width="1050" height="2400" loading="lazy"><figcaption>Deviation of every check with a single reference value from that value, drawn on its tolerance band</figcaption></figure>
+<p><em>Checks against an exact zero (round-off, symmetry, conservation drift) have no relative deviation and are not drawn; they, and any failure among them, are in the tables below.</em></p>
+<figure><img src="img/validation_cavity.png" alt="Mean Nusselt number of the differentially heated square cavity against the Rayleigh number, with de Vahl Davis&#x27;s benchmark values" width="690" height="450" loading="lazy"><figcaption>Mean Nusselt number of the differentially heated square cavity against the Rayleigh number, with de Vahl Davis's benchmark values</figcaption></figure>
+<figure><img src="img/validation_gci.png" alt="Grid study of the square cavity at Ra 1000: Nusselt number against cell size, the Richardson curve, the GCI band of the 64-cell grid, the 128-cell value inside it, and the band of de Vahl Davis&#x27;s values" width="720" height="465" loading="lazy"><figcaption>Grid study of the square cavity at Ra 1000: Nusselt number against cell size, the Richardson curve, the GCI band of the 64-cell grid, the 128-cell value inside it, and the band of de Vahl Davis's values</figcaption></figure>
+<h3 id="verification-exact-answers">Verification (exact answers)<a class="anchor" href="#verification-exact-answers" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>Taylor–Green 2D spatial order (16 → 32 cells)</td><td class="r">1.975</td><td>2 (central scheme)</td><td>1.8 … 2.2 (±0.2)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Energy decay rate / exact (32 cells)</td><td class="r">0.9968</td><td>1</td><td>0.98 … 1.02 (±2 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Taylor–Green 3D spatial order (8 → 16 cells)</td><td class="r">1.894</td><td>2 (central scheme)</td><td>1.8 … 2.2 (±0.2)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Energy decay rate / exact (16 cells)</td><td class="r">0.9872</td><td>1</td><td>0.97 … 1.03 (±3 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Projected divergence max |∇·u| h/U, float32 (cuda)</td><td class="r">1.79 × 10⁻⁷</td><td>0 (round-off)</td><td>0 … 1.00 × 10⁻⁵ (&lt; 10⁻⁵)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Half vs full domain, max relative difference: smoke channel 0 (rake)</td><td class="r">4.39 × 10⁻¹⁵</td><td>0 (mirror-symmetric problem)</td><td>0 … 1.00 × 10⁻⁶ (&lt; 10⁻⁶ (float64))</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Half vs full domain, max relative difference: smoke channel 1 (pulsed disc)</td><td class="r">4.44 × 10⁻¹⁶</td><td>0 (mirror-symmetric problem)</td><td>0 … 1.00 × 10⁻⁶ (&lt; 10⁻⁶ (float64))</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Half vs full domain, max relative difference: temperature</td><td class="r">8.88 × 10⁻¹⁶</td><td>0 (mirror-symmetric problem)</td><td>0 … 1.00 × 10⁻⁶ (&lt; 10⁻⁶ (float64))</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Half vs full domain, max relative difference: velocity u</td><td class="r">7.13 × 10⁻¹⁶</td><td>0 (mirror-symmetric problem)</td><td>0 … 1.00 × 10⁻⁶ (&lt; 10⁻⁶ (float64))</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Half vs full domain, max relative difference: sphere heat rate</td><td class="r">3.35 × 10⁻¹⁶</td><td>0 (mirror-symmetric problem)</td><td>0 … 1.00 × 10⁻⁶ (&lt; 10⁻⁶ (float64))</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="2d-flow">2D flow<a class="anchor" href="#2d-flow" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>Cylinder Re 40, Cd (32 cells/D) ⁽¹⁾</td><td class="r">1.619</td><td>1.50–1.55 unconfined</td><td>1.55 … 1.7 (1.55–1.70 with the domain's blockage)</td><td>pass</td><td><a href="#ref-dennis-chang">dennis-chang</a></td></tr>
+<tr><td>Cylinder Re 40, wake length L/D (32 cells/D)</td><td class="r">2.281</td><td>2.13–2.35</td><td>2 … 2.5 (2.0–2.5)</td><td>pass</td><td><a href="#ref-coutanceau">coutanceau</a></td></tr>
+<tr><td>Cylinder Re 100, mean Cd (24 cells/D)</td><td class="r">1.429</td><td>1.33–1.38 unconfined</td><td>1.33 … 1.47 (1.33–1.47 (blockage))</td><td>pass</td><td><a href="#ref-liu98">liu98</a></td></tr>
+<tr><td>Cylinder Re 100, lift amplitude Cl′ (24 cells/D)</td><td class="r">0.3555</td><td>0.32–0.34</td><td>0.3 … 0.4 (0.30–0.40)</td><td>pass</td><td><a href="#ref-liu98">liu98</a></td></tr>
+<tr><td>Cylinder Re 100, Strouhal number (24 cells/D)</td><td class="r">0.1689</td><td>0.164–0.167</td><td>0.16 … 0.175 (0.160–0.175)</td><td>pass</td><td><a href="#ref-williamson">williamson</a></td></tr>
+<tr><td>Schäfer–Turek 2D-1, Cd (40 cells/D)</td><td class="r">5.585</td><td>5.57–5.59</td><td>5.514 … 5.646 (band ± 1 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Schäfer–Turek 2D-1, Cl (40 cells/D)</td><td class="r">0.01032</td><td>0.0104–0.011</td><td>0.00988 … 0.01155 (band ± 5 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Schäfer–Turek 2D-1, recirculation length La [m] (40 cells/D)</td><td class="r">0.08491</td><td>0.0842–0.0852</td><td>0.08252 … 0.0869 (band ± 2 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Schäfer–Turek 2D-1, pressure difference Δp [Pa] (40 cells/D)</td><td class="r">0.1154</td><td>0.1172–0.1176</td><td>0.1149 … 0.12 (band ± 2 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Schäfer–Turek 2D-2, St (40 cells/D)</td><td class="r">0.2999</td><td>0.295–0.305</td><td>0.292 … 0.308 (band ± 1 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Schäfer–Turek 2D-2, Cd,max (40 cells/D)</td><td class="r">3.306</td><td>3.22–3.24</td><td>3.123 … 3.337 (band ± 3 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Schäfer–Turek 2D-2, Cl,max (40 cells/D)</td><td class="r">1.034</td><td>0.99–1.01</td><td>0.9603 … 1.04 (band ± 3 %)</td><td>pass</td><td><a href="#ref-schafer-turek">schafer-turek</a></td></tr>
+<tr><td>Square cylinder Re 100, mean Cd (32 cells/D) ⁽²⁾</td><td class="r">1.582</td><td>1.477–1.494</td><td>1.403 … 1.569 (range ± 5 %)</td><td><strong>fail</strong></td><td><a href="#ref-sohankar">sohankar</a></td></tr>
+<tr><td>Square cylinder Re 100, Strouhal number (32 cells/D)</td><td class="r">0.1461</td><td>0.145–0.149</td><td>0.1421 … 0.152 (± 2 %)</td><td>pass</td><td><a href="#ref-sohankar">sohankar</a></td></tr>
+<tr><td>Square cylinder Re 100, mean Cd (48 cells/D)</td><td class="r">1.549</td><td>1.477–1.494</td><td>1.403 … 1.569 (range ± 5 %)</td><td>pass</td><td><a href="#ref-sohankar">sohankar</a></td></tr>
+<tr><td>Square cylinder Re 100, Strouhal number (48 cells/D)</td><td class="r">0.147</td><td>0.145–0.149</td><td>0.1421 … 0.152 (± 2 %)</td><td>pass</td><td><a href="#ref-sohankar">sohankar</a></td></tr>
+</tbody>
+</table></div>
+<ol>
+<li>5 % blockage (slip walls 10 D from the axis) raises Cd about 4 % above the unconfined references (<a href="validation.html#2-circular-cylinder-re-40-and-re-100">Validation report, §2</a>)</li>
+<li>one-cell diffuse interface at sharp corners: drag converges from above (+5.9 % at 32 and +3.7 % at 48 cells/D, <a href="validation.html#3-channel-and-sharp-edged-benchmarks">Validation report, §3</a>); this grid is expected to fail the band</li>
+</ol>
+<h3 id="3d-flow">3D flow<a class="anchor" href="#3d-flow" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>Sphere Re 100, Cd (24 cells/D, 2.85 % blockage)</td><td class="r">1.148</td><td>1.087 unconfined</td><td>1.05 … 1.15 (1.05–1.15 (confinement +3.4 %))</td><td>pass</td><td><a href="#ref-clift">clift</a></td></tr>
+<tr><td>Sphere Re 100, wake length L/D (24 cells/D)</td><td class="r">0.8944</td><td>≈ 0.88</td><td>0.8 … 0.95 (0.80–0.95)</td><td>pass</td><td><a href="#ref-johnson-patel">johnson-patel</a></td></tr>
+<tr><td>Sphere Re 100: half domain vs full domain, |ΔCd|/Cd</td><td class="r">2.57 × 10⁻⁷</td><td>0 (same discrete problem)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="heat-transfer">Heat transfer<a class="anchor" href="#heat-transfer" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>Cavity Ra 10³ (64²): mean Nu, hot wall</td><td class="r">1.118</td><td>1.117</td><td>1.095 … 1.139 (± 2 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10³ (64²): Nu on the vertical mid-plane</td><td class="r">1.118</td><td>1.118</td><td>1.096 … 1.14 (± 2 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10³ (64²): u_max on x = ½ [κ/L]</td><td class="r">3.653</td><td>3.649</td><td>3.54 … 3.758 (± 3 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10³ (64²): v_max on y = ½ [κ/L]</td><td class="r">3.7</td><td>3.697</td><td>3.586 … 3.808 (± 3 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10³ (64²): height of u_max [L]</td><td class="r">0.8133</td><td>0.813</td><td>0.7974 … 0.8286 (± 1 cell)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10³ (64²): energy balance (Nu_hot − Nu_cold)/Nu_hot</td><td class="r">1.78 × 10⁻⁷</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Cavity Ra 10⁴ (64²): mean Nu, hot wall</td><td class="r">2.251</td><td>2.238</td><td>2.193 … 2.283 (± 2 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁴ (64²): Nu on the vertical mid-plane</td><td class="r">2.251</td><td>2.243</td><td>2.198 … 2.288 (± 2 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁴ (64²): u_max on x = ½ [κ/L]</td><td class="r">16.19</td><td>16.178</td><td>15.69 … 16.66 (± 3 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁴ (64²): v_max on y = ½ [κ/L]</td><td class="r">19.64</td><td>19.617</td><td>19.03 … 20.21 (± 3 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁴ (64²): height of u_max [L]</td><td class="r">0.8232</td><td>0.823</td><td>0.8074 … 0.8386 (± 1 cell)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁴ (64²): energy balance (Nu_hot − Nu_cold)/Nu_hot</td><td class="r">6.97 × 10⁻⁸</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Cavity Ra 10⁵ (128²): mean Nu, hot wall</td><td class="r">4.531</td><td>4.509</td><td>4.374 … 4.644 (± 3 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁵ (128²): Nu on the vertical mid-plane</td><td class="r">4.531</td><td>4.519</td><td>4.383 … 4.655 (± 3 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁵ (128²): u_max on x = ½ [κ/L]</td><td class="r">34.79</td><td>34.73</td><td>33.34 … 36.12 (± 4 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁵ (128²): v_max on y = ½ [κ/L]</td><td class="r">68.67</td><td>68.59</td><td>65.85 … 71.33 (± 4 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁵ (128²): height of u_max [L]</td><td class="r">0.8546</td><td>0.855</td><td>0.8472 … 0.8628 (± 1 cell)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁵ (128²): energy balance (Nu_hot − Nu_cold)/Nu_hot</td><td class="r">0</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Cavity Ra 10⁶ (256²): mean Nu, hot wall</td><td class="r">8.841</td><td>8.817</td><td>8.376 … 9.258 (± 5 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁶ (256²): Nu on the vertical mid-plane</td><td class="r">8.839</td><td>8.799</td><td>8.359 … 9.239 (± 5 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁶ (256²): u_max on x = ½ [κ/L]</td><td class="r">64.94</td><td>64.63</td><td>60.75 … 68.51 (± 6 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁶ (256²): v_max on y = ½ [κ/L]</td><td class="r">220.7</td><td>219.36</td><td>206.2 … 232.5 (± 6 %)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁶ (256²): height of u_max [L]</td><td class="r">0.84996</td><td>0.85</td><td>0.84609 … 0.85391 (± 1 cell)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+<tr><td>Cavity Ra 10⁶ (256²): energy balance (Nu_hot − Nu_cold)/Nu_hot</td><td class="r">0</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Heated cylinder Re 20, Pr 0.71: mean Nu (32 cells/D)</td><td class="r">2.503</td><td>2.433–2.4483</td><td>2.336 … 2.546 (published range ± 4 % (5 % blockage))</td><td>pass</td><td><a href="#ref-cylinder-nu">cylinder-nu</a></td></tr>
+<tr><td>Heated cylinder Re 40, Pr 0.71: mean Nu (32 cells/D)</td><td class="r">3.336</td><td>3.2–3.255</td><td>3.072 … 3.385 (published range ± 4 % (5 % blockage))</td><td>pass</td><td><a href="#ref-cylinder-nu">cylinder-nu</a></td></tr>
+<tr><td>Rayleigh–Bénard onset Ra_c (growth rates at Ra 1500 and 2000)</td><td class="r">1701</td><td>1707.76</td><td>1657 … 1759 (± 3 %)</td><td>pass</td><td><a href="#ref-chandrasekhar">chandrasekhar</a></td></tr>
+<tr><td>Cubic cavity Ra 10⁴ (48³): mean Nu, hot wall</td><td class="r">2.066</td><td>2.0542–2.1</td><td>1.993 … 2.163 (published range ± 3 %)</td><td>pass</td><td><a href="#ref-cavity3d">cavity3d</a></td></tr>
+<tr><td>Cubic cavity Ra 10⁴ (48³): mean Nu of the hot wall in the plane y = ½</td><td class="r">2.263</td><td>2.25–2.302</td><td>2.183 … 2.371 (published range ± 3 %)</td><td>pass</td><td><a href="#ref-cavity3d-plane">cavity3d-plane</a></td></tr>
+<tr><td>Cubic cavity Ra 10⁴ (48³): u_max on the vertical centre line [free-fall units]</td><td class="r">0.1981</td><td>0.198–0.2013</td><td>0.1881 … 0.2114 (published range ± 5 %)</td><td>pass</td><td><a href="#ref-cavity3d-plane">cavity3d-plane</a></td></tr>
+<tr><td>Cubic cavity Ra 10⁴ (48³): w_max on the horizontal centre line [free-fall units]</td><td class="r">0.221</td><td>0.222–0.2252</td><td>0.2109 … 0.2365 (published range ± 5 %)</td><td>pass</td><td><a href="#ref-cavity3d-plane">cavity3d-plane</a></td></tr>
+<tr><td>Cubic cavity Ra 10⁴ (48³): energy balance |Nu_hot − Nu_cold| / Nu_hot</td><td class="r">2.10 × 10⁻⁸</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Heated sphere Re 100, Pr 0.71: mean Nu (24 cells/D) ⁽¹⁾</td><td class="r">7.03</td><td>6.615–7.353 (Clift 6.922)</td><td>6.284 … 7.72 (correlation range ± 5 %)</td><td>pass</td><td><a href="#ref-sphere-nu">sphere-nu</a></td></tr>
+<tr><td>Heated sphere Re 100: heat leaving the domain / heat from the sphere</td><td class="r">0.9999</td><td>1 (steady state)</td><td>0.98 … 1.02 (± 2 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Heated sphere Re 100: drift of Nu over the last quarter of the run</td><td class="r">7.37 × 10⁻⁷</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Natural convection, sphere Ra 10⁴, Pr 0.71: mean Nu (27 cells/D) ⁽²⁾</td><td class="r">6.385</td><td>6.545 (Churchill 1983)</td><td>5.89 … 7.199 (± 10 % (this suite's band for one empirical correlation))</td><td>pass</td><td><a href="#ref-churchill-sphere">churchill-sphere</a></td></tr>
+<tr><td>Natural-convection sphere: heat leaving through the walls / heat from the sphere</td><td class="r">0.9915</td><td>1 (steady state)</td><td>0.98 … 1.02 (± 2 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Natural-convection sphere: drift of Nu over the last 30 free-fall times</td><td class="r">9.63 × 10⁻⁴</td><td>0 (steady state)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Cavity Ra 10³, grids 16² / 32² / 64²: observed order of Nu ⁽³⁾</td><td class="r">2.032</td><td>2 (formal order)</td><td>1.5 … 2.5 (± 25 %)</td><td>pass</td><td><a href="#ref-celik">celik</a></td></tr>
+<tr><td>GCI coverage: |Nu₁₂₈ − Nu₆₄| / GCI half-width of Nu₆₄ ⁽⁴⁾</td><td class="r">0.6862</td><td>≤ 1 (the band holds the finer grid)</td><td>0 … 1 (≤ 1)</td><td>pass</td><td><a href="#ref-celik">celik</a></td></tr>
+<tr><td>Richardson-extrapolated Nu (32² / 64² / 128²) vs de Vahl Davis ⁽⁵⁾</td><td class="r">1.1177</td><td>1.117–1.118</td><td>1.1165 … 1.1185 (the benchmark's own spread ± 0.0005 rounding)</td><td>pass</td><td><a href="#ref-devahl">devahl</a></td></tr>
+</tbody>
+</table></div>
+<ol>
+<li>2.85 % blockage, half domain</li>
+<li>Nu 6.79 / 6.524 / 6.385 at 12 / 18 / 27 cells/D; monotone, observed order 1.61, extrapolated 6.235, GCI 2.9 %; fluid beside the sphere at θ 0.003 of the sphere's excess (Nu on that local ambient 6.404)</li>
+<li>monotone</li>
+<li>Nu₆₄ = 1.11836 ± 0.00072 (GCI 0.065 %), Nu₁₂₈ = 1.11786</li>
+<li>observed order 1.850 on the finest three grids</li>
+</ol>
+<h3 id="fans-and-jets">Fans and jets<a class="anchor" href="#fans-and-jets" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>Actuator strip C_T 0.5, propeller (blowing with the stream), blockage 10 %: disc velocity / U (32 cells/D) ⁽¹⁾</td><td class="r">1.101</td><td>1.1030 (confined momentum theory)</td><td>1.07 … 1.136 (± 3 %)</td><td>pass</td><td><a href="#ref-garrett-cummins">garrett-cummins</a></td></tr>
+<tr><td>Actuator strip C_T 0.5, propeller (blowing with the stream): delivered thrust / set thrust</td><td class="r">1</td><td>1</td><td>0.99 … 1.01 (± 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Actuator strip C_T 0.5, turbine (blowing against it), blockage 10 %: disc velocity / U (32 cells/D) ⁽²⁾</td><td class="r">0.8775</td><td>0.8736 (confined momentum theory)</td><td>0.8474 … 0.8998 (± 3 %)</td><td>pass</td><td><a href="#ref-garrett-cummins">garrett-cummins</a></td></tr>
+<tr><td>Actuator strip C_T 0.5, turbine (blowing against it): delivered thrust / set thrust</td><td class="r">1</td><td>1</td><td>0.99 … 1.01 (± 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Actuator disc C_T 0.5 (propeller), blockage 2.2 %: disc velocity / U (16 cells/D) ⁽³⁾</td><td class="r">1.107</td><td>1.1103 (confined momentum theory)</td><td>1.077 … 1.144 (± 3 %)</td><td>pass</td><td><a href="#ref-garrett-cummins">garrett-cummins</a></td></tr>
+<tr><td>Actuator disc C_T 0.5 (propeller): delivered thrust / set thrust</td><td class="r">1</td><td>1</td><td>0.99 … 1.01 (± 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Actuator disc C_T 0.4 (turbine), blockage 2.2 %: disc velocity / U (16 cells/D) ⁽⁴⁾</td><td class="r">0.8965</td><td>0.8905 (confined momentum theory)</td><td>0.8638 … 0.9172 (± 3 %)</td><td>pass</td><td><a href="#ref-garrett-cummins">garrett-cummins</a></td></tr>
+<tr><td>Actuator disc C_T 0.4 (turbine): delivered thrust / set thrust</td><td class="r">1</td><td>1</td><td>0.99 … 1.01 (± 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Plane jet Re 25: centreline decay slope of u_c⁻³ / Bickley (8 ≤ x/b ≤ 24)</td><td class="r">0.9528</td><td>1 (similarity law)</td><td>0.9 … 1.1 (± 10 %)</td><td>pass</td><td><a href="#ref-bickley">bickley</a></td></tr>
+<tr><td>Plane jet Re 25: momentum budget of the jet core over 8 ≤ x/b ≤ 24, residual / K ⁽⁵⁾</td><td class="r">0.002661</td><td>0 (steady x-momentum balance of the core)</td><td>0 … 0.01 (&lt; 1 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Plane jet Re 25: drift of the core momentum flux ∫u² dy over 8 ≤ x/b ≤ 24 ⁽⁶⁾</td><td class="r">0.06158</td><td>0 for a free jet (conserved by the similarity law)</td><td>0 … 0.05 (&lt; 5 % (set before the first run))</td><td><strong>fail</strong></td><td><a href="#ref-bickley">bickley</a></td></tr>
+<tr><td>Plane jet Re 25: half-width b½ at x/b = 20 / Bickley</td><td class="r">0.9608</td><td>1 (similarity law, fitted virtual origin)</td><td>0.9 … 1.1 (± 10 %)</td><td>pass</td><td><a href="#ref-bickley">bickley</a></td></tr>
+<tr><td>Round jet Re 100: momentum budget of the jet core, residual / K ⁽⁷⁾</td><td class="r">0.001236</td><td>0 (steady x-momentum balance of the core)</td><td>0 … 0.005 (&lt; 0.5 %)</td><td>pass</td><td><a href="#ref-exact">exact</a></td></tr>
+<tr><td>Round jet Re 100: slope of 1/u_c / Schlichting (injected K)</td><td class="r">0.9928</td><td>1 (similarity law)</td><td>0.98 … 1.02 (± 2 %)</td><td>pass</td><td><a href="#ref-schlichting">schlichting</a></td></tr>
+<tr><td>Round jet Re 100: rms of u/u_c − (1 + ξ²/4)⁻² inside 2 r½</td><td class="r">0.01064</td><td>0 (similarity profile)</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-schlichting">schlichting</a></td></tr>
+</tbody>
+</table></div>
+<ol>
+<li>unconfined Froude value 1.1124</li>
+<li>unconfined Froude value 0.8536</li>
+<li>unconfined Froude value 1.1124</li>
+<li>unconfined Froude value 0.8873</li>
+<li>K = ∫u² dy over the jet's forward-flow core; the closed box returns the entrained fluid as a weak counter-flow beside the jet, which slowly drains it. The pressure part of the momentum flux, ∫(p − p_edge) dy over the core, averages 0.006529 (+0.7 % of K) over the same span and is not in K; of the change of K, -3.61 % is the return flow's shear and -2.48 % the box's pressure gradient</li>
+<li>the confinement's share of this drift is split in the momentum-budget check above; a closed box drains K, so this check fails until a free jet is validated (<a href="validation.html#10-what-is-not-validated">Validation report, §10</a>)</li>
+<li>change of K -4.60 %: return-flow shear -3.65 %, box pressure gradient -0.77 %</li>
+</ol>
+<h3 id="airfoil-polars">Airfoil polars<a class="anchor" href="#airfoil-polars" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>NACA 0012 Re 6×10⁶ tripped, cl at 2.05°</td><td class="r">0.2332</td><td>0.212</td><td>0.1625 … 0.2625 (± 0.05)</td><td>pass</td><td><a href="#ref-ladson">ladson</a></td></tr>
+<tr><td>NACA 0012 Re 6×10⁶ tripped, cl at 4.04°</td><td class="r">0.459</td><td>0.432</td><td>0.3816 … 0.4816 (± 0.05)</td><td>pass</td><td><a href="#ref-ladson">ladson</a></td></tr>
+<tr><td>NACA 0012 Re 6×10⁶ tripped, cd at 4.04°</td><td class="r">0.008201</td><td>0.00823</td><td>0.006995 … 0.009464 (± 15 %)</td><td>pass</td><td><a href="#ref-ladson">ladson</a></td></tr>
+<tr><td>NACA 0012 Re 6×10⁶ tripped, cl at 6.09°</td><td class="r">0.6894</td><td>0.655</td><td>0.6046 … 0.7046 (± 0.05)</td><td>pass</td><td><a href="#ref-ladson">ladson</a></td></tr>
+<tr><td>NACA 0012 Re 6×10⁶ tripped, cl at 8.3°</td><td class="r">0.9315</td><td>0.887</td><td>0.8373 … 0.9373 (± 0.05)</td><td>pass</td><td><a href="#ref-ladson">ladson</a></td></tr>
+<tr><td>NACA 0012 Re 1×10⁶ vs XFOIL: max |Δcl|</td><td class="r">0.005144</td><td>0</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 0012 Re 1×10⁶ vs XFOIL: max |Δcd|/cd</td><td class="r">0.01729</td><td>0</td><td>0 … 0.05 (&lt; 5 %)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 0012 Re 1×10⁶ vs XFOIL: max |Δcm|</td><td class="r">0.001199</td><td>0</td><td>0 … 0.005 (&lt; 0.005)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 0012 Re 3×10⁶ vs XFOIL: max |Δcl|</td><td class="r">0.005172</td><td>0</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 0012 Re 3×10⁶ vs XFOIL: max |Δcd|/cd</td><td class="r">0.01266</td><td>0</td><td>0 … 0.05 (&lt; 5 %)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 0012 Re 3×10⁶ vs XFOIL: max |Δcm|</td><td class="r">0.001192</td><td>0</td><td>0 … 0.005 (&lt; 0.005)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 2412 Re 1×10⁶ vs XFOIL: max |Δcl|</td><td class="r">0.01159</td><td>0</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 2412 Re 1×10⁶ vs XFOIL: max |Δcd|/cd</td><td class="r">0.01747</td><td>0</td><td>0 … 0.05 (&lt; 5 %)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 2412 Re 1×10⁶ vs XFOIL: max |Δcm|</td><td class="r">0.002395</td><td>0</td><td>0 … 0.005 (&lt; 0.005)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 2412 Re 3×10⁶ vs XFOIL: max |Δcl|</td><td class="r">0.005814</td><td>0</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 2412 Re 3×10⁶ vs XFOIL: max |Δcd|/cd</td><td class="r">0.02017</td><td>0</td><td>0 … 0.05 (&lt; 5 %)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 2412 Re 3×10⁶ vs XFOIL: max |Δcm|</td><td class="r">0.001374</td><td>0</td><td>0 … 0.005 (&lt; 0.005)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 4412 Re 1×10⁶ vs XFOIL: max |Δcl|</td><td class="r">0.01045</td><td>0</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 4412 Re 1×10⁶ vs XFOIL: max |Δcd|/cd</td><td class="r">0.02359</td><td>0</td><td>0 … 0.05 (&lt; 5 %)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 4412 Re 1×10⁶ vs XFOIL: max |Δcm|</td><td class="r">0.00255</td><td>0</td><td>0 … 0.005 (&lt; 0.005)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 4412 Re 3×10⁶ vs XFOIL: max |Δcl|</td><td class="r">0.01036</td><td>0</td><td>0 … 0.02 (&lt; 0.02)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 4412 Re 3×10⁶ vs XFOIL: max |Δcd|/cd</td><td class="r">0.01742</td><td>0</td><td>0 … 0.05 (&lt; 5 %)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+<tr><td>NACA 4412 Re 3×10⁶ vs XFOIL: max |Δcm|</td><td class="r">0.002333</td><td>0</td><td>0 … 0.005 (&lt; 0.005)</td><td>pass</td><td><a href="#ref-xfoil">xfoil</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="finite-wings">Finite wings<a class="anchor" href="#finite-wings" aria-label="Link to this section">#</a></h3>
+<div class="table-scroll"><table>
+<thead><tr><th scope="col">check</th><th class="r" scope="col">Aerolume</th><th scope="col">reference</th><th scope="col">band</th><th scope="col">result</th><th scope="col">source</th></tr></thead>
+<tbody>
+<tr><td>Elliptic wing AR 4, lifting line CLα [1/rad]</td><td class="r">4.19</td><td>4.1888</td><td>4.105 … 4.273 (± 2 %)</td><td>pass</td><td><a href="#ref-llt">llt</a></td></tr>
+<tr><td>Elliptic wing AR 4, span efficiency e (VLM)</td><td class="r">0.9973</td><td>1</td><td>0.98 … 1.02 (≥ 0.98)</td><td>pass</td><td><a href="#ref-llt">llt</a></td></tr>
+<tr><td>Elliptic wing AR 8, lifting line CLα [1/rad]</td><td class="r">5.027</td><td>5.0265</td><td>4.926 … 5.127 (± 2 %)</td><td>pass</td><td><a href="#ref-llt">llt</a></td></tr>
+<tr><td>Elliptic wing AR 8, span efficiency e (VLM)</td><td class="r">0.9983</td><td>1</td><td>0.98 … 1.02 (≥ 0.98)</td><td>pass</td><td><a href="#ref-llt">llt</a></td></tr>
+<tr><td>Elliptic wing AR 12, lifting line CLα [1/rad]</td><td class="r">5.386</td><td>5.3856</td><td>5.278 … 5.493 (± 2 %)</td><td>pass</td><td><a href="#ref-llt">llt</a></td></tr>
+<tr><td>Elliptic wing AR 12, span efficiency e (VLM)</td><td class="r">0.9989</td><td>1</td><td>0.98 … 1.02 (≥ 0.98)</td><td>pass</td><td><a href="#ref-llt">llt</a></td></tr>
+<tr><td>Circular wing, VLM CLα [1/rad]</td><td class="r">1.793</td><td>1.799</td><td>1.754 … 1.844 (± 2.5 %)</td><td>pass</td><td><a href="#ref-multhopp">multhopp</a></td></tr>
+<tr><td>Rectangular wing AR 6, VLM CLα [1/rad]</td><td class="r">4.213</td><td>4.231–4.247–4.27</td><td>4.125 … 4.377 (± 2.5 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Rectangular wing AR 4, VLM CLα [1/rad]</td><td class="r">3.61</td><td>3.639</td><td>3.548 … 3.73 (± 2.5 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Rectangular wing AR 2, VLM CLα [1/rad]</td><td class="r">2.473</td><td>2.524</td><td>2.436 … 2.612 (± 3.5 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Rectangular wing AR 1, VLM CLα [1/rad]</td><td class="r">1.459</td><td>1.489</td><td>1.437 … 1.541 (± 3.5 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Swept wing AR 6, 30°, VLM CLα [1/rad]</td><td class="r">3.854</td><td>3.877–3.955</td><td>3.761 … 4.074 (range ± 3 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Swept wing AR 6, 45°, VLM CLα [1/rad]</td><td class="r">3.338</td><td>3.304–3.464</td><td>3.205 … 3.568 (range ± 3 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Swept wing AR 4, 30°, VLM CLα [1/rad]</td><td class="r">3.375</td><td>3.4–3.467</td><td>3.298 … 3.571 (range ± 3 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Swept wing AR 4, 45°, VLM CLα [1/rad]</td><td class="r">3</td><td>2.986–3.121</td><td>2.896 … 3.215 (range ± 3 %)</td><td>pass</td><td><a href="#ref-falkner">falkner</a></td></tr>
+<tr><td>Weber &amp; Brebner 45° wing, CL at 2.1°</td><td class="r">0.1171</td><td>0.121</td><td>0.1149 … 0.127 (± 5 %)</td><td>pass</td><td><a href="#ref-weber">weber</a></td></tr>
+<tr><td>Weber &amp; Brebner 45° wing, CL at 4.2°</td><td class="r">0.2339</td><td>0.238</td><td>0.2261 … 0.2499 (± 5 %)</td><td>pass</td><td><a href="#ref-weber">weber</a></td></tr>
+<tr><td>Weber &amp; Brebner 45° wing, CL at 6.3°</td><td class="r">0.3503</td><td>0.350</td><td>0.3325 … 0.3675 (± 5 %)</td><td>pass</td><td><a href="#ref-weber">weber</a></td></tr>
+<tr><td>Weber &amp; Brebner 45° wing, CL at 8.4°</td><td class="r">0.466</td><td>0.456</td><td>0.4332 … 0.4788 (± 5 %)</td><td>pass</td><td><a href="#ref-weber">weber</a></td></tr>
+<tr><td>Weber &amp; Brebner 45° wing, CL at 10.5°</td><td class="r">0.5808</td><td>0.559</td><td>0.5311 … 0.587 (± 5 %)</td><td>pass</td><td><a href="#ref-weber">weber</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="references-of-the-automated-run">References of the automated run<a class="anchor" href="#references-of-the-automated-run" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>&lt;a id="ref-bickley"&gt;&lt;/a&gt;<strong>bickley</strong>: Bickley (1937), the plane laminar jet similarity solution: u_c = 0.4543 (K²/(ν x))^(1/3).</li>
+<li>&lt;a id="ref-cavity3d"&gt;&lt;/a&gt;<strong>cavity3d</strong>: Differentially heated cubic cavity, mean hot-wall Nusselt number: Tric, Labrosse &amp; Betrouni (2000), Int. J. Heat Mass Transfer 43; Wakashima &amp; Saitoh (2004), Int. J. Heat Mass Transfer 47; Fusegi, Hyun, Kuwahara &amp; Farouk (1991), Int. J. Heat Mass Transfer 34; as tabulated in validation/thermal3d_cases.py.</li>
+<li>&lt;a id="ref-cavity3d-plane"&gt;&lt;/a&gt;<strong>cavity3d-plane</strong>: Symmetry plane y = ½ of the differentially heated cubic cavity, free-fall units: hot-wall Nusselt number of Tric, Labrosse &amp; Betrouni (2000) and Fusegi et al. (1991); centre-line velocity maxima of Wakashima &amp; Saitoh (2004) and Fusegi et al. (1991); as tabulated in validation/thermal3d_cases.py from Li, Yang &amp; Zhang (arXiv:1511.04633), Al-Rashed et al. (2017) and Hajabdollahi &amp; Premnath (2017, arXiv:1710.04751).</li>
+<li>&lt;a id="ref-celik"&gt;&lt;/a&gt;<strong>celik</strong>: Celik, Ghia, Roache, Freitas, Coleman &amp; Raad (2008), Procedure for estimation and reporting of uncertainty due to discretization in CFD applications, J. Fluids Eng. 130, 078001.</li>
+<li>&lt;a id="ref-chandrasekhar"&gt;&lt;/a&gt;<strong>chandrasekhar</strong>: Chandrasekhar (1961), Hydrodynamic and Hydromagnetic Stability, Oxford: onset of convection between rigid isothermal plates at Ra_c = 1707.76 (k_c = 3.117).</li>
+<li>&lt;a id="ref-churchill-sphere"&gt;&lt;/a&gt;<strong>churchill-sphere</strong>: Churchill (1983), natural convection from an isothermal sphere in a quiescent fluid: Nu = 2 + 0.589 Ra^¼ / [1 + (0.469/Pr)^(9/16)]^(4/9) (laminar, Pr ≥ 0.7), as reproduced in M. M. Yovanovich, University of Waterloo ME 353 notes, Natural Convection from Isothermal Spheres.</li>
+<li>&lt;a id="ref-clift"&gt;&lt;/a&gt;<strong>clift</strong>: Clift, Grace &amp; Weber (1978), Bubbles, Drops and Particles, Academic Press.</li>
+<li>&lt;a id="ref-coutanceau"&gt;&lt;/a&gt;<strong>coutanceau</strong>: Coutanceau &amp; Bouard (1977), Experimental determination of the main features of the viscous flow in the wake of a circular cylinder in uniform translation, J. Fluid Mech. 79.</li>
+<li>&lt;a id="ref-cylinder-nu"&gt;&lt;/a&gt;<strong>cylinder-nu</strong>: Mean Nusselt number of an isothermal cylinder, Pr 0.71: Biswas &amp; Sarkar (2009), Jafroudi &amp; Yang (1986), Apelt &amp; Ledwich (1979), as tabulated by Singhal, Dutta &amp; Kalita (2023), Int. J. Thermal Sciences 194, 108588, Table 2.</li>
+<li>&lt;a id="ref-dennis-chang"&gt;&lt;/a&gt;<strong>dennis-chang</strong>: Dennis &amp; Chang (1970), Numerical solutions for steady flow past a circular cylinder at Reynolds numbers up to 100, J. Fluid Mech. 42.</li>
+<li>&lt;a id="ref-devahl"&gt;&lt;/a&gt;<strong>devahl</strong>: de Vahl Davis (1983), Natural convection of air in a square cavity: a bench mark numerical solution, Int. J. Numer. Meth. Fluids 3, 249–264, Table V.</li>
+<li>&lt;a id="ref-exact"&gt;&lt;/a&gt;<strong>exact</strong>: Exact solution or exact discrete identity (Taylor–Green vortex, projection, conservation).</li>
+<li>&lt;a id="ref-falkner"&gt;&lt;/a&gt;<strong>falkner</strong>: Falkner (1948/1952), Calculated loadings due to incidence of a number of straight and swept-back wings, ARC R&amp;M 2596.</li>
+<li>&lt;a id="ref-garrett-cummins"&gt;&lt;/a&gt;<strong>garrett-cummins</strong>: Garrett &amp; Cummins (2007), The efficiency of a turbine in a tidal channel, J. Fluid Mech. 588: actuator-disc momentum theory in a confined channel (Froude's theory for blockage → 0).</li>
+<li>&lt;a id="ref-johnson-patel"&gt;&lt;/a&gt;<strong>johnson-patel</strong>: Johnson &amp; Patel (1999), Flow past a sphere up to a Reynolds number of 300, J. Fluid Mech. 378.</li>
+<li>&lt;a id="ref-ladson"&gt;&lt;/a&gt;<strong>ladson</strong>: Ladson (1988), Effects of independent variation of Mach and Reynolds numbers on the low-speed aerodynamic characteristics of the NACA 0012 airfoil section, NASA TM-4074.</li>
+<li>&lt;a id="ref-liu98"&gt;&lt;/a&gt;<strong>liu98</strong>: Liu, Zheng &amp; Sung (1998), Preconditioned multigrid methods for unsteady incompressible flows, J. Comput. Phys. 139.</li>
+<li>&lt;a id="ref-llt"&gt;&lt;/a&gt;<strong>llt</strong>: Prandtl's lifting-line theory, elliptic wing: CLα = 2πAR/(AR + 2), e = 1 (e.g. Anderson, Fundamentals of Aerodynamics, ch. 5).</li>
+<li>&lt;a id="ref-multhopp"&gt;&lt;/a&gt;<strong>multhopp</strong>: Multhopp (1950), Methods for calculating the lift distribution of wings (subsonic lifting-surface theory), ARC R&amp;M 2884.</li>
+<li>&lt;a id="ref-schafer-turek"&gt;&lt;/a&gt;<strong>schafer-turek</strong>: Schäfer &amp; Turek (1996), Benchmark computations of laminar flow around a cylinder, Notes on Numerical Fluid Mechanics 52.</li>
+<li>&lt;a id="ref-schlichting"&gt;&lt;/a&gt;<strong>schlichting</strong>: Schlichting (1933), Laminare Strahlausbreitung, ZAMM 13: the laminar round jet similarity solution u = u_c (1 + ξ²/4)⁻², 1/u_c = 8πν x / (3K) (Schlichting &amp; Gersten, Boundary-Layer Theory, 9th ed., §7.2.6); Landau–Squire's exact solution differs by 1.1 % at this K.</li>
+<li>&lt;a id="ref-sohankar"&gt;&lt;/a&gt;<strong>sohankar</strong>: Sohankar, Norberg &amp; Davidson (1998), square cylinder at Re 100, as tabulated in validation/ns2d_cases.py (with Darekar &amp; Sherwin 2001 and Sharma &amp; Eswaran 2004).</li>
+<li>&lt;a id="ref-sphere-nu"&gt;&lt;/a&gt;<strong>sphere-nu</strong>: Mean Nusselt number of an isothermal sphere: Ranz &amp; Marshall (1952), Chem. Eng. Prog. 48; Whitaker (1972), AIChE J. 18; Clift, Grace &amp; Weber (1978), Bubbles, Drops and Particles.</li>
+<li>&lt;a id="ref-weber"&gt;&lt;/a&gt;<strong>weber</strong>: Weber &amp; Brebner, Low-speed tests on 45° swept-back wings, ARC R&amp;M 2882.</li>
+<li>&lt;a id="ref-williamson"&gt;&lt;/a&gt;<strong>williamson</strong>: Williamson (1989), Oblique and parallel modes of vortex shedding in the wake of a circular cylinder at low Reynolds numbers, J. Fluid Mech. 206.</li>
+<li>&lt;a id="ref-xfoil"&gt;&lt;/a&gt;<strong>xfoil</strong>: XFOIL 6.99 (M. Drela, MIT) on identical geometry, the reference table of validation/airfoil_validation.py.</li>
+</ul>
+<h2 id="10-what-is-not-validated">10. What is not validated<a class="anchor" href="#10-what-is-not-validated" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Turbulent flows: there is no wall model and no transition model in the Navier–Stokes
+solvers. Above Re ≈ 10⁴ their forces are qualitative; compare designs, do not quote
+absolute values. Airfoils at flight Reynolds numbers belong to the polar solver, wings to
+the finite-wing analysis.</li>
+<li>A 2D vehicle is an infinitely wide side profile. 3D vehicles: absolute drag and lift are
+not validated (section 8), nor are yawed vehicles, rolling wheels against data, or surface
+friction (c<sub>f</sub> is a lower bound wherever the boundary layer spans few cells).</li>
+<li>Finite wings: maximum lift, sideslip derivatives against data (signs and antisymmetry are
+unit-tested), compressibility against experiment, dihedral and cranked wings, low Reynolds
+numbers.</li>
+<li>Compressibility: the CFD solvers are incompressible (the polar solver has a Kármán–Tsien
+correction for low Mach numbers, the wing solver Prandtl–Glauert).</li>
+<li>Multi-element airfoils and wings in ground effect have been run but not compared with
+measurements.</li>
+<li>Heat transfer is validated for laminar natural convection (square cavity to Ra 10⁶, cubic
+cavity at Ra 10⁴, the Rayleigh–Bénard onset, a heated sphere at Ra 10⁴ in a closed box) and
+laminar forced convection (cylinder Re 20–40, sphere Re 100) at Pr 0.71. Not validated:
+turbulent or transitional convection, other Prandtl numbers, heat-flux bodies and heat sources
+against data (their released totals are exact by construction: each footprint is normalised by
+its discrete integral), mixed convection, and natural convection around a heated body at higher
+Rayleigh numbers or on coarse grids (a run in that regime says "regime not validated" in its
+warnings, and the planner sizes the thermal boundary layer on the buoyant velocity; the sphere
+at Ra 10⁴ was run on 12, 18 and 27 cells across it, with a GCI of 2.9 % on the finest grid, and a Draft hot sphere at Ra 4.2×10⁶
+with 0.4 cells across its thermal layer read Nu 53.5 against 22.6 from Churchill's (1983)
+correlation, so such Nusselt numbers need a grid study),
+large temperature differences (the model is Boussinesq), conjugate heat transfer and radiation
+(not modelled).</li>
+<li>Fans are validated as actuator discs against momentum theory (thrust delivered to 1 %, disc
+velocity against confined momentum theory, blowing with and against the stream); swirl,
+velocity-mode control and real fan curves are not compared with measurements.</li>
+<li><strong>Jets: momentum conservation of a free jet is not validated.</strong> A jet port blowing into a
+closed box follows Bickley's similarity law in its centreline decay (−4.7 %) and half-width
+(−3.9 %), but the momentum flux of the jet's forward-flow core, ∫u² dy, falls by 6.2 % between
+8 and 24 port widths, more than the 5 % band written before the check first ran, and that
+check <strong>fails</strong> in section 9 (three identical runs gave the same 6.158 %, so this is not
+noise). The core's momentum budget closes: the counter-flow the box forces beside the jet
+(about 3 % of the jet speed) drains −3.6 % of K through shear at the core's edges and the
+box's adverse pressure gradient −2.5 %, leaving 0.27 % of K to the scheme (the budget check,
+band 1 %, passes; the 3D round jet's budget closes to 0.12 %). So the drift belongs to the
+closed box rather than to the discretisation, but a free jet has not been run: a taller box or
+an open domain is the test that would show conservation directly. History: the first version
+of the check integrated over the whole box height and drifted 17.5 % over 12 ≤ x/b ≤ 40; an
+earlier development build then widened the drift band to 8 % after the 6.2 % was known, which
+made the check pass without testing anything, and that band was withdrawn before release.</li>
+<li>Smoke and tracer particles are passive visualisation; their transport is checked for
+boundedness and symmetry, not against measured smoke photographs.</li>
+<li>The grid-convergence index is validated on one steady, deterministic case (section 9); for
+time-averaged unsteady results its band is combined with the statistical error and studies
+whose grid differences are within the noise are flagged, not trusted.</li>
+<li>Apple GPUs (MPS) and float64 runs on the GPU have not been tested; every GPU timing above
+was taken on the development GPU, often while other programs used it.</li>
+</ul>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-sensitivity.html"><span>Previous</span><b>Sensitivity maps</b></a><a class="next" href="validation-airfoil.html"><span>Next</span><b>Airfoil validation</b></a></nav>
+</main>
+<aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#1-verification-exact-answers">1. Verification: exact answers</a></li><li class="l2"><a href="#2-circular-cylinder-re-40-and-re-100">2. Circular cylinder, Re 40 and Re 100</a></li><li class="l2"><a href="#3-channel-and-sharp-edged-benchmarks">3. Channel and sharp-edged benchmarks</a></li><li class="l2"><a href="#4-vehicles-and-high-reynolds-numbers">4. Vehicles and high Reynolds numbers</a></li><li class="l2"><a href="#5-performance">5. Performance</a></li><li class="l2"><a href="#6-airfoil-polar-solver">6. Airfoil polar solver</a></li><li class="l2"><a href="#7-shape-sensitivity-maps">7. Shape-sensitivity maps</a></li><li class="l2"><a href="#8-three-dimensions">8. Three dimensions</a></li><li class="l2"><a href="#9-automated-validation-run">9. Automated validation run</a></li><li class="l3"><a href="#verification-exact-answers">Verification (exact answers)</a></li><li class="l3"><a href="#2d-flow">2D flow</a></li><li class="l3"><a href="#3d-flow">3D flow</a></li><li class="l3"><a href="#heat-transfer">Heat transfer</a></li><li class="l3"><a href="#fans-and-jets">Fans and jets</a></li><li class="l3"><a href="#airfoil-polars">Airfoil polars</a></li><li class="l3"><a href="#finite-wings">Finite wings</a></li><li class="l3"><a href="#references-of-the-automated-run">References of the automated run</a></li><li class="l2"><a href="#10-what-is-not-validated">10. What is not validated</a></li></ul></div></aside>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Aerolume 0.1.0, Apache License 2.0. Built from the repository by <code>website/build.py</code> on 2026-11-02. Every number on this site comes from the repository&rsquo;s validation and benchmark scripts, and the documentation states the conditions of each.</p>
+    <nav aria-label="Footer">
+      <a href="../docs/index.html">Documentation</a>
+      <a href="../index.html#validation">Validation</a>
+      <a href="../index.html#download">Get Aerolume</a>
+      <a href="../LICENSE.txt">Licence</a>
+    </nav>
+  </div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+ "name": "Heated cavity · Ra 1.0×10⁵",
+ "kind": "generic",
+ "bodies": [],
+ "length_ref": 0.1,
+ "force_ref": 0.1,
+ "moment_ref": [
+  0.05,
+  0.05
+ ],
+ "id": "871654687002",
+ "source": {
+  "type": "case",
+  "case": "cavity",
+  "ra": 100000.0,
+  "pr": 0.71,
+  "size": 0.1,
+  "delta_t": 0.8829428231624324
+ },
+ "created": "2026-10-31T23:33:40",
+ "notes": "",
+ "dimension": 2,
+ "meshes": [],
+ "wing": null,
+ "ref_area": 0.0,
+ "span_ref": 0.0,
+ "moment_ref3": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "symmetric": false
+}

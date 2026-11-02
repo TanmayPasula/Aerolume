@@ -1,0 +1,82 @@
+{
+ "name": "Heated cylinder · d 10 mm · ΔT 10 K",
+ "design_id": "40339e37ecf7",
+ "analysis": "cfd",
+ "conditions": {
+  "fluid": {
+   "name": "Air, ISA sea level",
+   "density": 1.225000018124288,
+   "viscosity": 1.7892976260350732e-05
+  },
+  "speed": 0.058426044067324476,
+  "alpha_deg": 0.0,
+  "yaw_deg": 0.0
+ },
+ "ground": {
+  "enabled": false,
+  "moving": true,
+  "rotate_wheels": false
+ },
+ "cfd": {
+  "quality": "draft",
+  "cells_per_ref": null,
+  "domain_upstream": null,
+  "domain_downstream": null,
+  "domain_height": null,
+  "duration": null,
+  "average_from": null,
+  "turbulence": "auto",
+  "reynolds_mode": "real",
+  "reynolds_cap": null,
+  "precision": "auto",
+  "device": "auto",
+  "compute_sensitivity": false,
+  "sensitivity_objective": "cd",
+  "symmetry": "auto",
+  "domain_width": null,
+  "domain_mode": "tunnel",
+  "domain_box": null,
+  "record_diagnostics": true,
+  "adaptive_dt": "cfl"
+ },
+ "airfoil": {
+  "alpha_start": -4.0,
+  "alpha_end": 14.0,
+  "alpha_step": 1.0,
+  "ncrit": 9.0,
+  "xtr_upper": 1.0,
+  "xtr_lower": 1.0,
+  "mach": 0.0,
+  "panels": 199
+ },
+ "id": "88cafe338720",
+ "status": "done",
+ "created": "2026-10-31T23:32:50",
+ "finished": "2026-10-31T23:33:40",
+ "notes": "",
+ "error": null,
+ "wing": {
+  "alpha_start": -4.0,
+  "alpha_end": 12.0,
+  "alpha_step": 1.0,
+  "method": "vlm",
+  "viscous": true,
+  "ncrit": 9.0,
+  "mach": 0.0
+ },
+ "emitters": [],
+ "thermal": {
+  "enabled": true,
+  "t_ambient": 15.0,
+  "buoyancy": false,
+  "gravity": 9.80665,
+  "beta": null,
+  "prandtl": 0.7,
+  "conductivity": null,
+  "cp": null,
+  "walls": []
+ },
+ "heat_sources": [],
+ "fans": [],
+ "ports": []
+}

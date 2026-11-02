@@ -1,0 +1,19 @@
+Intel OpenMP runtime
+====================
+
+The PyTorch distribution bundled with Aerolume (torch {torch_version}) contains Intel's OpenMP
+runtime library. Its files are listed at the end of this file, each with the description,
+version and copyright line recorded in the file itself.
+
+These files are Intel proprietary software, and Aerolume's Apache License 2.0 does not cover
+them. Intel distributes this runtime as a redistributable library, for example in the
+intel-openmp package (https://pypi.org/project/intel-openmp/). That package's metadata names
+its licence as the "Intel End User License Agreement for Developer Tools". Intel publishes
+the agreement at
+  https://www.intel.com/content/www/us/en/developer/articles/license/end-user-license-agreement.html
+Intel's terms govern these files, not Aerolume's licence. Use them only as part of Aerolume.
+The full text of Intel's agreement is not included in this build. Read it at the address
+above.
+
+Files
+-----
