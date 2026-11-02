@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Sensitivity maps">
 <meta property="og:description" content="Shape sensitivities by reverse-mode differentiation through the solver, in 2D and 3D.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/theory-sensitivity.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -436,7 +440,7 @@ ray-parity test, so a grid point exactly on a face lost its derivative (<span cl
 point within the parity test's ray jitter (0.002 cells) could take the other side's sign. Moving
 the box 0.014 cells off the grid planes removed the effect (≤ 7 × 10⁻⁵ on every mode), which located
 it. The voxeliser now makes the distance differentiable <em>through</em> the surface
-(<code>geometry3d.voxel</code>, DESIGN.md 7.4): a cell whose nearest feature is a face interior within
+(<code>geometry3d.voxel</code>, <a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts</a> 7.4): a cell whose nearest feature is a face interior within
 0.02 cells of its plane gets the face's <strong>signed plane distance</strong> <span class="math"><i>s</i> <i>n</i>̂·(<i>p</i> − <i>a</i>)</span>, with the
 side <code>s</code> voted by the band cells clearly off that face (parity sign times plane side), and a cell
 exactly as far from several faces (a medial plane, an edge) takes the mean of their derivatives,
@@ -535,6 +539,7 @@ reverse or adjoint mode of computational differentiation, ACM TOMS 26.</li>
 <li>Othmer (2008), A continuous adjoint formulation for the computation of topological and surface
 sensitivities of ducted flows, Int. J. Numer. Meth. Fluids 58.</li>
 </ul>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/theory_sensitivity.md">docs/theory_sensitivity.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-wing.html"><span>Previous</span><b>Finite wings</b></a><a class="next" href="validation.html"><span>Next</span><b>Validation report</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-reading-the-map">1. Reading the map</a></li><li class="l2"><a href="#2-what-exactly-is-differentiated">2. What exactly is differentiated</a></li><li class="l2"><a href="#3-the-reverse-sweep">3. The reverse sweep</a></li><li class="l2"><a href="#4-verification-against-finite-differences">4. Verification against finite differences</a></li><li class="l2"><a href="#5-how-close-is-the-map-to-the-physical-derivative">5. How close is the map to the physical derivative?</a></li><li class="l2"><a href="#6-unsteady-flows-what-the-map-means-there">6. Unsteady flows: what the map means there</a></li><li class="l2"><a href="#7-shape-optimisation">7. Shape optimisation</a></li><li class="l3"><a href="#71-airfoils-at-flight-reynolds-numbers-optimize_airfoil">7.1 Airfoils at flight Reynolds numbers: optimize_airfoil</a></li><li class="l3"><a href="#72-any-shape-with-the-cfd-gradient-experimental-optimize_shape_cfd">7.2 Any shape with the CFD gradient (experimental): optimize_shape_cfd</a></li><li class="l2"><a href="#8-limits-in-one-place">8. Limits, in one place</a></li><li class="l2"><a href="#9-three-dimensions-maps-on-any-imported-mesh">9. Three dimensions: maps on any imported mesh</a></li><li class="l3"><a href="#91-what-is-differentiated">9.1 What is differentiated</a></li><li class="l3"><a href="#92-from-vertices-to-a-map">9.2 From vertices to a map</a></li><li class="l3"><a href="#93-the-reverse-sweep-memory-and-cost">9.3 The reverse sweep, memory and cost</a></li><li class="l3"><a href="#94-verification-against-finite-differences">9.4 Verification against finite differences</a></li><li class="l3"><a href="#95-how-close-is-the-3d-map-to-the-physical-derivative">9.5 How close is the 3D map to the physical derivative?</a></li><li class="l3"><a href="#96-limits-3d">9.6 Limits (3D)</a></li><li class="l2"><a href="#10-api">10. API</a></li><li class="l2"><a href="#11-references">11. References</a></li></ul></div></aside>
@@ -546,6 +551,8 @@ sensitivities of ducted flows, Int. J. Numer. Meth. Fluids 58.</li>
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

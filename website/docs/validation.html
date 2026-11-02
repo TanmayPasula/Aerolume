@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Validation report">
 <meta property="og:description" content="Exact answers, flow and heat-transfer benchmarks, fans and jets, polars, wings and performance.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/validation.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -62,7 +66,7 @@ python validation/airfoil_validation.py            # polars against wind-tunnel 
 python validation/make_validation_figures.py       # the figures on this page</code></pre>
 <p>and the same checks, with tolerances, run in the test suite (<code>pytest -m slow</code> for the
 GPU validation cases; <code>aerolume-cli validate</code> runs a quick subset on any machine). How to run
-and extend the validation: validation/README.md.</p>
+and extend the validation: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/validation/README.md">validation/README.md</a>.</p>
 <h2 id="summary">Summary<a class="anchor" href="#summary" aria-label="Link to this section">#</a></h2>
 <div class="table-scroll"><table>
 <thead><tr><th scope="col">area</th><th scope="col">check</th><th scope="col">result</th></tr></thead>
@@ -670,6 +674,7 @@ whose grid differences are within the noise are flagged, not trusted.</li>
 <li>Apple GPUs (MPS) and float64 runs on the GPU have not been tested; every GPU timing above
 was taken on the development GPU, often while other programs used it.</li>
 </ul>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/validation.md">docs/validation.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-sensitivity.html"><span>Previous</span><b>Sensitivity maps</b></a><a class="next" href="validation-airfoil.html"><span>Next</span><b>Airfoil validation</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#1-verification-exact-answers">1. Verification: exact answers</a></li><li class="l2"><a href="#2-circular-cylinder-re-40-and-re-100">2. Circular cylinder, Re 40 and Re 100</a></li><li class="l2"><a href="#3-channel-and-sharp-edged-benchmarks">3. Channel and sharp-edged benchmarks</a></li><li class="l2"><a href="#4-vehicles-and-high-reynolds-numbers">4. Vehicles and high Reynolds numbers</a></li><li class="l2"><a href="#5-performance">5. Performance</a></li><li class="l2"><a href="#6-airfoil-polar-solver">6. Airfoil polar solver</a></li><li class="l2"><a href="#7-shape-sensitivity-maps">7. Shape-sensitivity maps</a></li><li class="l2"><a href="#8-three-dimensions">8. Three dimensions</a></li><li class="l2"><a href="#9-automated-validation-run">9. Automated validation run</a></li><li class="l3"><a href="#verification-exact-answers">Verification (exact answers)</a></li><li class="l3"><a href="#2d-flow">2D flow</a></li><li class="l3"><a href="#3d-flow">3D flow</a></li><li class="l3"><a href="#heat-transfer">Heat transfer</a></li><li class="l3"><a href="#fans-and-jets">Fans and jets</a></li><li class="l3"><a href="#airfoil-polars">Airfoil polars</a></li><li class="l3"><a href="#finite-wings">Finite wings</a></li><li class="l3"><a href="#references-of-the-automated-run">References of the automated run</a></li><li class="l2"><a href="#10-what-is-not-validated">10. What is not validated</a></li></ul></div></aside>
@@ -681,6 +686,8 @@ was taken on the development GPU, often while other programs used it.</li>
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

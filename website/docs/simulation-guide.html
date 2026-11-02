@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Simulation guide">
 <meta property="og:description" content="How a run is planned and executed, and how to read its results.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/simulation-guide.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -543,7 +547,7 @@ aerolume-cli doctor                                                         also
 <code>--re-mode</code>, <code>--re-cap</code> and <code>--sensitivity cd|cl|ld</code>. Binary STL files have no parts:
 export OBJ (groups) or PLY per part to have wheels recognised and spun.</p>
 <h2 id="13-placed-physics-heat-smoke-particles-fans-jets-and-closed-rooms">13. Placed physics: heat, smoke, particles, fans, jets and closed rooms<a class="anchor" href="#13-placed-physics-heat-smoke-particles-fans-jets-and-closed-rooms" aria-label="Link to this section">#</a></h2>
-<p>A CFD simulation can carry more than the flow around its bodies (DESIGN.md section 10).
+<p>A CFD simulation can carry more than the flow around its bodies (<a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts, §10</a>).
 Everything below is off by default, so a simulation without it plans and runs exactly as
 before (the only addition is the solver diagnostics, recorded by default at about 2 % of a
 step in 2D and 3 % in 3D; switch them off with <code>CFDSettings.record_<wbr>diagnostics</code>). It works
@@ -1010,6 +1014,7 @@ faster than its own disc velocity, so the step shrinks and the run takes longer 
 first estimate (the estimate learns from each run).</li>
 <li>Lattice-Boltzmann solvers and neural-operator surrogates are not in this release.</li>
 </ul>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/user_guide_simulation.md">docs/user_guide_simulation.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="user-guide.html"><span>Previous</span><b>User guide</b></a><a class="next" href="scripting.html"><span>Next</span><b>Scripting API</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-the-analyses">1. The analyses</a></li><li class="l2"><a href="#2-what-the-planner-decides">2. What the planner decides</a></li><li class="l2"><a href="#3-quality-presets">3. Quality presets</a></li><li class="l2"><a href="#4-reynolds-number-real-or-capped">4. Reynolds number: real or capped</a></li><li class="l2"><a href="#5-when-a-run-stops-and-what-converged-means">5. When a run stops, and what "converged" means</a></li><li class="l2"><a href="#6-reading-results-honestly">6. Reading results honestly</a></li><li class="l2"><a href="#7-explore-mode">7. Explore mode</a></li><li class="l2"><a href="#8-command-line">8. Command line</a></li><li class="l2"><a href="#9-when-something-goes-wrong">9. When something goes wrong</a></li><li class="l2"><a href="#10-3d-cfd">10. 3D CFD</a></li><li class="l3"><a href="#101-what-the-planner-decides">10.1 What the planner decides</a></li><li class="l3"><a href="#102-measured-on-the-development-machine">10.2 Measured on the development machine</a></li><li class="l3"><a href="#103-what-a-3d-result-holds">10.3 What a 3D result holds</a></li><li class="l3"><a href="#104-explore-in-3d">10.4 Explore in 3D</a></li><li class="l2"><a href="#11-finite-wings">11. Finite wings</a></li><li class="l2"><a href="#12-command-line-3d-and-wings">12. Command line (3D and wings)</a></li><li class="l2"><a href="#13-placed-physics-heat-smoke-particles-fans-jets-and-closed-rooms">13. Placed physics: heat, smoke, particles, fans, jets and closed rooms</a></li><li class="l3"><a href="#131-heat-transfer-the-scales-the-planner-chooses">13.1 Heat transfer: the scales the planner chooses</a></li><li class="l3"><a href="#132-heat-transfer-what-a-result-holds">13.2 Heat transfer: what a result holds</a></li><li class="l3"><a href="#133-smoke-and-particles">13.3 Smoke and particles</a></li><li class="l3"><a href="#134-fans-and-jets">13.4 Fans and jets</a></li><li class="l3"><a href="#135-closed-rooms">13.5 Closed rooms</a></li><li class="l3"><a href="#136-when-a-run-with-placed-physics-stops">13.6 When a run with placed physics stops</a></li><li class="l3"><a href="#137-time-step-and-run-time-estimate-with-placed-physics">13.7 Time step and run-time estimate with placed physics</a></li><li class="l3"><a href="#138-explore-with-placed-physics">13.8 Explore with placed physics</a></li><li class="l3"><a href="#139-measured-on-the-development-machine">13.9 Measured on the development machine</a></li><li class="l3"><a href="#1310-command-line">13.10 Command line</a></li><li class="l3"><a href="#1311-limits">13.11 Limits</a></li></ul></div></aside>
@@ -1021,6 +1026,8 @@ first estimate (the estimate learns from each run).</li>
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

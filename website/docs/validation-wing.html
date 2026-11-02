@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Finite-wing validation">
 <meta property="og:description" content="Lifting-line and lifting-surface theory, Weber &amp; Brebner and NACA TN 1270 wings.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/validation-wing.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -82,7 +86,7 @@ not, and should not:</strong> 2πAR/(AR+2) is lifting-<em>line</em> theory, whic
 loading; a lifting <em>surface</em> carries less lift at low aspect ratio (Helmbold's approximation gives
 −7 % at AR 4). That the lattice's lower values are the right ones is shown by the lifting-surface
 references of section 2 — above all the circular wing, whose AR (1.27) is the hardest case and
-where the lattice matches Multhopp's lifting-surface solution to 0.3 %. The DESIGN.md bar "CLα =
+where the lattice matches Multhopp's lifting-surface solution to 0.3 %. The <a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts</a> bar "CLα =
 2πAR/(AR+2) within 2 %" is therefore met by the LLT; for the VLM it holds only at high AR (−2.7 % at
 AR 12, tending to 0 as AR grows). Both methods keep e ≥ 0.997.</p>
 <p>The semicircle collocation (<a href="theory-wing.html#1-geometry">Finite wings, §1</a>) is what makes e ≈ 1 at practical panel counts: with
@@ -249,6 +253,7 @@ identity with the stretched incompressible wing), not against compressible test 
 <li>Twisted, cranked or multi-airfoil wings beyond the NACA TN 1270 set; wings with dihedral (only the
 kinematics are tested); low Reynolds numbers (&lt; 2×10⁵) against data.</li>
 </ul>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/validation_wing.md">docs/validation_wing.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="validation-airfoil.html"><span>Previous</span><b>Airfoil validation</b></a><a class="next" href="design-guidelines.html"><span>Next</span><b>Design guidelines</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#1-elliptic-wings-lifting-line-theory">1. Elliptic wings: lifting-line theory</a></li><li class="l2"><a href="#2-lifting-surface-references">2. Lifting-surface references</a></li><li class="l2"><a href="#3-45-swept-wing-weber-brebner-wind-tunnel">3. 45° swept wing — Weber &amp; Brebner (wind tunnel)</a></li><li class="l2"><a href="#4-viscous-wings-naca-tn-1270-wind-tunnel">4. Viscous wings — NACA TN 1270 (wind tunnel)</a></li><li class="l2"><a href="#5-performance">5. Performance</a></li><li class="l2"><a href="#what-was-not-verified">What was not verified</a></li></ul></div></aside>
@@ -260,6 +265,8 @@ kinematics are tested); low Reynolds numbers (&lt; 2×10⁵) against data.</li>
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

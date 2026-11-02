@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Navier–Stokes solver (2D)">
 <meta property="og:description" content="Equations, discretisation, immersed boundaries, forces, heat transfer, fans, performance and limits.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/theory-ns2d.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -42,7 +46,7 @@
 <code>tests/test_ns2d_core.py</code>, <code>tests/<wbr>test_<wbr>ns2d_<wbr>solver.py</code>, <code>tests/<wbr>test_<wbr>ns2d_<wbr>physics.py</code>,
 <code>tests/<wbr>test_<wbr>ns2d_<wbr>validation.py</code> and <code>tests/<wbr>test_<wbr>ns2d_<wbr>physics_<wbr>validation.py</code> (<code>-m slow</code>).</p>
 <p>Part I (sections 1–14) is the validated flow solver. Part II (sections 15–23) adds the placed
-physics of DESIGN.md section 10 — smoke emitters and tracer particles, heat transfer with
+physics of <a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts, §10</a> — smoke emitters and tracer particles, heat transfer with
 buoyancy, fans, jets and vents, painted obstacles, live editing, diagnostics — without
 changing a Part I number.</p>
 <p>This document explains every numerical choice, why it was made, and what was measured to
@@ -59,7 +63,7 @@ length), velocities by the free-stream speed <code>U</code>, time by <code>L/U</
 rigid rotation for wheels), <span class="math">η</span> the permeability of the penalisation, <span class="math">ν<sub><i>t</i></sub></span> an optional
 subgrid eddy viscosity and <code>S</code> the strain-rate tensor.</p>
 <p>Flow always enters from the left along +x; angle of attack is applied by rotating the
-geometry (DESIGN.md §3), so the x force is drag and the y force is lift.</p>
+geometry (<a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts, §3</a>), so the x force is drag and the y force is lift.</p>
 <p>Pressure coefficient: <span class="math">cp = 2 (<i>p</i> − <i>p</i><sub>ref</sub>)</span> where <span class="math"><i>p</i><sub>ref</sub></span> is the mean pressure over the two
 inlet columns (in periodic mode: the domain mean). Force coefficients use the reference
 length <code>force_ref</code> (in units of L): <code>Cd = Fx / (½ force_ref)</code>, <code>Cl = Fy / (½ force_ref)</code>.
@@ -312,7 +316,7 @@ Coutanceau &amp; Bouard 1977: 53.5°). The split between pressure and friction d
 probe placement by ±1–2 % each (probes at 1/2 h or 2/3 h instead of 1.5/2.5 h moved Cd_f by
 +2.7 % / −2.0 % at Re 40, 32 cells/D); the total is more robust than either part.</p>
 <p><strong>Reference pressure.</strong> cp is relative to the mean pressure of the two inlet columns
-(DESIGN.md). In a confined domain the static pressure near the body is lower than at the
+(<a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts</a>). In a confined domain the static pressure near the body is lower than at the
 inlet: in the 5 %-blockage cylinder domain of §11 the slip-wall pressure abeam the cylinder
 is cp = −0.09 (Re 40) and −0.05 (Re 100) relative to the inlet, with a local wall velocity
 of 1.04 and 1.02 U. Blockage and upstream length (the planner's domain choice) therefore
@@ -590,7 +594,7 @@ builds on).</li>
 <hr>
 <h1 id="part-ii-placed-physics">Part II — placed physics</h1>
 <h2 id="15-placed-physics-design-rules">15. Placed physics: design rules<a class="anchor" href="#15-placed-physics-design-rules" aria-label="Link to this section">#</a></h2>
-<p>DESIGN.md §10 adds AeroJAX-style placed physics to the validated flow solver: smoke
+<p><a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts, §10</a> adds AeroJAX-style placed physics to the validated flow solver: smoke
 emitters and tracer particles, heat transfer with Boussinesq buoyancy, heated bodies and
 walls, volumetric heaters, fans (actuator strips), jets and vents, mouse-painted
 obstacles, live editing, diagnostics and a PID-controlled time step. Module
@@ -709,7 +713,7 @@ two held walls reproduces the exact linear profile and <code>Nu = 1</code> to 1e
 the cavity Nusselt numbers converge at second order (§21.1).</p>
 <p><code>FlowSolver.heat_<wbr>transfer()</code> reports per body the heat rate (units ρ c_p U ΔT_ref L per
 span), the wall temperature and the mean Nusselt number based on the reference length,
-<span class="math">Nu = Pe <i>Q</i> / ((θ<sub><i>w</i></sub> − θ<sub>ref</sub>) <i>P</i>)</span> (DESIGN.md §10.2: <span class="math">Nu = <i>Q</i> <i>L</i> / (<i>k</i> Δ<i>T</i> <i>A</i>)</span>); <code>surface()</code> adds
+<span class="math">Nu = Pe <i>Q</i> / ((θ<sub><i>w</i></sub> − θ<sub>ref</sub>) <i>P</i>)</span> (<a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts, §10.2</a>: <span class="math">Nu = <i>Q</i> <i>L</i> / (<i>k</i> Δ<i>T</i> <i>A</i>)</span>); <code>surface()</code> adds
 the local Nusselt number from the same two-probe quadratic as cf (§6.5).</p>
 <h3 id="165-buoyancy-and-scaling">16.5 Buoyancy and scaling<a class="anchor" href="#165-buoyancy-and-scaling" aria-label="Link to this section">#</a></h3>
 <p>The Boussinesq force <span class="math"><i>f</i> = −Ri θ ĝ</span> (<span class="math">Ri = <i>g</i> β Δ<i>T</i><sub>ref</sub> <i>L</i> / <i>U</i>²</span>, ĝ = −y by default, any
@@ -1354,6 +1358,7 @@ sequel to Godunov's method, J. Comput. Phys. 32, 101–136 (MUSCL).</li>
 a plate channel, in Turbulent Shear Flows 8 (Durst et al., eds.), Springer, 155–168
 (presented 1991; the power-law wall model of §18.4).</li>
 </ul>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/theory_ns2d.md">docs/theory_ns2d.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="methods.html"><span>Previous</span><b>Methods</b></a><a class="next" href="theory-ns3d.html"><span>Next</span><b>Navier–Stokes solver (3D)</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-equations-and-scaling">1. Equations and scaling</a></li><li class="l2"><a href="#2-grid-and-boundary-conditions">2. Grid and boundary conditions</a></li><li class="l2"><a href="#3-spatial-discretisation">3. Spatial discretisation</a></li><li class="l2"><a href="#4-pressure-exact-projection-with-a-direct-dct-poisson-solver">4. Pressure: exact projection with a direct DCT Poisson solver</a></li><li class="l2"><a href="#5-time-integration-and-time-step">5. Time integration and time step</a></li><li class="l2"><a href="#6-immersed-boundaries-brinkman-volume-penalisation">6. Immersed boundaries: Brinkman volume penalisation</a></li><li class="l3"><a href="#61-masks">6.1 Masks</a></li><li class="l3"><a href="#62-implicit-penalisation">6.2 Implicit penalisation</a></li><li class="l3"><a href="#63-choosing-η-and-placing-the-effective-wall">6.3 Choosing η and placing the effective wall</a></li><li class="l3"><a href="#64-force-evaluation">6.4 Force evaluation</a></li><li class="l3"><a href="#65-surface-distributions-cp-cf">6.5 Surface distributions (cp, cf)</a></li><li class="l2"><a href="#7-subgrid-models-2d-les">7. Subgrid models (2D LES)</a></li><li class="l2"><a href="#8-passive-dye">8. Passive dye</a></li><li class="l2"><a href="#9-start-up-perturbation">9. Start-up perturbation</a></li><li class="l2"><a href="#10-performance-cuda-graphs-cpu-path">10. Performance: CUDA graphs, CPU path</a></li><li class="l2"><a href="#11-verification-and-validation">11. Verification and validation</a></li><li class="l3"><a href="#verification-exact-answers">Verification (exact answers)</a></li><li class="l3"><a href="#validation-circular-cylinder">Validation: circular cylinder</a></li><li class="l3"><a href="#channel-and-sharp-edged-benchmarks">Channel and sharp-edged benchmarks</a></li><li class="l3"><a href="#airfoil-sanity-check-not-a-quantitative-validation">Airfoil sanity check (not a quantitative validation)</a></li><li class="l3"><a href="#moving-ground">Moving ground</a></li><li class="l2"><a href="#12-limitations-what-to-trust">12. Limitations — what to trust</a></li><li class="l2"><a href="#13-differentiability">13. Differentiability</a></li><li class="l2"><a href="#14-references">14. References</a></li><li class="l2"><a href="#15-placed-physics-design-rules">15. Placed physics: design rules</a></li><li class="l2"><a href="#16-heat-transfer">16. Heat transfer</a></li><li class="l3"><a href="#161-energy-equation-and-its-discretisation">16.1 Energy equation and its discretisation</a></li><li class="l3"><a href="#162-temperature-bodies-implicit-penalisation-and-the-thermal-wall">16.2 Temperature bodies: implicit penalisation and the thermal wall</a></li><li class="l3"><a href="#163-heat-flux-and-adiabatic-bodies">16.3 Heat-flux and adiabatic bodies</a></li><li class="l3"><a href="#164-domain-walls-heat-rates-and-nusselt-numbers">16.4 Domain walls, heat rates and Nusselt numbers</a></li><li class="l3"><a href="#165-buoyancy-and-scaling">16.5 Buoyancy and scaling</a></li><li class="l3"><a href="#166-heaters-and-the-energy-balance">16.6 Heaters and the energy balance</a></li><li class="l2"><a href="#17-emitters-smoke-channels-and-tracer-particles">17. Emitters: smoke channels and tracer particles</a></li><li class="l2"><a href="#18-fans-actuator-strips">18. Fans: actuator strips</a></li><li class="l3"><a href="#181-momentum-source">18.1 Momentum source</a></li><li class="l3"><a href="#182-velocity-mode-an-in-graph-pi-controller">18.2 Velocity mode: an in-graph PI controller</a></li><li class="l3"><a href="#183-fan-report">18.3 Fan report</a></li><li class="l3"><a href="#184-fans-in-closed-2d-rooms-a-grid-study-and-the-wall-model">18.4 Fans in closed 2D rooms: a grid study, and the wall model</a></li><li class="l2"><a href="#19-ports-jets-and-vents-and-painted-obstacles">19. Ports (jets and vents) and painted obstacles</a></li><li class="l3"><a href="#191-jets-and-vents">19.1 Jets and vents</a></li><li class="l3"><a href="#192-mass-balance-and-the-neumann-compatibility">19.2 Mass balance and the Neumann compatibility</a></li><li class="l3"><a href="#193-painted-obstacles-explore-mode">19.3 Painted obstacles (explore mode)</a></li><li class="l2"><a href="#20-live-editing-diagnostics-solver-trace-and-the-pid-time-step">20. Live editing, diagnostics, solver trace and the PID time step</a></li><li class="l3"><a href="#201-live-edits">20.1 Live edits</a></li><li class="l3"><a href="#202-pid-controlled-time-step">20.2 PID-controlled time step</a></li><li class="l3"><a href="#203-diagnostics-and-the-solver-trace">20.3 Diagnostics and the solver trace</a></li><li class="l2"><a href="#21-validation-of-the-placed-physics">21. Validation of the placed physics</a></li><li class="l3"><a href="#211-differentially-heated-square-cavity-de-vahl-davis-1983">21.1 Differentially heated square cavity (de Vahl Davis 1983)</a></li><li class="l3"><a href="#212-forced-convection-from-a-heated-cylinder">21.2 Forced convection from a heated cylinder</a></li><li class="l3"><a href="#213-rayleigh-bénard-onset">21.3 Rayleigh–Bénard onset</a></li><li class="l3"><a href="#214-actuator-strip-in-a-channel-momentum-theory">21.4 Actuator strip in a channel (momentum theory)</a></li><li class="l3"><a href="#215-plane-jet-from-a-port">21.5 Plane jet from a port</a></li><li class="l3"><a href="#216-exact-balances-tests-teststest_ns2d_physicspy">21.6 Exact balances (tests, tests/test_ns2d_physics.py)</a></li><li class="l2"><a href="#22-limitations-of-the-placed-physics">22. Limitations of the placed physics</a></li><li class="l2"><a href="#23-references-placed-physics">23. References (placed physics)</a></li></ul></div></aside>
@@ -1365,6 +1370,8 @@ a plate channel, in Turbulent Shear Flows 8 (Durst et al., eds.), Springer, 155�
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume">
 <meta property="og:description" content="Open-source aerodynamics and heat-transfer studio: GPU Navier-Stokes solvers in 2D and 3D with smoke emitters, heated bodies, fans and rooms, an XFOIL-class airfoil solver and finite wings, in one guided desktop workflow.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/site.css">
@@ -22,6 +25,7 @@
       <a href="#validation">Validation</a>
       <a href="#download">Get Aerolume</a>
       <a href="docs/index.html">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn hero-pause" type="button" data-hero-pause hidden aria-label="Pause the background animation"><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.25v9.5L12.5 8z" fill="currentColor"/></svg></button>
@@ -39,6 +43,7 @@
     <div class="actions">
       <a class="btn btn-primary" href="#validation">See the validation</a>
       <a class="btn btn-secondary" href="#download">Get Aerolume</a>
+      <a class="btn btn-secondary" href="https://github.com/TanmayPasula/Aerolume">Source code</a>
     </div>
   </div>
 </section>
@@ -182,13 +187,15 @@ and the limits above describe this release as it is.</p>
   </div>
   <div class="two-col code-right">
     <div class="prose">
-      <p><strong>There is no public download yet.</strong> The source repository is not public yet either; once it is, this page will link to it and show the command that clones it.</p>
+      <p><strong>There is no public download yet.</strong> Clone the <a href="https://github.com/TanmayPasula/Aerolume">repository</a> and build the installer with the commands beside this text.</p>
       <p>The build makes <code>Aerolume-0.1.0-cuda-setup.exe</code>, which installs for the current user without administrator rights, with Python, PyTorch and its CUDA libraries, VTK, Qt, the documentation and the validation scripts inside. GPU runs need only an NVIDIA driver; without one, every analysis runs on the CPU.</p>
       <p>The installer is not code-signed, so Windows SmartScreen asks once. The <a href="docs/install.html">installation guide</a> covers installing from source with pip, the portable folder and troubleshooting.</p>
     </div>
     <div class="codeblock">
-      <p class="label">Build the installer, inside a copy of the repository<button class="copy" type="button" data-copy="cmd-build" hidden>Copy</button></p>
-<pre class="cmd" id="cmd-build"><code><span class="ln">pip install pyinstaller          # and Inno Setup 6
+      <p class="label">Clone and build the installer<button class="copy" type="button" data-copy="cmd-build" hidden>Copy</button></p>
+<pre class="cmd" id="cmd-build"><code><span class="ln">git clone https://github.com/TanmayPasula/Aerolume.git
+</span><span class="ln">cd Aerolume
+</span><span class="ln">pip install pyinstaller          # and Inno Setup 6
 </span><span class="ln">python packaging/build.py --variant cuda
 </span><span class="ln">python packaging/build.py --status    # does the build match the sources?</span></code></pre>
     </div>
@@ -207,7 +214,7 @@ and the limits above describe this release as it is.</p>
     <div id="open-source">
       <h2>Open source</h2>
       <div class="prose">
-        <p>Released under the <a href="LICENSE.txt">Apache License 2.0</a>: use it commercially, modify it and redistribute it. The airfoil solver builds on <strong>mfoil</strong> by Krzysztof J. Fidkowski (MIT licence); the <a href="docs/third-party-notices.html">third-party notices</a> list the rest. The repository is not public yet, so this site cannot link to the source code or an issue tracker; it will once the repository is published.</p>
+        <p>Released under the <a href="LICENSE.txt">Apache License 2.0</a>: use it commercially, modify it and redistribute it. The airfoil solver builds on <strong>mfoil</strong> by Krzysztof J. Fidkowski (MIT licence); the <a href="docs/third-party-notices.html">third-party notices</a> list the rest. Source code: <a href="https://github.com/TanmayPasula/Aerolume">the repository</a>; questions and bug reports: <a href="https://github.com/TanmayPasula/Aerolume/issues">the issue tracker</a>.</p>
         <p>A change that moves a coefficient has to say by how much, on which validation case, and why the new value is closer to the reference: the <a href="docs/contributing.html">contributing guide</a>.</p>
       </div>
     </div>
@@ -222,6 +229,8 @@ and the limits above describe this release as it is.</p>
       <a href="docs/index.html">Documentation</a>
       <a href="index.html#validation">Validation</a>
       <a href="index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="LICENSE.txt">Licence</a>
     </nav>
   </div>

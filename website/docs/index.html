@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs">
 <meta property="og:description" content="Aerolume documentation: Overview, Installing Aerolume, User guide, Simulation guide, Scripting API, Experiment assistant, MCP server, Accounts (optional), Methods, Navier–Stokes solver (2D), Navier–Stokes solver (3D), Airfoil analysis, Finite wings, Sensitivity maps, Validation report, Airfoil validation, Finite-wing validation, Design guidelines, Contributing, Third-party notices.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/index.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -34,7 +38,7 @@
 <main id="main" class="doc">
 <div class="docs-mobile"><details class="m-nav"><summary>Documentation</summary><ul><li><a href="index.html">All documentation</a></li><li><a href="overview.html">Overview</a></li><li><a href="install.html">Installing Aerolume</a></li><li><a href="user-guide.html">User guide</a></li><li><a href="simulation-guide.html">Simulation guide</a></li><li><a href="scripting.html">Scripting API</a></li><li><a href="assistant.html">Experiment assistant</a></li><li><a href="mcp.html">MCP server</a></li><li><a href="accounts.html">Accounts (optional)</a></li><li><a href="methods.html">Methods</a></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a></li><li><a href="theory-airfoil.html">Airfoil analysis</a></li><li><a href="theory-wing.html">Finite wings</a></li><li><a href="theory-sensitivity.html">Sensitivity maps</a></li><li><a href="validation.html">Validation report</a></li><li><a href="validation-airfoil.html">Airfoil validation</a></li><li><a href="validation-wing.html">Finite-wing validation</a></li><li><a href="design-guidelines.html">Design guidelines</a></li><li><a href="contributing.html">Contributing</a></li><li><a href="third-party-notices.html">Third-party notices</a></li></ul></details></div>
 <h1>Documentation</h1>
-<p>How to use the program, the theory behind every solver with its verification, the validation against published data and the project&rsquo;s own rules. Each page is generated from the Markdown in the repository.</p>
+<p>How to use the program, the theory behind every solver with its verification, the validation against published data and the project&rsquo;s own rules. Each page is generated from the Markdown in the <a href="https://github.com/TanmayPasula/Aerolume">repository</a>.</p>
 <h2 class="doc-index-group" id="guide">Guide</h2><ul class="doc-index"><li><a href="overview.html">Overview</a><p>What Aerolume is, how to install it and how to run a first analysis.</p></li><li><a href="install.html">Installing Aerolume</a><p>The Windows installer, the portable folder and a source install; building the installer.</p></li><li><a href="user-guide.html">User guide</a><p>The pages of the application, 3D, placed physics, explore, scripting, the Assistant, accounts.</p></li><li><a href="simulation-guide.html">Simulation guide</a><p>How a run is planned and executed, and how to read its results.</p></li><li><a href="scripting.html">Scripting API</a><p>import aerolume as al: designs, runs, sweeps, plots and exports from Python.</p></li><li><a href="assistant.html">Experiment assistant</a><p>Planning, running and analysing experiments with Claude or a local model, and its rules.</p></li><li><a href="mcp.html">MCP server</a><p>Driving Aerolume from Claude Desktop or Claude Code through aerolume-mcp.</p></li><li><a href="accounts.html">Accounts (optional)</a><p>Connecting a Supabase project of your own: sign-in, cloud projects and share links.</p></li></ul>
 <h2 class="doc-index-group" id="theory">Theory</h2><ul class="doc-index"><li><a href="methods.html">Methods</a><p>Every method in one place, with its references: the summary to cite.</p></li><li><a href="theory-ns2d.html">Navier–Stokes solver (2D)</a><p>Equations, discretisation, immersed boundaries, forces, heat transfer, fans, performance and limits.</p></li><li><a href="theory-ns3d.html">Navier–Stokes solver (3D)</a><p>The 3D solver: voxelised meshes, symmetry planes, moving roads, placed physics, verification.</p></li><li><a href="theory-airfoil.html">Airfoil analysis</a><p>The viscous–inviscid polar method, its inputs and where its results stop being valid.</p></li><li><a href="theory-wing.html">Finite wings</a><p>Vortex lattice and nonlinear lifting line on the section polars.</p></li><li><a href="theory-sensitivity.html">Sensitivity maps</a><p>Shape sensitivities by reverse-mode differentiation through the solver, in 2D and 3D.</p></li></ul>
 <h2 class="doc-index-group" id="validation">Validation</h2><ul class="doc-index"><li><a href="validation.html">Validation report</a><p>Exact answers, flow and heat-transfer benchmarks, fans and jets, polars, wings and performance.</p></li><li><a href="validation-airfoil.html">Airfoil validation</a><p>Polars compared with NACA 0012, 2412 and 4412 wind-tunnel data.</p></li><li><a href="validation-wing.html">Finite-wing validation</a><p>Lifting-line and lifting-surface theory, Weber &amp; Brebner and NACA TN 1270 wings.</p></li></ul>
@@ -49,6 +53,8 @@
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

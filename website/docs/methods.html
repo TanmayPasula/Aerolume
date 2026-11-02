@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Methods">
 <meta property="og:description" content="Every method in one place, with its references: the summary to cite.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/methods.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -310,7 +314,7 @@ agrees.</p>
 transfer, fans and jets, airfoils, wings), compares each quantity with its cited reference and a
 tolerance band fixed before the run, and writes section 9 of the validation report with its
 figures; <code>--quick</code> runs a subset that touches every area in a few minutes. See
-validation/README.md for how to run and extend it. Every run records a
+<a href="https://github.com/TanmayPasula/Aerolume/blob/main/validation/README.md">validation/README.md</a> for how to run and extend it. Every run records a
 digest of the code it measured, and <code>--check-docs</code> says whether the published section still
 matches the code. In the run of 1 November 2026 on Aerolume 0.1.0 (25 cases, 30 minutes on
 the development GPU with no other compute job running) 126 of 128 checks passed. The two failures stay in the report: the square
@@ -423,6 +427,7 @@ single cylinders, single spheres, and for flow in packed beds and tube bundles",
 <em>Simulation</em> 69(6), 323–334, 1997. doi:10.1177/003754979706900601</li>
 </ul>
 <p>Every DOI above was checked against Crossref when this document was written (October 2026).</p>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/methods.md">docs/methods.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="accounts.html"><span>Previous</span><b>Accounts (optional)</b></a><a class="next" href="theory-ns2d.html"><span>Next</span><b>Navier–Stokes solver (2D)</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-the-solvers-at-a-glance">1. The solvers at a glance</a></li><li class="l2"><a href="#2-navier-stokes-solvers">2. Navier–Stokes solvers</a></li><li class="l3"><a href="#21-equations">2.1 Equations</a></li><li class="l3"><a href="#22-grid-boundary-conditions-symmetry">2.2 Grid, boundary conditions, symmetry</a></li><li class="l3"><a href="#23-spatial-discretisation">2.3 Spatial discretisation</a></li><li class="l3"><a href="#24-pressure">2.4 Pressure</a></li><li class="l3"><a href="#25-time-integration">2.5 Time integration</a></li><li class="l3"><a href="#26-immersed-bodies">2.6 Immersed bodies</a></li><li class="l3"><a href="#27-subgrid-models-and-limits-of-the-flow-solvers">2.7 Subgrid models and limits of the flow solvers</a></li><li class="l3"><a href="#28-start-up-and-determinism">2.8 Start-up and determinism</a></li><li class="l2"><a href="#3-heat-transfer">3. Heat transfer</a></li><li class="l3"><a href="#31-energy-equation-and-buoyancy">3.1 Energy equation and buoyancy</a></li><li class="l3"><a href="#32-discretisation">3.2 Discretisation</a></li><li class="l3"><a href="#33-thermal-boundary-conditions">3.3 Thermal boundary conditions</a></li><li class="l3"><a href="#34-nusselt-number-and-heat-balance">3.4 Nusselt number and heat balance</a></li><li class="l2"><a href="#4-fans-jets-and-vents">4. Fans, jets and vents</a></li><li class="l2"><a href="#5-flow-visualisation-smoke-and-tracers">5. Flow visualisation: smoke and tracers</a></li><li class="l2"><a href="#6-airfoil-polars">6. Airfoil polars</a></li><li class="l2"><a href="#7-finite-wings">7. Finite wings</a></li><li class="l2"><a href="#8-statistics-of-time-averaged-outputs">8. Statistics of time-averaged outputs</a></li><li class="l2"><a href="#9-discretisation-uncertainty-grid-convergence-studies">9. Discretisation uncertainty: grid-convergence studies</a></li><li class="l2"><a href="#10-reproducibility-and-provenance">10. Reproducibility and provenance</a></li><li class="l2"><a href="#11-validation">11. Validation</a></li><li class="l2"><a href="#12-limitations">12. Limitations</a></li><li class="l2"><a href="#references">References</a></li></ul></div></aside>
@@ -434,6 +439,8 @@ single cylinders, single spheres, and for flow in packed beds and tube bundles",
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

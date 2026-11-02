@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Experiment assistant">
 <meta property="og:description" content="Planning, running and analysing experiments with Claude or a local model, and its rules.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/assistant.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -25,6 +28,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -519,6 +523,7 @@ says when to call it, the schema must pass <code>schema.check_schema</code> (eve
 <code>additionalProperties: false</code>, no numeric limits - the handler checks ranges and says why), and
 <code>kind</code> decides the approval rule. Tests: <code>tests/test_ai_*.py</code>; <code>pytest -m slow tests/test_ai_live.py</code>
 runs a real experiment with a local model.</p>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/ai_assistant.md">docs/ai_assistant.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="scripting.html"><span>Previous</span><b>Scripting API</b></a><a class="next" href="mcp.html"><span>Next</span><b>MCP server</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#setting-up">Setting up</a></li><li class="l3"><a href="#claude">Claude</a></li><li class="l3"><a href="#local-model-ollama">Local model (Ollama)</a></li><li class="l2"><a href="#using-the-panel">Using the panel</a></li><li class="l3"><a href="#before-anything-is-sent">Before anything is sent</a></li><li class="l3"><a href="#suggestions">Suggestions</a></li><li class="l3"><a href="#approvals">Approvals</a></li><li class="l3"><a href="#what-it-can-do-its-tools">What it can do (its tools)</a></li><li class="l2"><a href="#how-it-stays-honest">How it stays honest</a></li><li class="l2"><a href="#experiment-logs">Experiment logs</a></li><li class="l2"><a href="#scripts-and-the-command-line">Scripts and the command line</a></li><li class="l2"><a href="#privacy-and-safety">Privacy and safety</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l2"><a href="#for-developers">For developers</a></li></ul></div></aside>
@@ -530,6 +535,8 @@ runs a real experiment with a local model.</p>
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>

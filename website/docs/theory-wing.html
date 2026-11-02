@@ -9,6 +9,9 @@
 <meta property="og:title" content="Aerolume docs · Finite wings">
 <meta property="og:description" content="Vortex lattice and nonlinear lifting line on the section polars.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://tanmaypasula.github.io/Aerolume-Website/docs/theory-wing.html">
+<meta property="og:image" content="https://tanmaypasula.github.io/Aerolume-Website/assets/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site.css">
@@ -23,6 +26,7 @@
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
       <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
     </nav>
     <div class="top-tools">
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
@@ -56,7 +60,7 @@ seconds per polar instead of the minutes-to-hours of 3D CFD. Two methods are ava
 Leading edge <span class="math">(<i>x</i><sub>le</sub>, <i>y</i>, <i>z</i><sub>le</sub>)</span>, chord and twist vary <strong>linearly in y</strong> between two stations, so
 the leading and trailing edges are straight and the planform is exactly what the user typed.
 <code>symmetric=True</code> mirrors the stations about y = 0 (the sections describe the right half,
-y ≥ 0, DESIGN.md 7.2); a first station at y &gt; 0 leaves a gap at the centre (two separate lifting
+y ≥ 0, <a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts</a> 7.2); a first station at y &gt; 0 leaves a gap at the centre (two separate lifting
 surfaces).</p>
 <ul>
 <li><strong>Twist</strong> rotates a section nose-up about the spanwise axis through its leading edge.
@@ -88,7 +92,7 @@ zero-lift angle at −1.87° instead of −2.12° with 8 chordwise panels (now �
 <code>aspect_ratio = span²/area</code>, <span class="math">mac = ∫<i>c</i>² dy / ∫<i>c</i> dy</span> with its leading-edge x and spanwise station,
 <code>taper</code>, the root-to-tip quarter-chord <code>sweep_c4_deg</code> and <code>mean_chord = area/span</code>.</p>
 <h2 id="2-frames-references-and-signs">2. Frames, references and signs<a class="anchor" href="#2-frames-references-and-signs" aria-label="Link to this section">#</a></h2>
-<p>The wing is solved in its own frame (x aft, y spanwise, z up). Following DESIGN.md 7.2, the angle
+<p>The wing is solved in its own frame (x aft, y spanwise, z up). Following <a href="https://github.com/TanmayPasula/Aerolume/blob/main/DESIGN.md">design contracts</a> 7.2, the angle
 of attack α rotates the wing about +y through the moment reference by +α (nose up) and the
 sideslip β (FlowConditions' <code>yaw_deg</code> convention) rotates it about +z by −β first. Equivalently the
 free stream seen by the wing is</p>
@@ -287,6 +291,7 @@ theory)", ARC R&amp;M 2884, 1950 (semicircle collocation; circular-wing benchmar
 using nonlinear section lift data", NACA TN 1269, 1947 (critical-section stall estimate).</li>
 <li>A. Deperrois, <em>XFLR5 v6 Guidelines</em>, 2013 (strip coupling of VLM and section polars).</li>
 </ul>
+<p class="crumb src-link">Source: <a href="https://github.com/TanmayPasula/Aerolume/blob/main/docs/theory_wing.md">docs/theory_wing.md</a></p>
 <nav class="pager" aria-label="Previous and next page"><a class="prev" href="theory-airfoil.html"><span>Previous</span><b>Airfoil analysis</b></a><a class="next" href="theory-sensitivity.html"><span>Next</span><b>Sensitivity maps</b></a></nav>
 </main>
 <aside class="docs-toc" aria-label="On this page"><div class="sticky"><h2>On this page</h2><ul><li class="l2"><a href="#1-geometry">1. Geometry</a></li><li class="l2"><a href="#2-frames-references-and-signs">2. Frames, references and signs</a></li><li class="l2"><a href="#3-vortex-lattice-method">3. Vortex-lattice method</a></li><li class="l2"><a href="#4-nonlinear-lifting-line-phillips-snyder-2000">4. Nonlinear lifting line (Phillips &amp; Snyder 2000)</a></li><li class="l2"><a href="#5-viscous-strip-coupling">5. Viscous strip coupling</a></li><li class="l2"><a href="#6-assumptions-and-validity-limits">6. Assumptions and validity limits</a></li><li class="l2"><a href="#7-cost">7. Cost</a></li><li class="l2"><a href="#8-api">8. API</a></li><li class="l2"><a href="#references">References</a></li></ul></div></aside>
@@ -298,6 +303,8 @@ using nonlinear section lift data", NACA TN 1269, 1947 (critical-section stall e
       <a href="../docs/index.html">Documentation</a>
       <a href="../index.html#validation">Validation</a>
       <a href="../index.html#download">Get Aerolume</a>
+      <a href="https://github.com/TanmayPasula/Aerolume">Source</a>
+      <a href="https://github.com/TanmayPasula/Aerolume/issues">Issues</a>
       <a href="../LICENSE.txt">Licence</a>
     </nav>
   </div>
