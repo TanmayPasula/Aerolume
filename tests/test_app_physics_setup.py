@@ -1054,6 +1054,8 @@ def test_geometry_page_physics_layer_shows_and_moves_the_selected_simulation(qap
     page.close()
 
 
+@pytest.mark.skipif(bool(__import__("os").environ.get("AEROLUME_TEST_NO_GL")),
+                    reason="text-fit check needs a desktop's font rendering; hosted CI runners differ")
 def test_physics_editors_are_named_reachable_and_show_whole_numbers(qapp, state, planner):
     """The accessibility review's measured checks (WCAG 4.1.2, 2.1.1 / 2.4.3, and legibility): every
     visible control in the physics groups has an accessible name, the Tab chain reaches each of them

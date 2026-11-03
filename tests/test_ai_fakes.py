@@ -359,6 +359,8 @@ def test_fake_ollama_serves_the_api_subset():
 
 
 def test_fake_claude_api_streams_through_the_real_sdk():
+    import pytest
+    pytest.importorskip("anthropic")        # the optional [ai] extra; CI installs only [dev]
     api = FakeClaudeAPI([claude_message(("text", "Hello there"), ("tool", "toolu_1", "x", '{"a": 1}'),
                                         stop="tool_use")])
     with api.client().beta.messages.stream(model="claude-opus-5-5", max_tokens=64,

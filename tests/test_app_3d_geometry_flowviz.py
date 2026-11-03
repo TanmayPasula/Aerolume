@@ -401,6 +401,7 @@ def _page(state, design):
     return page
 
 
+@needs_gl
 def test_setup_flow_visualisation_group(qapp, state, planner):
     from aerolume.app.pages.setup import flow_viz_of
     page = _page(state, _vehicle())

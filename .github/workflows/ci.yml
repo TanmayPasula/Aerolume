@@ -11,7 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # 0.1.0 ships for Windows only; Linux and macOS join once their GUI tests are made portable
+        os: [windows-latest]
         python: ["3.11", "3.12"]
     env:
       QT_QPA_PLATFORM: offscreen
