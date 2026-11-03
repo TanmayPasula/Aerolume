@@ -85,16 +85,22 @@ def _probe_vtk_out_of_process() -> None:
     filled with "not ok", so every 3D test skips with its usual reason and nothing in
     this process touches OpenGL.
     """
+    import os
     import subprocess
 
-    code = ("from aerolume.viz3d.scene import backend_info; "
-            "print('VTKOK' if backend_info().get('ok') else 'VTKNO')")
-    try:
-        out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=False,
-                             timeout=120).stdout
-        ok, why = "VTKOK" in out, "no off-screen OpenGL context (checked in a child process)"
-    except subprocess.TimeoutExpired:
-        ok, why = False, "the off-screen OpenGL probe hung (checked in a child process)"
+    if os.environ.get("AEROLUME_TEST_NO_GL"):
+        # CI runners: a child probe can succeed (VTK's own software context) while the views
+        # embedded in Qt's offscreen platform still abort, so CI states it has no GL instead.
+        ok, why = False, "AEROLUME_TEST_NO_GL is set (no GPU or display on this machine)"
+    else:
+        code = ("from aerolume.viz3d.scene import backend_info; "
+                "print('VTKOK' if backend_info().get('ok') else 'VTKNO')")
+        try:
+            out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=False,
+                                 timeout=120).stdout
+            ok, why = "VTKOK" in out, "no off-screen OpenGL context (checked in a child process)"
+        except subprocess.TimeoutExpired:
+            ok, why = False, "the off-screen OpenGL probe hung (checked in a child process)"
     if ok:
         return
     try:
@@ -102,6 +108,14 @@ def _probe_vtk_out_of_process() -> None:
     except Exception:  # noqa: BLE001 - no VTK at all: the 3D tests skip on import already
         return
     scene._BACKEND = {"ok": False, "window": "", "renderer": "", "version": "", "error": why}
+    # The app's self-test renders a sphere itself; without GL that check reports the reason
+    # instead of rendering (it is covered for real by the frozen build's smoke test).
+    from aerolume.app import platform as plat
+
+    def _no_gl_vtk_check() -> str:
+        return f"skipped: {why}"
+
+    plat._check_vtk = _no_gl_vtk_check
 
 
 @pytest.fixture(autouse=True)

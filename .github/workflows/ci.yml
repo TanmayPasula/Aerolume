@@ -15,6 +15,7 @@ jobs:
         python: ["3.11", "3.12"]
     env:
       QT_QPA_PLATFORM: offscreen
+      AEROLUME_TEST_NO_GL: "1"        # hosted runners have no GPU; 3D view tests skip
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

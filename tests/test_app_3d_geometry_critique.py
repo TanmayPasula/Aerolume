@@ -28,6 +28,17 @@ pytestmark = pytest.mark.gui
 EXAMPLES = Path(__file__).resolve().parents[1] / "examples" / "geometry3d"
 
 
+
+def _gl_ok() -> bool:
+    try:
+        from aerolume.viz3d.scene import backend_info
+        return bool(backend_info()["ok"])
+    except Exception:  # noqa: BLE001 - no VTK, no 3D preview
+        return False
+
+
+needs_gl = pytest.mark.skipif(not _gl_ok(), reason="the 3D case preview needs an off-screen OpenGL context")
+
 @pytest.fixture(scope="module")
 def qapp():
     app = QApplication.instance() or QApplication([])
@@ -133,6 +144,7 @@ def _nozzle_px(qapp, page) -> QPoint:
     return QPoint(round(x), round(y))
 
 
+@needs_gl
 def test_click_on_the_smoke_rake_brings_its_settings_into_view(qapp, state, planner):
     page = _setup(state, _vehicle(), size=(1280, 800))
     try:

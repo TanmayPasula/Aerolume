@@ -31,6 +31,17 @@ EXAMPLES = Path(__file__).resolve().parents[1] / "examples" / "geometry3d"
 CAR_BOX = (0.0, 4.5, -0.91, 0.91, 0.0, 1.41)          # a car's wind-frame box [m]
 
 
+
+def _gl_ok() -> bool:
+    try:
+        from aerolume.viz3d.scene import backend_info
+        return bool(backend_info()["ok"])
+    except Exception:  # noqa: BLE001 - no VTK, no 3D preview
+        return False
+
+
+needs_gl = pytest.mark.skipif(not _gl_ok(), reason="the 3D case preview needs an off-screen OpenGL context")
+
 @pytest.fixture(scope="module")
 def qapp():
     app = QApplication.instance() or QApplication([])
@@ -522,6 +533,7 @@ def test_setup_smoke_settings_survive_save_and_reopen_when_the_model_holds_them(
     assert flow_viz_of(again.simulations[sim.id]) == want
 
 
+@needs_gl
 def test_case_preview_draws_each_emitter_kind(qapp, tmp_path):
     from aerolume.app.widgets.geometry_canvas import CasePreview3D, smoke_rake_layout
     car = _vehicle()
