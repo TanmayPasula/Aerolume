@@ -23,9 +23,10 @@ user (no administrator rights): Python, PyTorch with the CUDA libraries, VTK, Qt
 documentation and the validation scripts are inside, so nothing else is needed but an NVIDIA
 driver for GPU runs (without one everything runs on the CPU). It adds a Start-menu entry, opens
 `.aerolume` projects by double-click and uninstalls from Windows Settings. The installer is
-not code-signed yet, so SmartScreen asks once. There is no public download page yet: the
-installer is built from this repository with one command (Inno Setup 6 and PyInstaller
-needed), and attached to the project's releases once the repository is published.
+not code-signed yet, so SmartScreen asks once. Download it from the
+[v0.1.0 release](https://github.com/TanmayPasula/Aerolume/releases/tag/v0.1.0) (1.94 GB;
+SHA-256 `72323e99690b860b7077994258082c34a76ec5f005a668c3ed9c4ebbdda0f2b1`), or build it
+from this repository with one command (Inno Setup 6 and PyInstaller needed).
 
 ```bash
 python packaging/build.py --variant cuda     # portable folder + headless smoke test + installer

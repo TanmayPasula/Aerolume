@@ -1947,6 +1947,24 @@ def ns3d_idle_rate(repo: Path = REPO) -> str | None:
     return m.group(1) if m else None
 
 
+def published_download(version: str, path: Path = HERE / "download.json") -> dict[str, str] | None:
+    """The published installer of this version, from website/download.json (written by hand once a
+    release exists: version, file, size, sha256, release page, direct url). None when the file is
+    missing or records another version, so the page never offers a download that does not exist."""
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError:
+        return None
+    keys = ("version", "file", "size", "sha256", "release", "url")
+    if not all(isinstance(data.get(k), str) and data[k] for k in keys) or data["version"] != version:
+        return None
+    if not (data["url"].startswith("https://") and data["release"].startswith("https://")):
+        return None
+    return {k: data[k] for k in keys}
+
+
 def installer_facts(repo: Path = REPO) -> str:
     """One sentence of installer sizes and timings, read from docs/install.md's measurement table
     (its last column is the newest build), so the home page cannot drift from the guide. Empty
@@ -2332,7 +2350,18 @@ class SiteBuilder:
             build_label = "Build the installer, inside a copy of the repository"
             oss_links = ("The repository is not public yet, so this site cannot link to the source code or an "
                          "issue tracker; it will once the repository is published.")
+        dl = published_download(self.site.version) if url else None
+        if dl:
+            download_status = (
+                f'<a class="btn btn-primary" href="{_attr(dl["url"])}">Download for Windows</a> '
+                f'<code>{_esc(dl["file"])}</code>, {_esc(dl["size"])}, from the '
+                f'<a href="{_attr(dl["release"])}">release page</a>. SHA-256 '
+                f'<code class="sha">{_esc(dl["sha256"])}</code>; check it in PowerShell with '
+                f'<code>Get-FileHash .\\{_esc(dl["file"])}</code>. Or build it yourself: {repo_status}')
+        else:
+            download_status = f"<strong>There is no public download yet.</strong> {repo_status}"
         return {
+            "DOWNLOAD_STATUS": download_status,
             "CMD_BUILD": command_block(clone + build_cmds),
             "BUILD_LABEL": build_label,
             "REPO_STATUS": repo_status,

@@ -435,6 +435,8 @@ pre .ph { font-style: italic; color: var(--muted); }
   border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; min-height: 1.75rem;
 }
 .copy:hover { border-color: var(--fg); }
+/* the SHA-256 beside the download button wraps anywhere instead of widening the page on a phone */
+code.sha { overflow-wrap: anywhere; word-break: break-all; }
 
 /* footer */
 .foot { margin-top: clamp(5rem, 10vw, 9rem); border-top: 1px solid var(--line); padding-block: 2rem 3rem; }

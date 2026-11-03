@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import importlib
 import itertools
+import json
 import re
 import shutil
 import sys
@@ -1064,3 +1065,27 @@ def test_fonts_are_self_hosted_with_their_licences():
         lic = (fonts / f"OFL-atkinson-hyperlegible-{fam}.txt").read_text(encoding="utf-8")
         assert "SIL Open Font License" in lic
     assert (WEBSITE / "assets" / build.FONT_PRELOAD.removeprefix("assets/")).exists()
+
+
+def test_published_download_only_for_this_version(tmp_path):
+    rec = {"version": "0.1.0", "file": "A-0.1.0-setup.exe", "size": "1 GB", "sha256": "ab" * 32,
+           "release": "https://github.com/o/r/releases/tag/v0.1.0",
+           "url": "https://github.com/o/r/releases/download/v0.1.0/A-0.1.0-setup.exe"}
+    f = tmp_path / "download.json"
+    assert build.published_download("0.1.0", f) is None              # nothing recorded
+    f.write_text(json.dumps(rec), encoding="utf-8")
+    assert build.published_download("0.1.0", f)["file"] == "A-0.1.0-setup.exe"
+    assert build.published_download("0.2.0", f) is None              # another version
+    f.write_text(json.dumps({**rec, "url": "http://x"}), encoding="utf-8")
+    assert build.published_download("0.1.0", f) is None
+
+
+def test_with_a_published_release_the_page_links_the_installer(built_with_urls):
+    out, _, builder = built_with_urls
+    index = (out / "index.html").read_text(encoding="utf-8")
+    dl = build.published_download(builder.site.version)
+    if dl is None:
+        assert "There is no public download yet." in index
+    else:
+        assert f'href="{dl["url"]}">Download for Windows</a>' in index and dl["sha256"] in index
+        assert "There is no public download yet." not in index
