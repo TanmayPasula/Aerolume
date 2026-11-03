@@ -1,0 +1,53 @@
+name: Assemble release installer
+
+# A large installer can be uploaded to a draft release in pieces (name.part000, name.part001, ...)
+# from a connection that cannot carry one 2 GB upload. This job joins the pieces on GitHub's
+# network, checks the SHA-256 of the result against the one the build recorded, uploads the
+# single file, removes the pieces and publishes the release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (the release may be a draft)"
+        required: true
+      asset:
+        description: "File name to assemble, e.g. Aerolume-0.1.0-cuda-setup.exe"
+        required: true
+      sha256:
+        description: "Expected SHA-256 of the assembled file"
+        required: true
+      publish:
+        description: "Publish the release afterwards"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ inputs.tag }}
+      ASSET: ${{ inputs.asset }}
+    steps:
+      - name: Download the pieces
+        run: |
+          mkdir parts && cd parts
+          gh release download "$TAG" --pattern "$ASSET.part*"
+          ls -l | head -5; echo "$(ls | wc -l) pieces"
+      - name: Join and check
+        run: |
+          cat $(ls parts/"$ASSET".part* | sort) > "$ASSET"
+          ls -l "$ASSET"
+          echo "${{ inputs.sha256 }}  $ASSET" | sha256sum --check --strict
+      - name: Upload the installer and remove the pieces
+        run: |
+          gh release upload "$TAG" "$ASSET" --clobber
+          for f in parts/"$ASSET".part*; do gh release delete-asset "$TAG" "$(basename "$f")" --yes; done
+      - name: Publish
+        if: ${{ inputs.publish }}
+        run: gh release edit "$TAG" --draft=false --latest
