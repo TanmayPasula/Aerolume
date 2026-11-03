@@ -78,7 +78,7 @@ def test_inviscid_distribution_order(n2412):
     p = inviscid(n2412, 3.0)
     ile = int(np.argmin(p.x))
     assert p.x[0] > 0.99 and p.x[-1] > 0.99
-    assert p.y[0] >= p.y[-1]                                  # upper TE first
+    assert p.y[0] >= p.y[-1] - 1e-12                          # upper TE first (round-off at a closed TE)
     assert np.mean(p.y[1:ile]) > np.mean(p.y[ile + 1:-1])     # upper surface first
     assert np.mean(p.cp[5:ile - 5]) < np.mean(p.cp[ile + 5:-5])   # suction side is the upper one
 
